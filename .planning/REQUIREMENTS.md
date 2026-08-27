@@ -71,36 +71,34 @@
 
 ## Traceability
 
-*(Populated during roadmap creation)*
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PUZZ-01 | — | Pending |
-| PUZZ-02 | — | Pending |
-| PUZZ-03 | — | Pending |
-| GAME-01 | — | Pending |
-| GAME-02 | — | Pending |
-| GAME-03 | — | Pending |
-| GAME-04 | — | Pending |
-| PUZZ-04 | — | Pending |
-| RET-01 | — | Pending |
-| RET-02 | — | Pending |
-| RET-03 | — | Pending |
-| MON-01 | — | Pending |
-| MON-02 | — | Pending |
-| MON-03 | — | Pending |
-| MON-04 | — | Pending |
-| UX-01 | — | Pending |
-| UX-02 | — | Pending |
-| UX-03 | — | Pending |
-| UX-04 | — | Pending |
-| UX-05 | — | Pending |
+| PUZZ-01 | Phase 1 | Pending |
+| PUZZ-02 | Phase 1 | Pending |
+| PUZZ-03 | Phase 1 | Pending |
+| MON-02 | Phase 2 | Pending |
+| MON-03 | Phase 2 | Pending |
+| MON-04 | Phase 2 | Pending |
+| RET-01 | Phase 2 | Pending |
+| RET-02 | Phase 2 | Pending |
+| GAME-01 | Phase 3 | Pending |
+| GAME-02 | Phase 3 | Pending |
+| GAME-03 | Phase 3 | Pending |
+| GAME-04 | Phase 3 | Pending |
+| PUZZ-04 | Phase 3 | Pending |
+| RET-03 | Phase 3 | Pending |
+| MON-01 | Phase 4 | Pending |
+| UX-01 | Phase 5 | Pending |
+| UX-02 | Phase 5 | Pending |
+| UX-03 | Phase 5 | Pending |
+| UX-04 | Phase 5 | Pending |
+| UX-05 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 20 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 20 ⚠️
+- Mapped to phases: 20
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-08-27*
-*Last updated: 2026-08-27 after initial definition*
+*Last updated: 2026-08-27 after roadmap creation*
