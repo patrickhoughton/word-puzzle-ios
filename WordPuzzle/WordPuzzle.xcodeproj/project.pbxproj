@@ -29,9 +29,22 @@
 		8C36E7733041DDE2001631B4 /* WordPuzzleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordPuzzleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8C36E7CB30422702001631B4 /* Exceptions for "WordPuzzle" folder in "WordPuzzleTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				WordPuzzle.storekit,
+			);
+			target = 8C36E7683041DDE2001631B4 /* WordPuzzleTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8C36E75E3041DDE0001631B4 /* WordPuzzle */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8C36E7CB30422702001631B4 /* Exceptions for "WordPuzzle" folder in "WordPuzzleTests" target */,
+			);
 			path = WordPuzzle;
 			sourceTree = "<group>";
 		};
