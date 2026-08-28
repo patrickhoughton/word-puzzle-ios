@@ -81,4 +81,70 @@ import SwiftData
         #expect(store.bestScore() == 57)
         #expect(store.totalWordsFound() == 30)
     }
+
+    // MARK: - RET-01 streak
+
+    /// Helper: a date N days before `now`, at midday to stay clear of day boundaries.
+    private func daysAgo(_ n: Int, from now: Date = Date()) -> Date {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: now)
+        let shifted = calendar.date(byAdding: .day, value: -n, to: startOfDay)!
+        return calendar.date(byAdding: .hour, value: 12, to: shifted)!
+    }
+
+    @Test func testStreakIsZeroForEmptyStore() throws {
+        let store = try makeInMemoryStore()
+        #expect(store.currentStreak() == 0)
+    }
+
+    @Test func testStreakIncrementsOnConsecutiveDays() throws {
+        let store = try makeInMemoryStore()
+        let now = Date()
+
+        store.record(score: 10, wordsFoundCount: 4, date: daysAgo(0, from: now))
+        #expect(store.currentStreak(now: now) == 1)
+
+        store.record(score: 12, wordsFoundCount: 5, date: daysAgo(1, from: now))
+        #expect(store.currentStreak(now: now) == 2)
+
+        store.record(score: 14, wordsFoundCount: 6, date: daysAgo(2, from: now))
+        #expect(store.currentStreak(now: now) == 3)
+
+        // Multiple sessions on the same day still count as one day.
+        store.record(score: 9, wordsFoundCount: 3, date: daysAgo(0, from: now))
+        store.record(score: 8, wordsFoundCount: 3, date: daysAgo(0, from: now))
+        #expect(store.currentStreak(now: now) == 3)
+    }
+
+    @Test func testStreakResetsAfterMissedDay() throws {
+        let store = try makeInMemoryStore()
+        let now = Date()
+
+        // Played today, yesterday, and 3 days ago — day -2 was missed.
+        store.record(score: 10, wordsFoundCount: 4, date: daysAgo(0, from: now))
+        store.record(score: 11, wordsFoundCount: 4, date: daysAgo(1, from: now))
+        store.record(score: 12, wordsFoundCount: 5, date: daysAgo(3, from: now))
+        #expect(store.currentStreak(now: now) == 2)
+
+        // A history that stops 2 days ago is a broken streak.
+        let brokenStore = try makeInMemoryStore()
+        brokenStore.record(score: 10, wordsFoundCount: 4, date: daysAgo(2, from: now))
+        brokenStore.record(score: 10, wordsFoundCount: 4, date: daysAgo(3, from: now))
+        #expect(brokenStore.currentStreak(now: now) == 0)
+
+        // After a long gap, the next play starts a fresh streak of 1.
+        let restartStore = try makeInMemoryStore()
+        restartStore.record(score: 10, wordsFoundCount: 4, date: daysAgo(5, from: now))
+        restartStore.record(score: 10, wordsFoundCount: 4, date: daysAgo(0, from: now))
+        #expect(restartStore.currentStreak(now: now) == 1)
+    }
+
+    @Test func testStreakSurvivesGraceDayBeforePlayingToday() throws {
+        let store = try makeInMemoryStore()
+        let now = Date()
+        // Played yesterday and the day before, nothing yet today.
+        store.record(score: 10, wordsFoundCount: 4, date: daysAgo(1, from: now))
+        store.record(score: 10, wordsFoundCount: 4, date: daysAgo(2, from: now))
+        #expect(store.currentStreak(now: now) == 2)
+    }
 }

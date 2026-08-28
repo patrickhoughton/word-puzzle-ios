@@ -81,4 +81,53 @@ final class PersistenceStore {
         let records = (try? context.fetch(FetchDescriptor<GameRecord>())) ?? []
         return records.reduce(0) { $0 + $1.wordsFoundCount }
     }
+
+    // MARK: - Daily streak (RET-01)
+
+    /// Number of consecutive local days, ending today or yesterday, on which at least
+    /// one session was recorded.
+    ///
+    /// Derived from GameRecord dates rather than stored as a counter — a stored counter
+    /// is a second source of truth that drifts out of sync with actual play history
+    /// (RESEARCH anti-pattern). Bounded to a 400-day window so the query cost is capped
+    /// regardless of history size; a streak longer than 400 days is not a realistic case
+    /// for this app and would simply report 400.
+    func currentStreak(now: Date = .now) -> Int {
+        let today = calendar.startOfDay(for: now)
+        guard let windowStart = calendar.date(byAdding: .day, value: -400, to: today) else {
+            return 0
+        }
+
+        let descriptor = FetchDescriptor<GameRecord>(
+            predicate: #Predicate { $0.date >= windowStart }
+        )
+        let records = (try? context.fetch(descriptor)) ?? []
+        guard !records.isEmpty else { return 0 }
+
+        // Collapse many sessions per day down to distinct days.
+        let playedDays = Set(records.map { calendar.startOfDay(for: $0.date) })
+
+        // Anchor the walk: today if played today, otherwise yesterday (grace day).
+        guard let yesterday = calendar.date(byAdding: .day, value: -1, to: today) else {
+            return 0
+        }
+        var cursor: Date
+        if playedDays.contains(today) {
+            cursor = today
+        } else if playedDays.contains(yesterday) {
+            cursor = yesterday
+        } else {
+            return 0  // most recent play was 2+ days ago — streak broken
+        }
+
+        var streak = 0
+        while playedDays.contains(cursor) {
+            streak += 1
+            guard let previousDay = calendar.date(byAdding: .day, value: -1, to: cursor) else {
+                break
+            }
+            cursor = previousDay
+        }
+        return streak
+    }
 }
