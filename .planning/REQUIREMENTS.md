@@ -14,9 +14,9 @@
 
 ### Puzzle Engine
 
-- [ ] **PUZZ-01**: App generates puzzles algorithmically using a pangram-first approach from the ENABLE word list
-- [ ] **PUZZ-02**: Word list is filtered for profanity and inappropriate content before puzzle generation
-- [ ] **PUZZ-03**: Each puzzle guarantees a minimum of 20 valid words and at least one pangram (word using all 7 letters)
+- [x] **PUZZ-01**: App generates puzzles algorithmically using a pangram-first approach from the ENABLE word list
+- [x] **PUZZ-02**: Word list is filtered for profanity and inappropriate content before puzzle generation
+- [x] **PUZZ-03**: Each puzzle guarantees a minimum of 20 valid words and at least one pangram (word using all 7 letters)
 - [ ] **PUZZ-04**: User can shuffle the displayed letters to help spot new words
 
 ### Retention
@@ -73,9 +73,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PUZZ-01 | Phase 1 | Pending |
-| PUZZ-02 | Phase 1 | Pending |
-| PUZZ-03 | Phase 1 | Pending |
+| PUZZ-01 | Phase 1 | Complete |
+| PUZZ-02 | Phase 1 | Complete |
+| PUZZ-03 | Phase 1 | Complete |
 | MON-02 | Phase 2 | Pending |
 | MON-03 | Phase 2 | Pending |
 | MON-04 | Phase 2 | Pending |
