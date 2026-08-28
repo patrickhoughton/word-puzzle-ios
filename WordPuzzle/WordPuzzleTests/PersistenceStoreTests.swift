@@ -55,7 +55,30 @@ import SwiftData
         let reopenedContainer = try PersistenceStore.makeContainer(url: storeURL)
         let reopenedStore = PersistenceStore(container: reopenedContainer)
         #expect(reopenedStore.puzzlesPlayedToday() == 2)
-        // totalGamesPlayed() is implemented in Task 2 of this plan; uncommented there.
-        // #expect(reopenedStore.totalGamesPlayed() == 2)
+        #expect(reopenedStore.totalGamesPlayed() == 2)
+    }
+
+    @Test func testLifetimeStatsAccumulate() throws {
+        let store = try makeInMemoryStore()
+
+        #expect(store.totalGamesPlayed() == 0)
+        #expect(store.bestScore() == 0)
+        #expect(store.totalWordsFound() == 0)
+
+        let calendar = Calendar.current
+        let now = Date()
+        store.record(score: 14, wordsFoundCount: 4, date: calendar.date(byAdding: .day, value: -5, to: now)!)
+        store.record(score: 57, wordsFoundCount: 12, date: calendar.date(byAdding: .day, value: -2, to: now)!)
+        store.record(score: 33, wordsFoundCount: 9, date: now)
+
+        #expect(store.totalGamesPlayed() == 3)
+        #expect(store.bestScore() == 57)
+        #expect(store.totalWordsFound() == 25)
+
+        // A later, lower-scoring session must not lower the best score.
+        store.record(score: 12, wordsFoundCount: 5, date: now)
+        #expect(store.totalGamesPlayed() == 4)
+        #expect(store.bestScore() == 57)
+        #expect(store.totalWordsFound() == 30)
     }
 }
