@@ -1,0 +1,35 @@
+{
+  "identifier" : "6E1A8C42-0B77-4C51-9E7B-2F3D5A9C1B04",
+  "nonRenewingSubscriptions" : [
+  ],
+  "products" : [
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "1",
+      "localizations" : [
+        {
+          "description" : "Play unlimited puzzles forever. One-time purchase, no subscription.",
+          "displayName" : "Unlimited Puzzles",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.patrickhoughton.wordpuzzle.unlimited",
+      "referenceName" : "Unlimited Puzzles",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+    ]
+  },
+  "subscriptionGroups" : [
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
