@@ -22,44 +22,48 @@ tech-stack:
 key-files:
   created:
     - WordPuzzle/WordPuzzle/WordPuzzle.storekit
-  modified: []
+  modified:
+    - WordPuzzle/WordPuzzle.xcodeproj/project.pbxproj
 
 key-decisions:
   - "App Store Connect app display name is 'Word Puzzle Unlimited' (the originally planned 'WordPuzzle' name was taken) — display name only, does not affect bundle ID, product ID, or any code"
 
 patterns-established: []
 
-requirements-completed: []  # MON-02 not yet complete: Task 3 (Xcode target/scheme wiring) still pending human action
+requirements-completed: []  # MON-02 not fully complete: Task 3 Step B (scheme StoreKit Configuration) unverified — see Known Issues
 
 # Metrics
-duration: in progress (Task 3 pending checkpoint)
+duration: in progress (Task 3 Step B unresolved)
 completed: null
 ---
 
 # Phase 2 Plan 1: StoreKit Setup Summary
 
-**STATUS: IN PROGRESS — Task 1 and Task 2 complete; paused at Task 3 (Xcode target membership + scheme wiring) checkpoint:human-action.**
+**STATUS: BLOCKED — Task 1 and Task 2 complete. Task 3 Step A (target membership) verified complete. Task 3 Step B (scheme StoreKit Configuration dropdowns) reported done by Patrick but NOT found on disk after verification — see Known Issues.**
 
-**Non-consumable IAP product `com.patrickhoughton.wordpuzzle.unlimited` ($2.99) declared locally in WordPuzzle.storekit and confirmed live in App Store Connect; Xcode target/scheme wiring remains.**
+**Non-consumable IAP product `com.patrickhoughton.wordpuzzle.unlimited` ($2.99) declared locally in WordPuzzle.storekit and confirmed live in App Store Connect. WordPuzzle.storekit is now wired into the WordPuzzleTests target. The scheme-level StoreKit Configuration wiring (needed for manual Simulator runs, not for SKTestSession-based automated tests) remains unresolved.**
 
 ## Performance
 
-- **Tasks:** 2 of 3 completed (Task 3 pending human action in Xcode GUI)
-- **Files modified:** 1 (WordPuzzle/WordPuzzle/WordPuzzle.storekit)
+- **Tasks:** 2 of 3 fully completed; Task 3 partially completed (Step A verified, Step B unverified)
+- **Files modified:** 2 (WordPuzzle/WordPuzzle/WordPuzzle.storekit, WordPuzzle/WordPuzzle.xcodeproj/project.pbxproj)
 
 ## Accomplishments
 
 - Created `WordPuzzle/WordPuzzle/WordPuzzle.storekit`, a valid StoreKit Configuration file declaring exactly one `NonConsumable` product (`com.patrickhoughton.wordpuzzle.unlimited`, display price `2.99`), matching CONTEXT decision D-04's locked product identifier.
 - Confirmed the App Store Connect prerequisites for MON-02 are in place: Paid Applications Agreement, app record, and IAP product record with matching Product ID and price (see report-back answers below).
+- Verified `WordPuzzle.storekit` is now a member of the `WordPuzzleTests` target: `project.pbxproj` contains a `PBXFileSystemSynchronizedBuildFileExceptionSet` listing `WordPuzzle.storekit` under the `WordPuzzleTests` target. This is the mechanism `SKTestSession(configurationFileNamed: "WordPuzzle")` needs at test runtime (plan 02-04).
+- Ran the full test suite (`xcodebuild test -project WordPuzzle/WordPuzzle.xcodeproj -scheme WordPuzzle -destination 'platform=iOS Simulator,name=iPhone 17'`) after the target-membership change: all suites passed (PerformanceTests, PersistenceStoreTests, WordListTests, WordPuzzleTests, ProfanityTests, PuzzleGeneratorTests, WordPuzzleUITests, WordPuzzleUITestsLaunchTests) — no regression.
 
 ## Task Commits
 
 Each task was committed atomically:
 
 1. **Task 1: Create the WordPuzzle.storekit configuration file** - `492dd27` (feat) — cherry-picked from prior worktree session commit `c372baf` (branch `worktree-agent-ad94b8c8990c99c4f`), which was created and verified but not yet merged to `main` when this continuation session started.
-2. **Task 2: App Store Connect — agreement, app record, and IAP product** - no repo files (App Store Connect web UI action); outcome recorded below and in this SUMMARY commit.
+2. **Task 2: App Store Connect — agreement, app record, and IAP product** - `4f94b00` (docs) — no repo files (App Store Connect web UI action); outcome recorded below.
+3. **Task 3 Step A only (target membership): `094bf56` (chore)** — adds the `PBXFileSystemSynchronizedBuildFileExceptionSet` wiring `WordPuzzle.storekit` into `WordPuzzleTests`. `WordPuzzle.storekit` itself was also reformatted by Xcode's StoreKit editor (schema version bumped 3.0 → 5.0, default `appPolicies`/settings fields added) as a side effect of being opened in the File Inspector; productID, type, and displayPrice were verified unchanged.
 
-Task 3 (Xcode target membership + scheme wiring) has NOT started — see Checkpoint below.
+Task 3 Step B (scheme StoreKit Configuration dropdowns for Run and Test) is NOT committed — no artifact was found on disk to commit. See Known Issues below.
 
 ## Files Created/Modified
 
@@ -90,17 +94,68 @@ None - Task 1 and Task 2 executed exactly as written. The app-name substitution 
 
 - This continuation session's worktree started from an earlier commit than `main` (missing the Phase 1/Phase 2 planning commits and the parallel 02-02 plan's work). Resolved by fast-forward merging `main` into this branch, then cherry-picking Task 1's commit (`c372baf`, originally made in worktree branch `worktree-agent-ad94b8c8990c99c4f`, which had not yet been merged to `main`) forward as `492dd27`. No content changes — Task 1's file and commit message are unchanged from the original.
 
+## Known Issues
+
+**Task 3 Step B (scheme StoreKit Configuration dropdowns) could not be verified on disk.**
+
+Patrick replied "storekit wired" confirming both Target Membership checkboxes (Step A) and both
+scheme StoreKit Configuration dropdowns for Run and Test (Step B) were set and saved with Cmd+S.
+
+Verification of Step A succeeded (see Accomplishments above). Verification of Step B did NOT:
+
+- `find WordPuzzle/WordPuzzle.xcodeproj -iname "*.xcscheme"` returns no results anywhere in the
+  project — not in `xcuserdata/patrickhoughton.xcuserdatad/xcschemes/` (only a
+  `xcschememanagement.plist` exists there, with no accompanying `.xcscheme` XML file), and there is
+  no `xcshareddata/xcschemes/` directory at all (only `xcshareddata/xcbaselines/` exists).
+- Also checked both `WordPuzzle-*` DerivedData folders for a stray `.xcscheme` — none found.
+- `git log --all --oneline -- '**/*.xcscheme'` returns nothing — no `.xcscheme` file has ever
+  existed in this repository's history.
+- The `xcschememanagement.plist` file's modification time (10:16) predates the `project.pbxproj`
+  and `WordPuzzle.storekit` edits from this session (15:28–15:29), so it reflects an earlier Xcode
+  session, not evidence of a scheme edit made during Task 3.
+- Strings extracted from `UserInterfaceState.xcuserstate` show `WordPuzzle.storekit` was opened in
+  Xcode's StoreKit editor (`com.apple.dt.storekitbundle`, `IDEStoreKitEditor`) — consistent with
+  Step A (selecting the file for Target Membership) — but show no trace of the Edit Scheme dialog
+  or a `StoreKitConfigurationFileReference` having been set.
+
+Conclusion: Step A (Target Membership) is real, verified, and committed. Step B (scheme StoreKit
+Configuration for Run/Test) does not appear to have persisted to disk, despite Patrick's report
+that it was done. This does not block plan 02-04 (`SKTestSession` reads target membership, not the
+scheme setting), but it DOES block manually running the app in the Simulator with local StoreKit
+purchases simulated, which the plan's Task 3 explicitly requires.
+
+**Recommended next step:** Re-open `WordPuzzle.xcodeproj` in Xcode, use **Product -> Scheme -> Edit
+Scheme... (Cmd+<)**, set the **StoreKit Configuration** dropdown to `WordPuzzle.storekit` under both
+**Run -> Options** and **Test -> Options**, click **Close**, then run
+`find WordPuzzle/WordPuzzle.xcodeproj -iname "*.xcscheme"` again to confirm a scheme file now exists
+containing `StoreKitConfigurationFileReference`. It is possible the dropdown selection did not
+"stick" because the edit was made without clicking Close, or because Xcode's autocreated-scheme
+persistence behaved unexpectedly in this Xcode 26.6 project.
+
 ## User Setup Required
 
-None further for Task 1/Task 2 — App Store Connect setup (agreement, app record, IAP product) is complete. Task 3 requires manual Xcode GUI steps (Target Membership checkboxes, Edit Scheme StoreKit Configuration dropdowns) — see Checkpoint below.
+App Store Connect setup (agreement, app record, IAP product) is complete — no further action needed there. Task 3 Step B (Edit Scheme -> Options -> StoreKit Configuration, for both Run and Test) still needs to be redone and confirmed — see Known Issues above.
 
 ## Next Phase Readiness
 
 - `com.patrickhoughton.wordpuzzle.unlimited` now appears identically in both the App Store Connect record and `WordPuzzle.storekit` (2 of the 3 places RESEARCH Pitfall 2 requires; the 3rd — `EntitlementStore.swift` — comes in plan 02-04).
 - ROADMAP Phase 2 success criterion 5 (sandbox IAP product exists in App Store Connect before StoreKit code is written) is satisfied.
 - STATE.md blocker "Paid Applications Agreement must be accepted before writing any StoreKit 2 code" is RESOLVED (status: Active).
-- BLOCKED: Task 3 (Xcode target membership for WordPuzzleTests + scheme StoreKit Configuration dropdowns) must be completed before plan 02-04's `SKTestSession(configurationFileNamed: "WordPuzzle")` will resolve the file at test runtime. This is a genuine manual Xcode GUI step with no CLI equivalent.
+- `WordPuzzle.storekit` target membership for `WordPuzzleTests` is RESOLVED and verified — plan 02-04's `SKTestSession(configurationFileNamed: "WordPuzzle")` should resolve the file at automated test runtime.
+- BLOCKED: Task 3 Step B (scheme StoreKit Configuration dropdowns) is unresolved. This does not block plan 02-04's automated tests, but does block manual Simulator runs that need local StoreKit purchase simulation (relevant before plan 02-05).
+
+## Self-Check
+
+- `test -f WordPuzzle/WordPuzzle/WordPuzzle.storekit` → FOUND
+- `grep -q "WordPuzzle.storekit" WordPuzzle/WordPuzzle.xcodeproj/project.pbxproj` → FOUND
+- `grep -q "PBXFileSystemSynchronizedBuildFileExceptionSet" WordPuzzle/WordPuzzle.xcodeproj/project.pbxproj` → FOUND
+- Commit `492dd27` → FOUND (`git log --oneline --all | grep 492dd27`)
+- Commit `4f94b00` → FOUND
+- Commit `094bf56` → FOUND
+- `find WordPuzzle/WordPuzzle.xcodeproj -iname "*.xcscheme"` → MISSING (no scheme file exists — Task 3 Step B unverified, documented above as a Known Issue, not fabricated as passing)
+
+## Self-Check: PARTIAL — Task 3 Step B acceptance criterion not met; documented above, not fabricated.
 
 ---
 *Phase: 02-persistence-entitlements*
-*Status: IN PROGRESS — awaiting Task 3 human action*
+*Status: BLOCKED — Task 3 Step B (scheme StoreKit Configuration) needs to be redone in Xcode and re-verified*

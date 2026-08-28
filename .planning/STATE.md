@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-08-28T19:35:56.105Z"
-last_activity: 2026-08-28
+stopped_at: "Phase 02 Plan 01 Task 3 partially complete: target membership verified, scheme StoreKit Configuration unverified — see 02-01-SUMMARY.md Known Issues"
+last_updated: "2026-08-28T20:38:24.355Z"
+last_activity: 2026-08-28 -- 02-02 complete; 02-01 paused at App Store Connect checkpoint
 progress:
   total_phases: 5
   completed_phases: 1
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 ## Current Position
 
 Phase: 02 (persistence-entitlements) — EXECUTING
-Plan: 2 of 5 complete (02-02)
+Plan: 2 of 5 complete (02-02); 02-01 in progress (Task 3 Step A done, Step B blocked)
 Status: Executing Phase 02
-Last activity: 2026-08-28 -- 02-02 complete; 02-01 paused at App Store Connect checkpoint
+Last activity: 2026-08-28 -- 02-01 Task 3 Step A (target membership) verified and committed; Step B (scheme StoreKit Configuration) unverified, see Blockers/Concerns
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -74,10 +74,10 @@ None yet.
 
 ### Blockers/Concerns
 
-- Phase 2 prerequisite: Paid Applications Agreement must be accepted in App Store Connect before writing any StoreKit 2 code (accept at start of Phase 2)
+- Phase 02 Plan 01 Task 3 Step B: scheme StoreKit Configuration dropdowns (Run/Test) reported set by Patrick but no .xcscheme file found on disk after verification (checked xcuserdata, xcshareddata, DerivedData, git history) — needs to be redone in Xcode (Product > Scheme > Edit Scheme > Options tab > StoreKit Configuration, for both Run and Test) and re-confirmed before plan 02-01 can be marked complete. See .planning/phases/02-persistence-entitlements/02-01-SUMMARY.md Known Issues section for full diagnostic detail.
 
 ## Session Continuity
 
-Last session: 2026-08-28T19:35:56.102Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-08-28T20:37:36.413Z
+Stopped at: Phase 02 Plan 01 Task 3 partially complete: target membership verified, scheme StoreKit Configuration unverified — see 02-01-SUMMARY.md Known Issues
 Resume file: None
