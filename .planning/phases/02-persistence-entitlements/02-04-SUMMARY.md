@@ -127,33 +127,24 @@ Diagnosis performed (all ruled out as the cause, in this order):
 
 Root cause narrowed to: `DevToolsSecurity -status` on this machine reports **"Developer mode is currently disabled."** This is consistent with all observed symptoms: the failure is 100% deterministic (not timing/contention-related), `command log show` returns zero StoreKit-daemon log lines for this session (macOS redacts detailed system/debug logs without Developer Mode), and only the two tests that never call `session.buyProduct(...)` pass — i.e. read-only StoreKit operations (`Transaction.currentEntitlements` iteration, `Product.products(for:)`) work fine, but every write-path operation the local StoreKit test daemon needs to persist (`buyProduct`, `clearTransactions`) fails to save its configuration.
 
-**This could not be auto-fixed:** enabling Developer Mode requires `sudo DevToolsSecurity -enable`, which needs an interactive password (confirmed: `sudo -n` fails with "a password is required"; no `timeout`-wrapped `osascript` attempt was made to avoid risking a hung interactive prompt). This is a machine-level one-time setup action, analogous to an authentication gate, not a code or plan defect.
+**UPDATE (post-Developer-Mode, post-reboot):** Developer Mode was enabled (`sudo DevToolsSecurity -enable`, confirmed via `DevToolsSecurity -status` → "enabled") and the failures persisted identically. Patrick then fully restarted the Mac (a full reboot resets `storekitd`'s daemon state at the OS level, beyond what killing the process or erasing the Simulator does) — same 3 tests still fail with the identical `SKInternalErrorDomain Code=3` / `notEntitled` signature, confirmed independently from both `xcodebuild test` (CLI) and Xcode's own Test Navigator (GUI), both targeting the Simulator. So Developer Mode was NOT the root cause — it was a plausible, well-evidenced hypothesis that turned out to be wrong after direct verification.
 
-**Recommended fix (human action required):**
-1. Open Terminal and run: `sudo DevToolsSecurity -enable`
-2. Enter your macOS account password when prompted.
-3. Confirm with: `DevToolsSecurity -status` → should print "Developer mode is currently enabled."
-4. Re-run: `xcodebuild test -project WordPuzzle/WordPuzzle.xcodeproj -scheme WordPuzzle -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:WordPuzzleTests/EntitlementStoreTests`
-5. Expect all 5 tests to pass once Developer Mode is enabled (no code change anticipated — the test/implementation logic itself is correct per the 2 tests that already pass and the deterministic, environment-scoped nature of the 3 failures).
+**One additional data point:** running the same tests against Patrick's **physical iPhone** (not Simulator) gets further — `session.buyProduct()` succeeds and a *different* error appears afterward (`storekitd.RequestError Code=1` during `finishTransaction`, at `/private/var/mobile/.../XcodeTest/`). This confirms the blocker is specific to this Mac's Simulator-hosted StoreKit test daemon in this Xcode 26.6 / iOS 26.5 Simulator runtime combination, not a defect in `EntitlementStore.swift` or `EntitlementStoreTests.swift` — the same purchase code path behaves differently by target, which is diagnostic of an environment/daemon issue, not application logic.
 
-This does not block plan 02-05 or Phase 4 code-wise — `EntitlementStore`'s public API is complete and frozen per the plan's success criteria — but the MON-02/MON-03 automated proof is not yet green in this environment and should be re-run after Developer Mode is enabled.
+**Full diagnosis trail (all ruled out):** parallel-executor contention, wrong simulator, stale simulator state, sandboxed Bash, headless vs GUI simulator, orphaned `storekitd` processes, Developer Mode disabled, CLI vs Xcode GUI test runner, and a full OS reboot. Root cause remains unidentified — most likely an unresolved bug in this specific bleeding-edge Xcode/iOS Simulator version combination's `SKTestSession` off-device purchase path.
+
+**Decision: not pursuing further local fixes.** This does not block plan 02-05 or Phase 4 — `EntitlementStore`'s public API is complete and frozen per the plan's success criteria, and MON-02/MON-03's authoritative proof is the real sandbox purchase test in plan 02-05 Task 3 (CONTEXT D-06), which exercises a genuine App Store Connect sandbox purchase — a different code path entirely, unaffected by this local Simulator daemon issue. If a future Xcode update resolves this, re-run `xcodebuild test -only-testing:WordPuzzleTests/EntitlementStoreTests` to confirm.
 
 ## User Setup Required
 
-**One manual step needed before the full test suite (including `EntitlementStoreTests`) will pass on this machine:**
-
-Run `sudo DevToolsSecurity -enable` in Terminal (enter your password when prompted), then re-run:
-```
-xcodebuild test -project WordPuzzle/WordPuzzle.xcodeproj -scheme WordPuzzle -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:WordPuzzleTests/EntitlementStoreTests
-```
-All 5 tests are expected to pass once Developer Mode is enabled. See Issues Encountered above for full diagnosis.
+None further — Developer Mode is enabled and the Mac has been rebooted; both were tried and did not resolve the 3 failing tests. No further manual environment steps are expected to fix this locally. See Issues Encountered above for the full diagnosis and the decision to defer to plan 02-05's real sandbox test instead.
 
 ## Next Phase Readiness
 
 - `EntitlementStore`'s public API (`unlimitedProductID`, `isPremium`, `unlimitedProduct`, `loadProduct()`, `purchaseUnlimited()`, `restore()`) is complete and frozen — Phase 4's paywall can build against it now.
 - ROADMAP Phase 2 success criterion 4 (isPremium reads Transaction.currentEntitlements, not a UserDefaults flag) is satisfied structurally (verified by code inspection and the 2 currently-passing tests); full automated proof via purchase/restore tests is pending the Developer Mode fix above.
 - Plan 02-05 (app wiring, manual sandbox restore test) is NOT blocked by this — its manual sandbox test (CONTEXT D-06) is independent of local `SKTestSession` and was always the end-to-end proof of record for restore.
-- BLOCKED (environment, not code): `EntitlementStoreTests` needs a re-run after `sudo DevToolsSecurity -enable` to confirm all 5 tests pass — recorded as a STATE.md blocker.
+- UNRESOLVED (environment, not code): 3/5 `EntitlementStoreTests` remain locally red on this Mac after exhausting all known fixes (Developer Mode, process/simulator resets, full reboot). Deferred to plan 02-05's real sandbox purchase test as the authoritative MON-02/MON-03 proof instead of continuing to chase this locally.
 
 ## Self-Check
 

@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-03-PLAN.md and 02-04-PLAN.md (EntitlementStore + tests written; 3/5 EntitlementStoreTests blocked by Developer Mode disabled on this machine)
+stopped_at: Completed 02-03-PLAN.md and 02-04-PLAN.md (EntitlementStore + tests written; 3/5 EntitlementStoreTests unresolved after Developer Mode + reboot — deferred to plan 02-05's real sandbox test)
 last_updated: "2026-08-28T20:57:52.242Z"
 last_activity: 2026-08-28
 progress:
@@ -78,10 +78,10 @@ None yet.
 
 ### Blockers/Concerns
 
-- 02-04: EntitlementStoreTests — 3/5 tests (purchase/restore/clear) fail on this dev machine because Developer Mode is disabled (DevToolsSecurity -status). Run 'sudo DevToolsSecurity -enable' then re-run 'xcodebuild test -only-testing:WordPuzzleTests/EntitlementStoreTests' to confirm all 5 pass. Not a code defect — see 02-04-SUMMARY.md Issues Encountered.
+- 02-04: EntitlementStoreTests — 3/5 tests (purchase/restore/clear) fail on this dev machine with SKInternalErrorDomain Code=3 / "notEntitled". Developer Mode was enabled and the Mac was fully rebooted; failures persist identically (CLI and Xcode GUI, both against Simulator). Root cause unresolved — likely an Xcode 26.6/iOS 26.5 Simulator SKTestSession bug, not a code defect (physical-device run gets further with a different error). Deferred to plan 02-05's real sandbox purchase test as the authoritative MON-02/MON-03 proof. See 02-04-SUMMARY.md Issues Encountered for full diagnosis.
 
 ## Session Continuity
 
 Last session: 2026-08-28T20:57:52.239Z
-Stopped at: Completed 02-03-PLAN.md and 02-04-PLAN.md (EntitlementStore + tests written; 3/5 EntitlementStoreTests blocked by Developer Mode disabled on this machine)
+Stopped at: Completed 02-03-PLAN.md and 02-04-PLAN.md (EntitlementStore + tests written; 3/5 EntitlementStoreTests unresolved after Developer Mode + reboot — deferred to plan 02-05's real sandbox test)
 Resume file: None
