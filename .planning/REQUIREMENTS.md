@@ -21,7 +21,7 @@
 
 ### Retention
 
-- [ ] **RET-01**: App tracks and displays a daily streak counter (days in a row with at least one puzzle played)
+- [x] **RET-01**: App tracks and displays a daily streak counter (days in a row with at least one puzzle played)
 - [x] **RET-02**: App shows lifetime stats: total words found, best score, total games played
 - [ ] **RET-03**: App provides haptic feedback when a correct word is submitted
 
@@ -79,7 +79,7 @@
 | MON-02 | Phase 2 | Complete |
 | MON-03 | Phase 2 | Pending |
 | MON-04 | Phase 2 | Pending |
-| RET-01 | Phase 2 | Pending |
+| RET-01 | Phase 2 | Complete |
 | RET-02 | Phase 2 | Complete |
 | GAME-01 | Phase 3 | Pending |
 | GAME-02 | Phase 3 | Pending |
