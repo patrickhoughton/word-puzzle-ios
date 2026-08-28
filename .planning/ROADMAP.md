@@ -45,7 +45,13 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
   3. Lifetime stats (total words found, best score, total games played) accumulate correctly across multiple sessions
   4. `EntitlementStore.isPremium` reads `Transaction.currentEntitlements` — not a UserDefaults flag — and returns the correct value after a sandbox purchase and after a restore
   5. Sandbox IAP product is created and attached in App Store Connect before any StoreKit code is written
-**Plans**: TBD
+**Plans**: 5 plans
+Plans:
+- [ ] 02-01-PLAN.md — App Store Connect setup (agreement, app record, IAP product) + WordPuzzle.storekit configuration file (Wave 1)
+- [ ] 02-02-PLAN.md — GameRecord @Model, PersistenceStore container/record/puzzlesPlayedToday + lifetime stats (Wave 1)
+- [ ] 02-03-PLAN.md — ScoreCalculator (D-02 formula) + derived daily streak counter (Wave 2)
+- [ ] 02-04-PLAN.md — EntitlementStore (currentEntitlements, purchase, AppStore.sync restore) + SKTestSession tests (Wave 2)
+- [ ] 02-05-PLAN.md — Wire both stores into WordPuzzleApp + manual sandbox purchase/restore verification (Wave 3)
 **UI hint**: no
 
 ### Phase 3: Core Game UI
@@ -91,7 +97,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Word Engine & Puzzle Generation | 2/3 | In Progress|  |
-| 2. Persistence & Entitlements | 0/? | Not started | - |
+| 2. Persistence & Entitlements | 0/5 | Planned | - |
 | 3. Core Game UI | 0/? | Not started | - |
 | 4. Paywall & Free Tier Gate | 0/? | Not started | - |
 | 5. Polish, Compliance & App Store | 0/? | Not started | - |
