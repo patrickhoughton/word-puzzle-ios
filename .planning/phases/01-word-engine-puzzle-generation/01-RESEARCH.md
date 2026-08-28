@@ -254,6 +254,8 @@ if __name__ == '__main__':
 **What:** Wraps puzzle generation in XCTest's `measure {}` block to record timing across 10 runs. The 500ms threshold is validated by setting a baseline after running on device.
 **When to use:** The single performance test for PUZZ-03's "under 500ms" success criterion. Must be run on a physical device, not Simulator.
 
+> **SIGNATURE NOTE (updated):** The generator's locked signature is `generatePuzzle(from wordList: WordList, maxAttempts: Int = 1000) throws -> Puzzle` (see Plan 02 `<interfaces>`). Call it with a `WordList` instance: `generatePuzzle(from: wordList)`. Do NOT pass `wordList.words` or a raw `Set<String>` — the earlier `from wordSet: Set<String>` form in Pattern 2 and the Code Examples section is outdated and will not compile against the shipped API.
+
 ```swift
 // PuzzleGeneratorTests.swift (XCTest — NOT Swift Testing)
 import XCTest
@@ -270,7 +272,7 @@ class PuzzlePerformanceTests: XCTestCase {
     func testPuzzleGenerationPerformance() throws {
         // Runs the block 10 times, records average
         measure {
-            _ = try? generatePuzzle(from: wordList.words)
+            _ = try? generatePuzzle(from: wordList)
         }
         // After first run: click the gray diamond in Xcode to "Set Baseline"
         // Future runs fail if average regresses by more than 10% above baseline
@@ -286,7 +288,7 @@ class PuzzlePerformanceTests: XCTestCase {
 func testPuzzleGenerationUnder500ms() async throws {
     await wordList.load()
     let start = Date()
-    _ = try generatePuzzle(from: wordList.words)
+    _ = try generatePuzzle(from: wordList)
     let elapsed = Date().timeIntervalSince(start)
     XCTAssertLessThan(elapsed, 0.500, "Puzzle generation exceeded 500ms: \(elapsed)s")
 }
