@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-08-28T21:32:41.309Z",
+  "phase": "02",
+  "phase_name": "persistence-entitlements",
+  "phase_dir": ".planning/phases/02-persistence-entitlements",
+  "plan": 5,
+  "task": 0,
+  "total_tasks": 3,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": "02-01", "name": "App Store Connect setup + WordPuzzle.storekit + scheme wiring", "status": "done", "commit": "1ce551e (latest of several)"},
+    {"id": "02-02", "name": "GameRecord model + PersistenceStore (record, puzzlesPlayedToday, lifetime stats)", "status": "done", "commit": "16a3606"},
+    {"id": "02-03", "name": "ScoreCalculator (D-02 formula) + derived daily streak", "status": "done", "commit": "6cada28"},
+    {"id": "02-04", "name": "EntitlementStore StoreKit 2 service + EntitlementStoreTests", "status": "done_with_known_issue", "commit": "5f83afb", "progress": "Code complete and frozen. 2/5 EntitlementStoreTests pass; 3/5 fail locally (SKInternalErrorDomain Code=3 / notEntitled in Simulator's SKTestSession off-device buy path) after exhausting Developer Mode, process/simulator resets, and a full Mac reboot. Not a code defect. Deferred to 02-05 Task 3's real sandbox purchase test as the authoritative MON-02/MON-03 proof."}
+  ],
+  "remaining_tasks": [
+    {"id": 1, "name": "Instantiate and inject both stores (PersistenceStore, EntitlementStore) in WordPuzzleApp", "status": "not_started"},
+    {"id": 2, "name": "DEBUG-only entitlement harness in ContentView", "status": "not_started"},
+    {"id": 3, "name": "Manual sandbox purchase and restore on a device (checkpoint:human-action)", "status": "not_started"}
+  ],
+  "blockers": [
+    {
+      "description": "3/5 EntitlementStoreTests fail locally on this Mac with SKInternalErrorDomain Code=3 / notEntitled from SKTestSession's off-device buy path. Ruled out: parallel-executor contention, wrong simulator, stale simulator state, sandboxed Bash, headless vs GUI simulator, orphaned storekitd processes, Developer Mode disabled (enabled it, no change), CLI vs Xcode GUI test runner, full OS reboot (no change). A physical-device run gets further (buyProduct succeeds) then fails differently at finishTransaction with storekitd.RequestError Code=1 — confirms this is Simulator/environment-specific, not app code.",
+      "type": "technical",
+      "workaround": "Not resolved locally. Deferred — plan 02-05 Task 3's real App Store Connect sandbox purchase test is a different, unaffected code path and will serve as the authoritative proof of MON-02/MON-03 instead. If a future Xcode update fixes this, re-run: xcodebuild test -project WordPuzzle/WordPuzzle.xcodeproj -scheme WordPuzzle -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:WordPuzzleTests/EntitlementStoreTests"
+    }
+  ],
+  "human_actions_pending": [
+    {"action": "Plan 02-05 Task 3 is a checkpoint:human-action — manual sandbox purchase and restore test on a real device/sandbox Apple ID, following CONTEXT D-06. Also Task 3 will require switching the Xcode scheme's Run StoreKit Configuration dropdown back to 'None' before the real sandbox test (the local WordPuzzle.storekit config would otherwise override the real App Store sandbox) — plan 02-05 repeats this instruction.", "context": "Required to close out Phase 2 and get a real, authoritative pass on MON-02/MON-03.", "blocking": true}
+  ],
+  "decisions": [
+    {"decision": "App Store Connect app display name is 'Word Puzzle Unlimited' (not 'WordPuzzle', which was taken)", "rationale": "Name collision on the App Store; plan's own documented fallback. No code impact.", "phase": "02"},
+    {"decision": "Xcode scheme StoreKit Configuration wiring written directly as XML to xcshareddata/xcschemes/WordPuzzle.xcscheme instead of via Edit Scheme GUI", "rationale": "No .xcscheme file had ever existed in this repo's history; the implicit-scheme GUI edits were silently not persisting to disk across 3 attempts (2 via Edit Scheme dialog, both apparently unsaved). Direct XML write is deterministic and verifiable; confirmed working via a full test-suite pass.", "phase": "02"},
+    {"decision": "Daily streak (RET-01) derived at read time from GameRecord.date over a bounded 400-day window, not stored as a counter, with grace-day semantics", "rationale": "Simpler than maintaining a separate mutable counter; avoids drift bugs.", "phase": "02"},
+    {"decision": "EntitlementStore derives isPremium exclusively from Transaction.currentEntitlements (no UserDefaults/@AppStorage flag)", "rationale": "MON-04 requirement; purchaseUnlimited() and restore() via AppStore.sync() form the frozen API Phase 4's paywall depends on.", "phase": "02"},
+    {"decision": "Set up App Store Connect API automation (scripts/appstoreconnect.py, JWT auth via ~/.appstoreconnect/) for future app/IAP record queries and creation", "rationale": "Reduces future manual App Store Connect dashboard work; credentials stored outside the repo, machine-wide, reusable across future iOS projects. Read operations tested working; create operations deliberately not yet scripted (verify against Apple's current OpenAPI spec when actually needed).", "phase": "02"}
+  ],
+  "uncommitted_files": [
+    "CLAUDE.md (pre-existing edit from before this session, unrelated to Phase 2 work — not touched or committed by this session)",
+    "WordPuzzle/WordPuzzle.xcodeproj/project.xcworkspace/xcuserdata/patrickhoughton.xcuserdatad/UserInterfaceState.xcuserstate (routine Xcode UI-state churn, gitignore candidate, harmless)"
+  ],
+  "next_action": "Run /gsd:execute-phase 02 (or resume via GSD normally) to spawn plan 02-05: wire PersistenceStore and EntitlementStore into WordPuzzleApp (Task 1), add the DEBUG-only entitlement harness (Task 2), then walk Patrick through the real manual sandbox purchase/restore checkpoint (Task 3) — remember to have him switch the Run scheme's StoreKit Configuration back to 'None' first so the real App Store sandbox is exercised, not the local config.",
+  "context_notes": "Phase 2 (02-01 through 02-04) is fully complete and merged to main; only 02-05 remains, which finishes Phase 2. This was a full wave-based execute-phase run (3 waves, parallel worktree executors for waves 1-2). Two significant side investigations happened along the way: (1) building App Store Connect API automation (scripts/appstoreconnect.py) since Patrick asked about reducing future manual dashboard work, and (2) an extensive, ultimately inconclusive diagnosis of a local StoreKit-testing environment bug (documented in 02-04-SUMMARY.md and the blocker above) that does not block moving forward. Also worth remembering: this project's Xcode version (26.6) uses PBXFileSystemSynchronizedRootGroup for target folders, so new files in WordPuzzle/WordPuzzle/ or WordPuzzle/WordPuzzleTests/ are automatically part of that target — only a SECOND target membership (like adding WordPuzzle.storekit to WordPuzzleTests) needs explicit wiring."
+}
