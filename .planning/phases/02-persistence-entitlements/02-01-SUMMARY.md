@@ -22,31 +22,34 @@ tech-stack:
 key-files:
   created:
     - WordPuzzle/WordPuzzle/WordPuzzle.storekit
+    - WordPuzzle/WordPuzzle.xcodeproj/xcshareddata/xcschemes/WordPuzzle.xcscheme
   modified:
     - WordPuzzle/WordPuzzle.xcodeproj/project.pbxproj
 
 key-decisions:
   - "App Store Connect app display name is 'Word Puzzle Unlimited' (the originally planned 'WordPuzzle' name was taken) — display name only, does not affect bundle ID, product ID, or any code"
+  - "Task 3 Step B resolved by writing WordPuzzle.xcscheme directly (as shared scheme XML) instead of retrying the Edit Scheme GUI dialog a third time — no .xcscheme file had ever existed in this repo's history, so the implicit-scheme GUI edits were never persisting to disk"
 
-patterns-established: []
+patterns-established:
+  - "Xcode scheme StoreKit Configuration wiring (and other .xcscheme settings) can be written directly as XML into xcshareddata/xcschemes/<Scheme>.xcscheme instead of via Edit Scheme GUI — more reliable for this project and scriptable for future phases"
 
-requirements-completed: []  # MON-02 not fully complete: Task 3 Step B (scheme StoreKit Configuration) unverified — see Known Issues
+requirements-completed: [MON-02]
 
 # Metrics
-duration: in progress (Task 3 Step B unresolved)
-completed: null
+duration: ~3.5 hours (across 3 checkpoint round-trips)
+completed: true
 ---
 
 # Phase 2 Plan 1: StoreKit Setup Summary
 
-**STATUS: BLOCKED — Task 1 and Task 2 complete. Task 3 Step A (target membership) verified complete. Task 3 Step B (scheme StoreKit Configuration dropdowns) reported done by Patrick but NOT found on disk after verification — see Known Issues.**
+**STATUS: COMPLETE — All 3 tasks done. Task 3 Step A (target membership) and Step B (scheme StoreKit Configuration) both verified on disk.**
 
-**Non-consumable IAP product `com.patrickhoughton.wordpuzzle.unlimited` ($2.99) declared locally in WordPuzzle.storekit and confirmed live in App Store Connect. WordPuzzle.storekit is now wired into the WordPuzzleTests target. The scheme-level StoreKit Configuration wiring (needed for manual Simulator runs, not for SKTestSession-based automated tests) remains unresolved.**
+**Non-consumable IAP product `com.patrickhoughton.wordpuzzle.unlimited` ($2.99) declared locally in WordPuzzle.storekit and confirmed live in App Store Connect. WordPuzzle.storekit is wired into the WordPuzzleTests target (Step A) and into a newly-created shared scheme's Run/Test StoreKit Configuration (Step B). Full test suite passes against the new scheme.**
 
 ## Performance
 
-- **Tasks:** 2 of 3 fully completed; Task 3 partially completed (Step A verified, Step B unverified)
-- **Files modified:** 2 (WordPuzzle/WordPuzzle/WordPuzzle.storekit, WordPuzzle/WordPuzzle.xcodeproj/project.pbxproj)
+- **Tasks:** 3 of 3 complete
+- **Files modified:** 3 (WordPuzzle/WordPuzzle/WordPuzzle.storekit, WordPuzzle/WordPuzzle.xcodeproj/project.pbxproj, WordPuzzle/WordPuzzle.xcodeproj/xcshareddata/xcschemes/WordPuzzle.xcscheme)
 
 ## Accomplishments
 
