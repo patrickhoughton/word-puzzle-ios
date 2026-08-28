@@ -32,7 +32,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 **Plans**: 3 plans
 - [x] 01-01-PLAN.md — Install Xcode, create WordPuzzle project + PuzzleEngine group, bundle profanity-filtered ENABLE list (Wave 0)
 - [x] 01-02-PLAN.md — Implement Puzzle model, WordList loader (O(1) Set), pangram-first generator + Swift Testing unit tests (Wave 1)
-- [ ] 01-03-PLAN.md — XCTest 500ms performance test, verified on a physical iPhone (Wave 2)
+- [x] 01-03-PLAN.md — XCTest 500ms performance test, verified on a physical iPhone (Wave 2)
 **UI hint**: no
 
 ### Phase 2: Persistence & Entitlements
