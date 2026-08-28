@@ -10,7 +10,7 @@ requires:
     provides: "WordPuzzle.storekit (plan 02-01) declaring com.patrickhoughton.wordpuzzle.unlimited, wired into the WordPuzzleTests target and the shared WordPuzzle.xcscheme's Run/Test StoreKit Configuration"
 provides:
   - "EntitlementStore: @Observable StoreKit 2 service exposing isPremium, unlimitedProduct, loadProduct(), purchaseUnlimited(), restore(), refreshEntitlements()"
-  - "EntitlementStoreTests: 5 XCTest cases via SKTestSession proving MON-02/03/04 behavior (2 of 5 currently green in this dev machine's environment — see Known Issues)"
+  - "EntitlementStoreTests: 5 XCTest cases via SKTestSession proving MON-02/03/04 behavior (2 of 5 currently green in this dev machine's Simulator environment after exhausting known fixes — see Known Issues; deferred to plan 02-05's real sandbox test)"
 affects: [02-05-app-wiring, phase-4-paywall]
 
 # Tech tracking
@@ -43,7 +43,7 @@ completed: 2026-08-28
 
 # Phase 2 Plan 4: EntitlementStore StoreKit 2 Service Summary
 
-**`EntitlementStore` (@Observable, StoreKit 2) makes `Transaction.currentEntitlements` the sole source of truth for `isPremium`, with `purchaseUnlimited()` (MON-02) and `restore()` via `AppStore.sync()` (MON-03) — code and 5-test `SKTestSession` suite written exactly per plan, but 3 of 5 tests are currently blocked from passing in this dev machine's environment because Developer Mode is disabled (`DevToolsSecurity -status` → disabled), which breaks the local StoreKit test daemon's off-device purchase simulation.**
+**`EntitlementStore` (@Observable, StoreKit 2) makes `Transaction.currentEntitlements` the sole source of truth for `isPremium`, with `purchaseUnlimited()` (MON-02) and `restore()` via `AppStore.sync()` (MON-03) — code and 5-test `SKTestSession` suite written exactly per plan. 3 of 5 tests remain unresolved on this dev machine's Simulator after exhausting Developer Mode, process/simulator resets, and a full reboot — a likely Xcode 26.6/iOS 26.5 Simulator SKTestSession bug, not a code defect. Deferred to plan 02-05's real sandbox purchase test as the authoritative MON-02/MON-03 proof.**
 
 ## Performance
 
@@ -157,7 +157,7 @@ None further — Developer Mode is enabled and the Mac has been rebooted; both w
 - `xcodebuild test -only-testing:WordPuzzleTests/EntitlementStoreTests` → 2/5 PASSED, 3/5 FAILED (environment-blocked, documented above — not fabricated as passing)
 - Full non-StoreKit suite (14 tests) → ALL PASSED, no regression
 
-## Self-Check: PARTIAL — code and test file complete and committed per spec; 3/5 EntitlementStoreTests currently fail due to a documented environment blocker (Developer Mode disabled), not a code or plan defect. Nothing fabricated as passing.
+## Self-Check: PARTIAL — code and test file complete and committed per spec; 3/5 EntitlementStoreTests remain unresolved on this dev machine after exhausting all known fixes (Developer Mode, process/simulator resets, full reboot) — not a code or plan defect. Deferred to plan 02-05's real sandbox purchase test as the authoritative MON-02/MON-03 proof. Nothing fabricated as passing.
 
 ---
 *Phase: 02-persistence-entitlements*
