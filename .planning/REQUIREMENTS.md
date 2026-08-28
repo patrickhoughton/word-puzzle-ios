@@ -29,8 +29,8 @@
 
 - [ ] **MON-01**: Free users can play 3 puzzles per day; a paywall gate appears after the 3rd puzzle ends
 - [x] **MON-02**: User can purchase a one-time non-consumable IAP ($2.99) to unlock unlimited puzzles permanently
-- [ ] **MON-03**: Paywall screen includes a visible "Restore Purchases" button (required by Apple Guideline 3.1.1)
-- [ ] **MON-04**: Premium unlock status is verified via StoreKit 2 `Transaction.currentEntitlements` on every app launch (no UserDefaults flag as source of truth)
+- [x] **MON-03**: Paywall screen includes a visible "Restore Purchases" button (required by Apple Guideline 3.1.1)
+- [x] **MON-04**: Premium unlock status is verified via StoreKit 2 `Transaction.currentEntitlements` on every app launch (no UserDefaults flag as source of truth)
 
 ### Polish & Compliance
 
@@ -77,8 +77,8 @@
 | PUZZ-02 | Phase 1 | Complete |
 | PUZZ-03 | Phase 1 | Complete |
 | MON-02 | Phase 2 | Complete |
-| MON-03 | Phase 2 | Pending |
-| MON-04 | Phase 2 | Pending |
+| MON-03 | Phase 2 | Complete |
+| MON-04 | Phase 2 | Complete |
 | RET-01 | Phase 2 | Complete |
 | RET-02 | Phase 2 | Complete |
 | GAME-01 | Phase 3 | Pending |
