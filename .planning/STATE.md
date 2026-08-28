@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-27)
 
 **Core value:** Endless, fresh word puzzles that generate algorithmically from a local dictionary — no internet, no content team, no ongoing maintenance.
-**Current focus:** Phase 01 — word-engine-puzzle-generation
+**Current focus:** Phase 02 — persistence-entitlements
 
 ## Current Position
 
-Phase: 2
-Plan: 1 of 5
-Status: Ready to execute
-Last activity: 2026-08-28
+Phase: 02 (persistence-entitlements) — EXECUTING
+Plan: 2 of 5 complete (02-02)
+Status: Executing Phase 02
+Last activity: 2026-08-28 -- 02-02 complete; 02-01 paused at App Store Connect checkpoint
 
 Progress: [░░░░░░░░░░] 0%
 
