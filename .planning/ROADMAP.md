@@ -48,7 +48,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 **Plans**: 5 plans
 Plans:
 - [ ] 02-01-PLAN.md — App Store Connect setup (agreement, app record, IAP product) + WordPuzzle.storekit configuration file (Wave 1)
-- [ ] 02-02-PLAN.md — GameRecord @Model, PersistenceStore container/record/puzzlesPlayedToday + lifetime stats (Wave 1)
+- [x] 02-02-PLAN.md — GameRecord @Model, PersistenceStore container/record/puzzlesPlayedToday + lifetime stats (Wave 1)
 - [ ] 02-03-PLAN.md — ScoreCalculator (D-02 formula) + derived daily streak counter (Wave 2)
 - [ ] 02-04-PLAN.md — EntitlementStore (currentEntitlements, purchase, AppStore.sync restore) + SKTestSession tests (Wave 2)
 - [ ] 02-05-PLAN.md — Wire both stores into WordPuzzleApp + manual sandbox purchase/restore verification (Wave 3)
