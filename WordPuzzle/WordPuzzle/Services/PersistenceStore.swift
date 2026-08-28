@@ -56,4 +56,29 @@ final class PersistenceStore {
         )
         return (try? context.fetchCount(descriptor)) ?? 0
     }
+
+    // MARK: - Lifetime stats (RET-02)
+
+    /// COUNT — pushed down to SQLite, does not instantiate any GameRecord objects.
+    func totalGamesPlayed() -> Int {
+        (try? context.fetchCount(FetchDescriptor<GameRecord>())) ?? 0
+    }
+
+    /// MAX — expressed as ORDER BY score DESC LIMIT 1, which SwiftData does push down.
+    func bestScore() -> Int {
+        var descriptor = FetchDescriptor<GameRecord>(
+            sortBy: [SortDescriptor(\.score, order: .reverse)]
+        )
+        descriptor.fetchLimit = 1
+        return (try? context.fetch(descriptor))?.first?.score ?? 0
+    }
+
+    /// SUM — RESEARCH Pitfall 3: SwiftData has NO SUM/AVG pushdown (unlike Core Data's
+    /// NSExpressionDescription). Do not attempt an expression macro or a map/reduce inside
+    /// the #Predicate macro — it will not compile. Fetch and reduce in Swift instead; at
+    /// this app's data scale (a few sessions per day, personal history) the cost is negligible.
+    func totalWordsFound() -> Int {
+        let records = (try? context.fetch(FetchDescriptor<GameRecord>())) ?? []
+        return records.reduce(0) { $0 + $1.wordsFoundCount }
+    }
 }
