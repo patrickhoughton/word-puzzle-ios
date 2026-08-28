@@ -29,7 +29,10 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
   2. The word list contains no profanity (verified by running the blocklist against the bundled file)
   3. Word validation returns a result in O(1) — a `Set<String>` lookup, not array iteration
   4. Puzzle generation completes in under 500ms on a physical device (not Simulator)
-**Plans**: TBD
+**Plans**: 3 plans
+- [ ] 01-01-PLAN.md — Install Xcode, create WordPuzzle project + PuzzleEngine group, bundle profanity-filtered ENABLE list (Wave 0)
+- [ ] 01-02-PLAN.md — Implement Puzzle model, WordList loader (O(1) Set), pangram-first generator + Swift Testing unit tests (Wave 1)
+- [ ] 01-03-PLAN.md — XCTest 500ms performance test, verified on a physical iPhone (Wave 2)
 **UI hint**: no
 
 ### Phase 2: Persistence & Entitlements
@@ -87,7 +90,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Word Engine & Puzzle Generation | 0/? | Not started | - |
+| 1. Word Engine & Puzzle Generation | 0/3 | Not started | - |
 | 2. Persistence & Entitlements | 0/? | Not started | - |
 | 3. Core Game UI | 0/? | Not started | - |
 | 4. Paywall & Free Tier Gate | 0/? | Not started | - |
