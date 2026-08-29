@@ -79,4 +79,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-27 after initialization*
+*Last updated: 2026-08-29 after Phase 2 (persistence-entitlements) completion — PersistenceStore and EntitlementStore built and verified (real device sandbox purchase/restore), but not yet wired into user-facing gameplay/paywall UI (Phase 3/4). Active requirements remain unvalidated until that UI exists.*
