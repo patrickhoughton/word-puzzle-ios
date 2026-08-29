@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 3 context gathered
-last_updated: "2026-08-29T17:55:59.488Z"
+status: executing
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-08-29T19:43:18.676Z"
 last_activity: 2026-08-29
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 8
-  completed_plans: 8
-  percent: 100
+  total_plans: 13
+  completed_plans: 9
+  percent: 69
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-27)
 
 **Core value:** Endless, fresh word puzzles that generate algorithmically from a local dictionary — no internet, no content team, no ongoing maintenance.
-**Current focus:** Phase 02 — persistence-entitlements
+**Current focus:** Phase 03 — core-game-ui
 
 ## Current Position
 
 Phase: 3
-Plan: Not started
-Status: Phase complete — ready for verification
+Plan: 2 of 5
+Status: Ready to execute
 Last activity: 2026-08-29
 
-Progress: [██████████] 100%
+Progress: [███████░░░] 69%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [██████████] 100%
 | Phase 02-persistence-entitlements P03 | 12min | 2 tasks | 4 files |
 | Phase 02 P04 | 35min | 2 tasks | 2 files |
 | Phase 02 P05 | ~50min | 3 tasks | 4 files |
+| Phase 03-core-game-ui P01 | 15min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,9 @@ Recent decisions affecting current work:
 - [Phase 02]: EntitlementStore derives isPremium exclusively from Transaction.currentEntitlements (no UserDefaults/@AppStorage flag), with purchaseUnlimited() and restore() via AppStore.sync() forming the frozen API for Phase 4's paywall
 - [Phase 02-05]: Transaction.currentEntitlements is scoped to the signed-in sandbox/production Apple ID account, not local device state — a fresh reinstall on an account with a prior purchase shows isPremium=true immediately, before Restore is tapped. This is correct MON-04 behavior, not a bug; relevant for Phase 4 paywall design/QA.
 - [Phase 02-05]: Reset the WordPuzzle.xcscheme Run StoreKit Configuration back to WordPuzzle.storekit after the manual sandbox test (it was set to None for that test per the plan's Step B) so Phase 3/4 local dev is not left pointed at the real sandbox.
+- [Phase 03-01]: GameViewModel submission validation mirrors PuzzleGenerator's private isValidPuzzleWord rule exactly (length >= 4, contains center, subset of letters) plus dictionary and duplicate checks, so the UI never rejects a word the generator counted as valid.
+- [Phase 03-01]: finishRound() records the session via PersistenceStore BEFORE flipping roundPhase to .roundOver, so the missed-words screen always renders against already-persisted data.
+- [Phase 03-01]: GameTheme.swift is the single source of spacing/typography/color/geometry/motion tokens for all Phase 3 views — no inline magic numbers. GameViewModel, RankTier, and GameTheme's API is now frozen for plans 03-02/03-03/03-04.
 
 ### Pending Todos
 
@@ -85,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-29T17:55:59.479Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-core-game-ui/03-CONTEXT.md
+Last session: 2026-08-29T19:43:18.673Z
+Stopped at: Completed 03-01-PLAN.md
+Resume file: .planning/phases/03-core-game-ui/03-02-PLAN.md

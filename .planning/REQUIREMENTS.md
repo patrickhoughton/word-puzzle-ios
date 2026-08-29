@@ -7,23 +7,23 @@
 
 ### Core Game
 
-- [ ] **GAME-01**: User can view a set of 7 letters (with one highlighted required center letter) and submit words using those letters
-- [ ] **GAME-02**: App validates submitted words against a bundled local dictionary with immediate feedback (accepted or rejected)
-- [ ] **GAME-03**: User can see their score and found-word count update in real-time during a round
-- [ ] **GAME-04**: User can see all words they missed revealed at the end of each round
+- [x] **GAME-01**: User can view a set of 7 letters (with one highlighted required center letter) and submit words using those letters
+- [x] **GAME-02**: App validates submitted words against a bundled local dictionary with immediate feedback (accepted or rejected)
+- [x] **GAME-03**: User can see their score and found-word count update in real-time during a round
+- [x] **GAME-04**: User can see all words they missed revealed at the end of each round
 
 ### Puzzle Engine
 
 - [x] **PUZZ-01**: App generates puzzles algorithmically using a pangram-first approach from the ENABLE word list
 - [x] **PUZZ-02**: Word list is filtered for profanity and inappropriate content before puzzle generation
 - [x] **PUZZ-03**: Each puzzle guarantees a minimum of 20 valid words and at least one pangram (word using all 7 letters)
-- [ ] **PUZZ-04**: User can shuffle the displayed letters to help spot new words
+- [x] **PUZZ-04**: User can shuffle the displayed letters to help spot new words
 
 ### Retention
 
 - [x] **RET-01**: App tracks and displays a daily streak counter (days in a row with at least one puzzle played)
 - [x] **RET-02**: App shows lifetime stats: total words found, best score, total games played
-- [ ] **RET-03**: App provides haptic feedback when a correct word is submitted
+- [x] **RET-03**: App provides haptic feedback when a correct word is submitted
 
 ### Monetization
 
@@ -80,12 +80,12 @@
 | MON-04 | Phase 2 | Complete |
 | RET-01 | Phase 2 | Complete |
 | RET-02 | Phase 2 | Complete |
-| GAME-01 | Phase 3 | Pending |
-| GAME-02 | Phase 3 | Pending |
-| GAME-03 | Phase 3 | Pending |
-| GAME-04 | Phase 3 | Pending |
-| PUZZ-04 | Phase 3 | Pending |
-| RET-03 | Phase 3 | Pending |
+| GAME-01 | Phase 3 | Complete |
+| GAME-02 | Phase 3 | Complete |
+| GAME-03 | Phase 3 | Complete |
+| GAME-04 | Phase 3 | Complete |
+| PUZZ-04 | Phase 3 | Complete |
+| RET-03 | Phase 3 | Complete |
 | MON-01 | Phase 4 | Pending |
 | UX-01 | Phase 5 | Pending |
 | UX-02 | Phase 5 | Pending |
