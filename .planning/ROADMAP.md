@@ -70,7 +70,7 @@ Plans:
 - [x] 03-02-PLAN.md — HexagonShape, HexFlowerLayout geometry, HexTileView, LetterGridView with single unified tap/drag recognizer + shuffle animation (Wave 2)
 - [x] 03-03-PLAN.md — WordDisplayView (swipe-down submit, shake/pop, haptics), ScoreBarView, MissedWordsView (Wave 2)
 - [x] 03-04-PLAN.md — GameView assembly, WordList + GameViewModel app wiring, EntitlementDebugPanel deletion (Wave 3)
-- [ ] 03-05-PLAN.md — On-device manual verification checkpoint on a real iPhone (Wave 4)
+- [x] 03-05-PLAN.md — On-device manual verification checkpoint on a real iPhone (Wave 4)
 **UI hint**: yes
 
 ### Phase 4: Paywall & Free Tier Gate

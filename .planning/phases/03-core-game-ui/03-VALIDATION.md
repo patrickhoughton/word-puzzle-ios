@@ -1,9 +1,9 @@
 ---
 phase: 3
 slug: core-game-ui
-status: planned
+status: verified
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-08-29
 ---
 
@@ -38,18 +38,18 @@ created: 2026-08-29
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 03-01 T3 | 03-01 | 1 | GAME-01 | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testAppendAndSubmitBuildsWord` | created by 03-01 T3 | ⬜ pending |
-| 03-01 T3 | 03-01 | 1 | GAME-02 | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testSubmitInvalidWordReturnsFalse` | created by 03-01 T3 | ⬜ pending |
-| 03-01 T3 | 03-01 | 1 | GAME-03 | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testScoreAndFoundCountUpdateOnCorrectSubmit` | created by 03-01 T3 | ⬜ pending |
-| 03-01 T3 | 03-01 | 1 | GAME-04 | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testMissedWordsGroupedByLength` | created by 03-01 T3 | ⬜ pending |
-| 03-01 T3 | 03-01 | 1 | PUZZ-04 | unit + manual | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testShufflePreservesLetterSetExcludesCenter` | created by 03-01 T3 | ⬜ pending |
-| 03-01 T3 | 03-01 | 1 | RET-03 | manual-only (proxy: unit) | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testCorrectSubmissionTogglesHapticTrigger` (proxy only — does not prove haptic actually fires on hardware) | created by 03-01 T3 | ⬜ pending |
-| 03-01 T2 | 03-01 | 1 | D-09 (supports GAME-03) | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/RankTierTests` | created by 03-01 T2 | ⬜ pending |
-| 03-02 T1 | 03-02 | 2 | GAME-01 (hex geometry) | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/HexGeometryTests` | created by 03-02 T1 | ⬜ pending |
-| 03-02 T2 | 03-02 | 2 | GAME-01, PUZZ-04 (grid + gesture) | build + manual | `xcodebuild build ... -scheme WordPuzzle` | n/a | ⬜ pending |
-| 03-03 T1-T3 | 03-03 | 2 | GAME-02, GAME-03, GAME-04, RET-03 (views) | build + manual | `xcodebuild build ... -scheme WordPuzzle` | n/a | ⬜ pending |
-| 03-04 T2 | 03-04 | 3 | all (launch path) | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/AppWiringTests/testGameViewModelStartsARoundFromLoadedWordList` | created by 03-04 T2 | ⬜ pending |
-| 03-05 T1 | 03-05 | 4 | all (on-device) | manual checkpoint | full suite + 8 on-device checks | n/a | ⬜ pending |
+| 03-01 T3 | 03-01 | 1 | GAME-01 | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testAppendAndSubmitBuildsWord` | created by 03-01 T3 | ✅ green |
+| 03-01 T3 | 03-01 | 1 | GAME-02 | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testSubmitInvalidWordReturnsFalse` | created by 03-01 T3 | ✅ green |
+| 03-01 T3 | 03-01 | 1 | GAME-03 | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testScoreAndFoundCountUpdateOnCorrectSubmit` | created by 03-01 T3 | ✅ green |
+| 03-01 T3 | 03-01 | 1 | GAME-04 | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testMissedWordsGroupedByLength` | created by 03-01 T3 | ✅ green |
+| 03-01 T3 | 03-01 | 1 | PUZZ-04 | unit + manual | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testShufflePreservesLetterSetExcludesCenter` | created by 03-01 T3 | ✅ green |
+| 03-01 T3 | 03-01 | 1 | RET-03 | manual-only (proxy: unit) | `xcodebuild test ... -only-testing:WordPuzzleTests/GameViewModelTests/testCorrectSubmissionTogglesHapticTrigger` (proxy only — does not prove haptic actually fires on hardware) | created by 03-01 T3 | ✅ green |
+| 03-01 T2 | 03-01 | 1 | D-09 (supports GAME-03) | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/RankTierTests` | created by 03-01 T2 | ✅ green |
+| 03-02 T1 | 03-02 | 2 | GAME-01 (hex geometry) | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/HexGeometryTests` | created by 03-02 T1 | ✅ green |
+| 03-02 T2 | 03-02 | 2 | GAME-01, PUZZ-04 (grid + gesture) | build + manual | `xcodebuild build ... -scheme WordPuzzle` | n/a | ✅ green |
+| 03-03 T1-T3 | 03-03 | 2 | GAME-02, GAME-03, GAME-04, RET-03 (views) | build + manual | `xcodebuild build ... -scheme WordPuzzle` | n/a | ✅ green |
+| 03-04 T2 | 03-04 | 3 | all (launch path) | unit | `xcodebuild test ... -only-testing:WordPuzzleTests/AppWiringTests/testGameViewModelStartsARoundFromLoadedWordList` | created by 03-04 T2 | ✅ green |
+| 03-05 T1 | 03-05 | 4 | all (on-device) | manual checkpoint | full suite + 8 on-device checks | n/a | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 *Plan/wave/task-ID columns filled in by gsd-planner on 2026-08-29. Both Wave 0 test files are created by plan 03-01, which has no dependencies and executes first.*
@@ -68,14 +68,14 @@ created: 2026-08-29
 
 ## Manual-Only Verifications
 
-| Behavior | Requirement | Why Manual | Test Instructions |
-|----------|-------------|------------|-------------------|
-| Haptic feedback actually fires on correct submission | RET-03 | Simulator cannot verify real haptic hardware output; `sensoryFeedback` trigger toggling is only a proxy | On a real iPhone, submit a valid word and confirm a haptic tap is felt |
-| Hex grid visual layout — center letter distinguished, 6 outer letters arranged correctly | GAME-01 | Visual correctness not verifiable by unit test | On-device/simulator visual check against CONTEXT.md D-01 |
-| Drag-to-connect gesture across tiles feels correct and doesn't drop/misfire | GAME-01, D-02 | Gesture feel and hit-testing accuracy require real touch input | On a real iPhone, drag across multiple tiles and confirm each is registered in order |
-| Tap-to-append and drag-to-connect don't fight each other for the same touch | GAME-01, D-02 | Gesture composition conflicts only surface with real touch timing | On a real iPhone, alternate tap and drag input on the same puzzle round |
-| Shuffle animation feel (non-instant rearrangement) | PUZZ-04, D-03 | Animation smoothness is a visual/qualitative check | Tap Shuffle repeatedly and confirm outer letters animate (not jump) into new positions |
-| Reject animation on invalid word submission | GAME-02 | Animation correctness not verifiable by unit test | Submit an invalid word and confirm a shake/reject animation plays without crashing |
+| Behavior | Requirement | Why Manual | Test Instructions | Status |
+|----------|-------------|------------|-------------------|--------|
+| Haptic feedback actually fires on correct submission | RET-03 | Simulator cannot verify real haptic hardware output; `sensoryFeedback` trigger toggling is only a proxy | On a real iPhone, submit a valid word and confirm a haptic tap is felt | ✅ verified 2026-08-29 (03-05, real iPhone) |
+| Hex grid visual layout — center letter distinguished, 6 outer letters arranged correctly | GAME-01 | Visual correctness not verifiable by unit test | On-device/simulator visual check against CONTEXT.md D-01 | ✅ verified 2026-08-29 (03-05, real iPhone) |
+| Drag-to-connect gesture across tiles feels correct and doesn't drop/misfire | GAME-01, D-02 | Gesture feel and hit-testing accuracy require real touch input | On a real iPhone, drag across multiple tiles and confirm each is registered in order | ✅ verified 2026-08-29 (03-05, real iPhone) |
+| Tap-to-append and drag-to-connect don't fight each other for the same touch | GAME-01, D-02 | Gesture composition conflicts only surface with real touch timing | On a real iPhone, alternate tap and drag input on the same puzzle round | ✅ verified 2026-08-29 (03-05, real iPhone) |
+| Shuffle animation feel (non-instant rearrangement) | PUZZ-04, D-03 | Animation smoothness is a visual/qualitative check | Tap Shuffle repeatedly and confirm outer letters animate (not jump) into new positions | ✅ verified 2026-08-29 (03-05, real iPhone) |
+| Reject animation on invalid word submission | GAME-02 | Animation correctness not verifiable by unit test | Submit an invalid word and confirm a shake/reject animation plays without crashing | ✅ verified 2026-08-29 (03-05, real iPhone) |
 
 ---
 
@@ -88,4 +88,4 @@ created: 2026-08-29
 - [x] Feedback latency < 180s
 - [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** plan-mapped 2026-08-29 (manual on-device rows verified in plan 03-05)
+**Approval:** plan-mapped 2026-08-29; on-device rows verified 2026-08-29 in plan 03-05 (all 8 checks PASS on Patrick's iPhone 15 Pro)
