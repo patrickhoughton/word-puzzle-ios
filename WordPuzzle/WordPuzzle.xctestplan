@@ -1,0 +1,36 @@
+{
+  "configurations" : [
+    {
+      "id" : "F7DF8440-886A-41B1-839F-FDCF2E1A594D",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:WordPuzzle.xcodeproj",
+      "identifier" : "8C36E75B3041DDE0001631B4",
+      "name" : "WordPuzzle"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:WordPuzzle.xcodeproj",
+        "identifier" : "8C36E7683041DDE2001631B4",
+        "name" : "WordPuzzleTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:WordPuzzle.xcodeproj",
+        "identifier" : "8C36E7723041DDE2001631B4",
+        "name" : "WordPuzzleUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
