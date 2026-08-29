@@ -64,7 +64,13 @@ Plans:
   3. User receives haptic feedback on correct word submission
   4. User can tap a Shuffle button and the non-center letters rearrange
   5. At round end, user sees the complete list of words they did not find during the round
-**Plans**: TBD
+**Plans**: 5 plans
+Plans:
+- [ ] 03-01-PLAN.md — GameTheme tokens + #F5B800 accent, RankTier NYT 10-tier lookup, GameViewModel round state/validation/scoring/shuffle + Wave 0 tests (Wave 1)
+- [ ] 03-02-PLAN.md — HexagonShape, HexFlowerLayout geometry, HexTileView, LetterGridView with single unified tap/drag recognizer + shuffle animation (Wave 2)
+- [ ] 03-03-PLAN.md — WordDisplayView (swipe-down submit, shake/pop, haptics), ScoreBarView, MissedWordsView (Wave 2)
+- [ ] 03-04-PLAN.md — GameView assembly, WordList + GameViewModel app wiring, EntitlementDebugPanel deletion (Wave 3)
+- [ ] 03-05-PLAN.md — On-device manual verification checkpoint on a real iPhone (Wave 4)
 **UI hint**: yes
 
 ### Phase 4: Paywall & Free Tier Gate
@@ -98,6 +104,6 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Word Engine & Puzzle Generation | 3/3 | Complete | 2026-08-28 |
 | 2. Persistence & Entitlements | 5/5 | Complete   | 2026-08-29 |
-| 3. Core Game UI | 0/? | Not started | - |
+| 3. Core Game UI | 0/5 | Planned | - |
 | 4. Paywall & Free Tier Gate | 0/? | Not started | - |
 | 5. Polish, Compliance & App Store | 0/? | Not started | - |
