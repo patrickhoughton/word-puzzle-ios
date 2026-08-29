@@ -25,8 +25,8 @@ One structural conflict was found and must be flagged to the planner: `.planning
 - **D-06:** Submission is a swipe-down gesture on the assembled word (drag it downward past a threshold) — there is NO dedicated Submit button. This was a deliberate, explicit user choice (initially proposed as a two-finger pinch, then revised to swipe-down) — do not substitute a button in planning or research.
 - **D-07:** Invalid word: the word display shakes and shows a generic "Not a valid word" message. Phase 3 does NOT distinguish reasons (already found / too short / missing center letter / not in list) — that granularity is out of scope for this pass.
 - **D-08:** Valid word: the word display briefly highlights/pops and shows the points earned ("+N") before clearing, in addition to the required haptic (RET-03).
-- **D-09:** Score/progress uses a rank/tier system, not a plain number. Use NYT Spelling Bee's standard 10 tiers and thresholds, expressed as a percentage of the puzzle's maximum possible score:
-  - Beginner: 0% / Good Start: 2% / Moving Up: 5% / Good: 8% / Solid: 15% / Nice: 25% / Great: 40% / Amazing: 50% / Genius: 70% / Queen Bee: 100%
+- **D-09:** Score/progress uses a rank/tier system, not a plain number. Uses an original 10-tier ladder (NOT NYT Spelling Bee's tier names — avoided for App Store 4.3 clone-risk), at NYT's same percentage thresholds:
+  - Novice: 0% / Rookie: 2% / Apprentice: 5% / Wordsmith: 8% / Adept: 15% / Skilled: 25% / Expert: 40% / Virtuoso: 50% / Master: 70% / Legend: 100%
   - Maximum possible score for a puzzle = `ScoreCalculator.score(for:pangrams:)` applied to ALL of `Puzzle.validWords`, using `Puzzle.pangrams` as the pangram set — computed once when the puzzle is generated.
 - **D-10:** A round ends only when the user taps a manual "Finish"/"End Round" button. No timer, no auto-end when all words are found.
 - **D-11:** The missed-words reveal screen groups missed words by word length, with any missed pangram(s) specially highlighted.
@@ -91,7 +91,7 @@ None — discussion stayed within Phase 3 scope. Per-reason invalid-word messagi
 WordPuzzle/WordPuzzle/
 ├── Game/                          # NEW group for Phase 3
 │   ├── GameViewModel.swift        # @Observable round/puzzle state, submit/shuffle/finish logic
-│   ├── RankTier.swift             # NYT tier enum + percentage-of-max lookup (D-09)
+│   ├── RankTier.swift             # original tier enum + percentage-of-max lookup (D-09)
 │   └── Views/
 │       ├── GameView.swift         # top-level screen; replaces ContentView's DEBUG panel
 │       ├── HexagonShape.swift     # custom Shape conforming to Shape protocol
@@ -256,7 +256,7 @@ Bind these triggers to `Equatable` state in `GameViewModel` (e.g. an incrementin
 |---------|-------------|-------------|-----|
 | Haptic feedback triggering/lifecycle | Manual `UIImpactFeedbackGenerator` instance management (`.prepare()`, retain/release timing) | `.sensoryFeedback(_:trigger:)` | SwiftUI manages the generator lifecycle; iOS 17.6 target has no reason to touch UIKit haptics directly |
 | Word validity checking (dictionary + puzzle rules) | A second, separate validator | Reuse the exact predicate from `PuzzleGenerator.isValidPuzzleWord` (private today — either duplicate the 3-line rule in `GameViewModel` or extract it to a shared internal function) plus `WordList.contains(_:)` | The puzzle generator and the round's live validator must agree on what counts as valid, or a puzzle could contain "valid" words the UI rejects. This is a correctness risk, not just a style preference. |
-| Percentage-of-max-score rank lookup | Ad-hoc if/else chain scattered across views | A single `RankTier` type (enum or struct) with a static lookup table matching D-09's 10 tiers, computed once from `(currentScore, maxScore)` | Keeps the NYT tier table in one testable place; avoids drift if tier logic is needed in both the live score bar and (later) a results screen |
+| Percentage-of-max-score rank lookup | Ad-hoc if/else chain scattered across views | A single `RankTier` type (enum or struct) with a static lookup table matching D-09's 10 tiers, computed once from `(currentScore, maxScore)` | Keeps the tier table in one testable place; avoids drift if tier logic is needed in both the live score bar and (later) a results screen |
 
 **Key insight:** Nothing in this phase needs a third-party library — every mechanic (hex shape, gesture-to-path tracking, haptics, shake/pop animation) is achievable with stock SwiftUI/UIKit-bridged APIs at the iOS 17.6 target. The complexity is entirely in gesture composition, not missing tooling.
 

@@ -66,7 +66,7 @@ Plans:
   5. At round end, user sees the complete list of words they did not find during the round
 **Plans**: 5 plans
 Plans:
-- [ ] 03-01-PLAN.md — GameTheme tokens + #F5B800 accent, RankTier NYT 10-tier lookup, GameViewModel round state/validation/scoring/shuffle + Wave 0 tests (Wave 1)
+- [ ] 03-01-PLAN.md — GameTheme tokens + #F5B800 accent, RankTier original 10-tier lookup, GameViewModel round state/validation/scoring/shuffle + Wave 0 tests (Wave 1)
 - [ ] 03-02-PLAN.md — HexagonShape, HexFlowerLayout geometry, HexTileView, LetterGridView with single unified tap/drag recognizer + shuffle animation (Wave 2)
 - [ ] 03-03-PLAN.md — WordDisplayView (swipe-down submit, shake/pop, haptics), ScoreBarView, MissedWordsView (Wave 2)
 - [ ] 03-04-PLAN.md — GameView assembly, WordList + GameViewModel app wiring, EntitlementDebugPanel deletion (Wave 3)
