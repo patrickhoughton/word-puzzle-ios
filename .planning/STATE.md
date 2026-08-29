@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-02-PLAN.md and 03-03-PLAN.md (Wave 2)
-last_updated: "2026-08-29T20:08:57.883Z"
+stopped_at: Completed 03-04-PLAN.md
+last_updated: "2026-08-29T20:21:44.117Z"
 last_activity: 2026-08-29
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 13
-  completed_plans: 11
+  completed_plans: 12
   percent: 85
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 ## Current Position
 
 Phase: 3
-Plan: 4 of 5
+Plan: 5 of 5
 Status: Ready to execute
 Last activity: 2026-08-29
 
@@ -60,6 +60,7 @@ Progress: [████████░░] 85%
 | Phase 03-core-game-ui P01 | 15min | 3 tasks | 6 files |
 | Phase 03-core-game-ui P03 | 25min | 3 tasks | 3 files |
 | Phase 03 P02 | 25min | 2 tasks | 5 files |
+| Phase 03 P04 | 12min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,8 @@ Recent decisions affecting current work:
 - [Phase 03-01]: GameTheme.swift is the single source of spacing/typography/color/geometry/motion tokens for all Phase 3 views — no inline magic numbers. GameViewModel, RankTier, and GameTheme's API is now frozen for plans 03-02/03-03/03-04.
 - [Phase 03-03]: Presentation views (WordDisplayView, ScoreBarView, MissedWordsView) built with zero GameViewModel coupling — value/closure contracts only, verified via grep gates; counter-based .sensoryFeedback triggers (not Bool) so consecutive identical outcomes still fire haptics
 - [Phase 03-02]: LetterGridView uses a single unified DragGesture(minimumDistance: 0) for both tap and drag-to-connect input, with HexFlowerLayout's trigonometry extracted into a stateless enum for unit testability
+- [Phase 03-04]: wordList @State declared without a default value (assigned only in init, same pattern as gameViewModel) to avoid constructing two WordList instances -- the plan's own example code textually built WordList() twice
+- [Phase 03-04]: AppWiringTests suite marked @Suite(.serialized) since the new launch-path test loads the full ENABLE word list, matching the project convention for word-list-loading test suites
 
 ### Pending Todos
 
@@ -93,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-29T20:08:57.880Z
-Stopped at: Completed 03-02-PLAN.md and 03-03-PLAN.md (Wave 2)
-Resume file: .planning/phases/03-core-game-ui/03-04-PLAN.md
+Last session: 2026-08-29T20:21:44.115Z
+Stopped at: Completed 03-04-PLAN.md
+Resume file: None
