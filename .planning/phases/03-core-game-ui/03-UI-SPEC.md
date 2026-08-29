@@ -117,7 +117,7 @@ Outer (non-center) hex tiles use the Secondary surface color, not a third color 
 - Missed-words screen title: "Words You Missed"
 - Missed-word length-group headers: "{N} Letters" (e.g. "4 Letters", "5 Letters")
 - Pangram badge on a missed word: "Pangram" tag/label next to the word, accent-colored, per D-11
-- Rank tier names (exact, per D-09 — do not reword): Beginner, Good Start, Moving Up, Good, Solid, Nice, Great, Amazing, Genius, Queen Bee
+- Rank tier names (exact, per D-09 — do not reword, deliberately not NYT's names): Novice, Rookie, Apprentice, Wordsmith, Adept, Skilled, Expert, Virtuoso, Master, Legend
 - Shuffle button accessibility label: "Shuffle Letters"
 - Delete button accessibility label: "Delete Last Letter"
 

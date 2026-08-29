@@ -26,17 +26,17 @@ Deliver the real, playable game screen replacing the Phase 2 debug panel: a comp
 ### Feedback & Scoring Display
 - **D-07:** Invalid word: the word display shakes and shows a generic "Not a valid word" message. Phase 3 does NOT distinguish reasons (already found / too short / missing center letter / not in list) — that granularity is out of scope for this pass.
 - **D-08:** Valid word: the word display briefly highlights/pops and shows the points earned ("+N") before clearing, in addition to the required haptic (RET-03).
-- **D-09:** Score/progress uses a rank/tier system, not a plain number. Use NYT Spelling Bee's standard 10 tiers and thresholds, expressed as a percentage of the puzzle's maximum possible score:
-  - Beginner: 0%
-  - Good Start: 2%
-  - Moving Up: 5%
-  - Good: 8%
-  - Solid: 15%
-  - Nice: 25%
-  - Great: 40%
-  - Amazing: 50%
-  - Genius: 70%
-  - Queen Bee / King Bee: 100%
+- **D-09:** Score/progress uses a rank/tier system, not a plain number. Uses an original 10-tier ladder (NOT NYT Spelling Bee's tier names — those are avoided as App Store 4.3 clone-risk), at the same percentage thresholds as NYT's system, expressed as a percentage of the puzzle's maximum possible score:
+  - Novice: 0%
+  - Rookie: 2%
+  - Apprentice: 5%
+  - Wordsmith: 8%
+  - Adept: 15%
+  - Skilled: 25%
+  - Expert: 40%
+  - Virtuoso: 50%
+  - Master: 70%
+  - Legend: 100%
   - Maximum possible score for a puzzle = `ScoreCalculator.score(for:pangrams:)` applied to ALL of `Puzzle.validWords`, using `Puzzle.pangrams` as the pangram set — computed once when the puzzle is generated.
 
 ### Round Structure & Missed-Word Reveal
@@ -100,7 +100,7 @@ No external specs or ADRs beyond project files.
 ## Specific Ideas
 
 - The submit gesture is a swipe/drag-DOWN on the assembled word — this was explicitly chosen over both a Submit button and a two-finger pinch. Do not plan around a button.
-- Rank tiers must use the exact NYT Spelling Bee names and percentages listed in D-09 — this is a recognizable system players expect, not a placeholder to be redesigned.
+- Rank tiers must use the exact original tier names and percentages listed in D-09 — deliberately NOT NYT Spelling Bee's own tier names, to avoid App Store 4.3 clone risk. This is a fixed system, not a placeholder to be redesigned.
 - Missed words must be grouped by length with pangrams highlighted (D-11) — a flat undifferentiated list does not satisfy this decision.
 
 </specifics>
