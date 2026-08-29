@@ -154,3 +154,12 @@ Plans:
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
+
+### Phase 999.6: Double-tap-to-shuffle gesture (BACKLOG)
+
+**Goal:** [Captured for future planning] — a double-tap gesture as an alternative (or addition) to the Shuffle button. Direct conflict to resolve at design time: on a single tile, quickly tapping twice is already legitimate input (appends that letter twice — e.g. a double letter in the word being built), so "double-tap to shuffle" cannot mean "double-tap any tile" without breaking that existing behavior. Likely needs a distinct trigger — e.g. double-tap the center tile specifically, or double-tap empty space off the honeycomb — chosen deliberately, not just bolted on. Same gesture-composition caution as 999.5 (single unified `DragGesture` in `LetterGridView` today).
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd:review-backlog when ready)
