@@ -127,3 +127,12 @@ Plans:
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
+
+### Phase 999.3: Differentiated invalid-word messaging (BACKLOG)
+
+**Goal:** [Captured for future planning] — replace the single generic "Not a valid word" rejection message with distinct feedback for each rejection reason: word too short (< 4 letters), word not in the dictionary/doesn't use valid letters, and word already found this round (duplicate). Currently `GameViewModel.submitCurrentWord()` returns a plain `Bool` and `WordDisplayView` shows one hardcoded string for every failure case, so the player can't tell why a word was rejected.
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd:review-backlog when ready)
