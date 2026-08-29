@@ -104,6 +104,6 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Word Engine & Puzzle Generation | 3/3 | Complete | 2026-08-28 |
 | 2. Persistence & Entitlements | 5/5 | Complete   | 2026-08-29 |
-| 3. Core Game UI | 3/5 | In Progress|  |
+| 3. Core Game UI | 4/5 | In Progress|  |
 | 4. Paywall & Free Tier Gate | 0/? | Not started | - |
 | 5. Polish, Compliance & App Store | 0/? | Not started | - |
