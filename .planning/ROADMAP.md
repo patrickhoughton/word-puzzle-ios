@@ -145,3 +145,12 @@ Plans:
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
+
+### Phase 999.5: Two-finger rotate-to-shuffle gesture (BACKLOG)
+
+**Goal:** [Captured for future planning] — a two-finger twisting/rotation gesture on the honeycomb grid as an alternative (or addition) to the Shuffle button, rotating the 6 outer letters. Non-trivial: `LetterGridView` currently has exactly ONE gesture recognizer by design (a single-touch `DragGesture(minimumDistance: 0)` handling both tap-to-append and drag-to-connect, per Phase 3's RESEARCH Pattern 3 / Pitfall 1 gesture-contention finding). Adding a two-finger `RotationGesture` means composing a second, multi-touch recognizer alongside the existing one without reintroducing that contention risk — will need its own on-device gesture-contention verification pass, same as Phase 3's 03-05 checkpoint.
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd:review-backlog when ready)
