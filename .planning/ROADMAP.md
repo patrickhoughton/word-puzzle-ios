@@ -157,7 +157,7 @@ Plans:
 
 ### Phase 999.6: Double-tap-to-shuffle gesture (BACKLOG)
 
-**Goal:** [Captured for future planning] — a double-tap gesture as an alternative (or addition) to the Shuffle button. Direct conflict to resolve at design time: on a single tile, quickly tapping twice is already legitimate input (appends that letter twice — e.g. a double letter in the word being built), so "double-tap to shuffle" cannot mean "double-tap any tile" without breaking that existing behavior. Likely needs a distinct trigger — e.g. double-tap the center tile specifically, or double-tap empty space off the honeycomb — chosen deliberately, not just bolted on. Same gesture-composition caution as 999.5 (single unified `DragGesture` in `LetterGridView` today).
+**Goal:** [Captured for future planning] — a double-tap gesture as an alternative (or addition) to the Shuffle button. **Trigger decided: double-tap any empty area of the screen** (off the honeycomb tiles) — this avoids the conflict where double-tapping a tile is already legitimate input (appends that letter twice, e.g. a double letter in the word being built). Implementation note: `LetterGridView`'s existing single `DragGesture(minimumDistance: 0)` is scoped to the tiles themselves for hit-testing, so an empty-area double-tap recognizer would live on the surrounding container/background view, not compete with the grid's own gesture — should avoid the contention risk that made 999.5 (rotate gesture, tile-scoped) trickier.
 **Requirements:** TBD
 **Plans:** 0 plans
 
