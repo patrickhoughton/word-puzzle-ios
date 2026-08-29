@@ -172,3 +172,12 @@ Plans:
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
+
+### Phase 999.8: Bonus for finding all pangrams (BACKLOG)
+
+**Goal:** [Captured for future planning] — an extra scoring bonus for finding every pangram in a puzzle, not just the per-word +7 pangram bonus that already exists. Context: `Puzzle.pangrams` is already a plural array (a puzzle can have more than one pangram, per `PuzzleGenerator`'s `pangrams = validArray.filter { Set($0) == letters }`), and `ScoreCalculator.points(for:isPangram:)` already awards +7 per individual pangram found — but there's currently no reward tied to clearing the *complete set*. Needs: (1) UI/feedback for "you found all N pangrams!" (likely surfaced in `MissedWordsView`'s pangram badge or a distinct end-of-round callout), (2) a bonus formula decision (flat bonus vs. scaled by pangram count), (3) confirming how often multi-pangram puzzles actually occur in practice (worth checking before investing UI work, since a bonus that almost never triggers isn't worth much).
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd:review-backlog when ready)
