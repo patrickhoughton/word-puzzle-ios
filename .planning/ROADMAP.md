@@ -163,3 +163,12 @@ Plans:
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
+
+### Phase 999.7: Long-press center letter to shuffle (BACKLOG)
+
+**Goal:** [Captured for future planning] — long-press (or "hard press") on the gold center tile as an alternative (or addition) to the Shuffle button. **Hardware note:** true pressure-sensitive 3D Touch was removed from iPhones starting with the XR/11 generation; Apple's replacement, Haptic Touch, is functionally a long-press with a delay + haptic confirmation — so "long press" and "hard press" are the same gesture on all currently-shipping iPhones, not two separate inputs to build. Conflict to resolve at design time: the center tile is currently part of the single unified `DragGesture(minimumDistance: 0)` hit-test area in `LetterGridView` (tapping it appends the center letter), so a long-press recognizer on that same tile needs to coexist with tap-to-append without misfiring — likely resolved via a time threshold (a fast tap still appends; holding past ~0.5s triggers shuffle instead) rather than a fully separate `LongPressGesture`, to avoid the two-recognizer contention risk noted in 999.5.
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd:review-backlog when ready)
