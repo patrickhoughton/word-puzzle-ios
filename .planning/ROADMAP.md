@@ -13,7 +13,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 ## Phases
 
 - [ ] **Phase 1: Word Engine & Puzzle Generation** - Pangram-first puzzle generator with profanity-filtered ENABLE word list; fully unit-testable with no UI
-- [ ] **Phase 2: Persistence & Entitlements** - SwiftData models for game history and daily usage; StoreKit 2 entitlement check for premium status
+- [x] **Phase 2: Persistence & Entitlements** - SwiftData models for game history and daily usage; StoreKit 2 entitlement check for premium status (completed 2026-08-29)
 - [ ] **Phase 3: Core Game UI** - Playable game on a real device: letter display, word input, validation feedback, scoring, end-of-round reveal, haptics
 - [ ] **Phase 4: Paywall & Free Tier Gate** - 3-puzzle daily limit enforced; paywall screen with Restore Purchases; IAP purchase and restore flows sandbox-tested
 - [ ] **Phase 5: Polish, Compliance & App Store** - Sound effects, Dynamic Type, offline verification, privacy label, app icon, screenshots, ASO
@@ -51,7 +51,7 @@ Plans:
 - [x] 02-02-PLAN.md — GameRecord @Model, PersistenceStore container/record/puzzlesPlayedToday + lifetime stats (Wave 1)
 - [x] 02-03-PLAN.md — ScoreCalculator (D-02 formula) + derived daily streak counter (Wave 2)
 - [x] 02-04-PLAN.md — EntitlementStore (currentEntitlements, purchase, AppStore.sync restore) + SKTestSession tests (Wave 2)
-- [ ] 02-05-PLAN.md — Wire both stores into WordPuzzleApp + manual sandbox purchase/restore verification (Wave 3)
+- [x] 02-05-PLAN.md — Wire both stores into WordPuzzleApp + manual sandbox purchase/restore verification (Wave 3)
 **UI hint**: no
 
 ### Phase 3: Core Game UI
@@ -97,7 +97,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Word Engine & Puzzle Generation | 3/3 | Complete | 2026-08-28 |
-| 2. Persistence & Entitlements | 4/5 | In Progress | - |
+| 2. Persistence & Entitlements | 5/5 | Complete   | 2026-08-29 |
 | 3. Core Game UI | 0/? | Not started | - |
 | 4. Paywall & Free Tier Gate | 0/? | Not started | - |
 | 5. Polish, Compliance & App Store | 0/? | Not started | - |

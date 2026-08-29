@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 02-03-PLAN.md and 02-04-PLAN.md (EntitlementStore + tests written; 3/5 EntitlementStoreTests unresolved after Developer Mode + reboot — deferred to plan 02-05's real sandbox test)
-last_updated: "2026-08-28T20:57:52.242Z"
-last_activity: 2026-08-28
+status: verifying
+stopped_at: Completed 02-05-PLAN.md — Phase 2 (persistence-entitlements) all 5 plans complete, manual sandbox purchase/restore verified on device. Ready for phase verification.
+last_updated: "2026-08-29T16:49:10.670Z"
+last_activity: 2026-08-29
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 8
-  completed_plans: 7
-  percent: 0
+  completed_plans: 8
+  percent: 100
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 ## Current Position
 
 Phase: 02 (persistence-entitlements) — EXECUTING
-Plan: 4 of 5 complete (02-01, 02-02, 02-03, 02-04); 02-05 remaining (Wave 3)
-Status: Executing Phase 02
-Last activity: 2026-08-28 -- 02-03 and 02-04 complete (parallel Wave 2)
+Plan: 5 of 5
+Status: Phase complete — ready for verification
+Last activity: 2026-08-29
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-persistence-entitlements P02 | 12min | 2 tasks | 3 files |
 | Phase 02-persistence-entitlements P03 | 12min | 2 tasks | 4 files |
 | Phase 02 P04 | 35min | 2 tasks | 2 files |
+| Phase 02 P05 | ~50min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,8 @@ Recent decisions affecting current work:
 - [Phase 02-persistence-entitlements]: PersistenceStore API frozen: makeContainer(inMemory:url:), record(score:wordsFoundCount:date:), puzzlesPlayedToday(now:), totalGamesPlayed(), bestScore(), totalWordsFound() — plans 02-03/02-05 depend on these exact signatures
 - [Phase 02-persistence-entitlements]: Daily streak (RET-01) is derived at read time from GameRecord.date over a bounded 400-day window, not stored as a counter, with grace-day semantics (survives one missed day before playing)
 - [Phase 02]: EntitlementStore derives isPremium exclusively from Transaction.currentEntitlements (no UserDefaults/@AppStorage flag), with purchaseUnlimited() and restore() via AppStore.sync() forming the frozen API for Phase 4's paywall
+- [Phase 02-05]: Transaction.currentEntitlements is scoped to the signed-in sandbox/production Apple ID account, not local device state — a fresh reinstall on an account with a prior purchase shows isPremium=true immediately, before Restore is tapped. This is correct MON-04 behavior, not a bug; relevant for Phase 4 paywall design/QA.
+- [Phase 02-05]: Reset the WordPuzzle.xcscheme Run StoreKit Configuration back to WordPuzzle.storekit after the manual sandbox test (it was set to None for that test per the plan's Step B) so Phase 3/4 local dev is not left pointed at the real sandbox.
 
 ### Pending Todos
 
@@ -82,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-28T20:57:52.239Z
-Stopped at: Completed 02-03-PLAN.md and 02-04-PLAN.md (EntitlementStore + tests written; 3/5 EntitlementStoreTests unresolved after Developer Mode + reboot — deferred to plan 02-05's real sandbox test)
+Last session: 2026-08-29T16:49:10.667Z
+Stopped at: Completed 02-05-PLAN.md — Phase 2 (persistence-entitlements) all 5 plans complete, manual sandbox purchase/restore verified on device. Ready for phase verification.
 Resume file: None
