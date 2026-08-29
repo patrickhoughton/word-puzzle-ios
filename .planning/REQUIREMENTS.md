@@ -65,7 +65,6 @@
 | Android version | Focus iOS first; cross-platform before product-market fit is premature |
 | Subscription model | One-time IAP is simpler to implement, easier to convert, no churn tracking |
 | Backend / cloud save | Eliminates server costs; local-only is a feature (works offline) |
-| NYT-style hex honeycomb layout | App Store Guideline 4.3 clone risk; use alternative letter arrangement |
 | OAuth / social login | No user accounts needed; everything is local |
 | In-app hint system | Scope risk; word shuffle covers discoverability need |
 
