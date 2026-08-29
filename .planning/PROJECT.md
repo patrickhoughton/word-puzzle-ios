@@ -12,14 +12,13 @@ Endless, fresh word puzzles that generate algorithmically from a local dictionar
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] User can play a word puzzle with a set of scrambled letters and a required center letter — Phase 3 (core-game-ui), verified on real iPhone hardware 2026-08-29
+- [x] User can submit words and see them validated against a local dictionary — Phase 3 (core-game-ui), verified on real iPhone hardware 2026-08-29
+- [x] User can see their score and word count for each round — Phase 3 (core-game-ui), verified on real iPhone hardware 2026-08-29
+- [x] App generates unlimited puzzles algorithmically (no curated content) — Phase 1 (word-engine-puzzle-generation) built it; Phase 3 verified Finish Round → Next Puzzle generates a fresh puzzle end-to-end on device
 
 ### Active
 
-- [ ] User can play a word puzzle with a set of scrambled letters and a required center letter
-- [ ] User can submit words and see them validated against a local dictionary
-- [ ] User can see their score and word count for each round
-- [ ] App generates unlimited puzzles algorithmically (no curated content)
 - [ ] App works fully offline (local dictionary, no network required)
 - [ ] Free tier: limited puzzles per day (e.g., 3 free puzzles)
 - [ ] Premium unlock: one-time IAP removes daily limit for unlimited play
@@ -79,4 +78,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-29 after Phase 2 (persistence-entitlements) completion — PersistenceStore and EntitlementStore built and verified (real device sandbox purchase/restore), but not yet wired into user-facing gameplay/paywall UI (Phase 3/4). Active requirements remain unvalidated until that UI exists.*
+*Last updated: 2026-08-29 after Phase 3 (core-game-ui) completion — the full playable game loop (hex letter grid, tap/drag input, word validation, scoring, haptics, shuffle, missed-words reveal) is built, wired into the app, and verified on real iPhone hardware. Remaining active requirements (offline verification, free-tier limit, IAP paywall, App Store availability) are Phase 4/5 work.*
