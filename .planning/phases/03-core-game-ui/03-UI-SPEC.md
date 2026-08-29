@@ -1,7 +1,7 @@
 ---
 phase: 3
 slug: core-game-ui
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-08-29
@@ -27,6 +27,19 @@ created: 2026-08-29
 
 **Existing asset found during scouting:** `Assets.xcassets/AccentColor.colorset` exists but is currently unset (defaults to system blue). This spec repurposes it — see Color section.
 
+**Visual hierarchy:** Primary focal point on GameView is the in-progress word display (Heading-size, above the hex grid) together with the center hex tile it builds from. The hex grid is the primary interactive surface; the ScoreBar (rank tier + found-count) is secondary, positioned above but visually subordinate via smaller type (Label size) and the Secondary surface color. On the missed-words screen, the primary focal point is the length-grouped word list itself; the rank tier / "Perfect Round!" headline is secondary framing above it.
+
+---
+
+## Component Geometry
+
+Off-grid values driven by hex-grid trigonometry, not independently chosen — kept out of the Spacing Scale below to avoid ambiguity with the spacing-grid contract:
+
+- Hex tile diameter: **70pt** (per RESEARCH.md Pattern 2, tune visually on-device, keep within 64–72pt)
+- Outer-ring radius: `hexSize * 1.6` (~112pt), derived from hex tile diameter
+
+Minimum tap target: **44×44pt** on every interactive element (each hex tile, Shuffle, Delete, Finish) per Apple HIG — apply via `.contentShape` padding if the visual hex/icon is smaller. This is a HIG compliance floor, not a spacing-scale value.
+
 ---
 
 ## Spacing Scale
@@ -43,10 +56,7 @@ Declared values (must be multiples of 4):
 | 2xl | 48px | Vertical gap between word-display card and hex grid |
 | 3xl | 64px | Not used in Phase 3 (no page-level multi-section layout) |
 
-Exceptions:
-- Hex tile diameter: **70pt** (not on the 8pt scale — driven by hex-grid geometry per RESEARCH.md Pattern 2, tune visually on-device, keep within 64–72pt)
-- Minimum tap target: **44×44pt** on every interactive element (each hex tile, Shuffle, Delete, Finish) per Apple HIG — apply via `.contentShape` padding if the visual hex/icon is smaller
-- Outer-ring radius: `hexSize * 1.6` (~112pt), derived from hex tile diameter, not independently chosen
+Component-sizing exceptions (hex tile diameter, outer-ring radius, minimum tap target) are documented separately in the "Component Geometry" section above — this scale covers gap/padding spacing only, all clean multiples of 4.
 
 ---
 
@@ -125,11 +135,11 @@ Not applicable — this is a native SwiftUI iOS project with no component regist
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS (flag addressed — visual hierarchy statement added)
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS (flag addressed — geometry constants moved to Component Geometry section)
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-08-29
