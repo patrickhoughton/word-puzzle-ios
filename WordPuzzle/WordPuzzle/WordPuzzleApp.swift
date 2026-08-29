@@ -11,10 +11,12 @@ import SwiftData
 @main
 struct WordPuzzleApp: App {
 
-    // CONTEXT D-07: both services are @Observable and injected via .environment().
-    // Views read them with @Environment(PersistenceStore.self) / @Environment(EntitlementStore.self).
+    // CONTEXT D-07: all services are @Observable and injected via .environment().
+    // Views read them with @Environment(Type.self).
     @State private var persistenceStore: PersistenceStore
     @State private var entitlementStore = EntitlementStore()
+    @State private var wordList: WordList
+    @State private var gameViewModel: GameViewModel
 
     private let modelContainer: ModelContainer
 
@@ -31,7 +33,12 @@ struct WordPuzzleApp: App {
             container = try! PersistenceStore.makeContainer(inMemory: true)
         }
         self.modelContainer = container
-        _persistenceStore = State(initialValue: PersistenceStore(container: container))
+
+        let store = PersistenceStore(container: container)
+        let list = WordList()
+        _persistenceStore = State(initialValue: store)
+        _wordList = State(initialValue: list)
+        _gameViewModel = State(initialValue: GameViewModel(wordList: list, persistenceStore: store))
     }
 
     var body: some Scene {
@@ -39,12 +46,21 @@ struct WordPuzzleApp: App {
             ContentView()
                 .environment(persistenceStore)
                 .environment(entitlementStore)
+                .environment(wordList)
+                .environment(gameViewModel)
                 .task {
                     // CONTEXT D-08 / MON-04: the entitlement check runs on EVERY app
                     // launch, from Transaction.currentEntitlements — never from a
                     // cached UserDefaults flag.
                     await entitlementStore.refreshEntitlements()
                     await entitlementStore.loadProduct()
+                }
+                .task {
+                    // Phase 3: WordList enters the app here for the first time.
+                    // Puzzle generation is gated on isLoaded — GameViewModel stays
+                    // in .loading until the ~173K-word list is parsed.
+                    await wordList.load()
+                    gameViewModel.startNewRound()
                 }
         }
         .modelContainer(modelContainer)
