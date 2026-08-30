@@ -190,3 +190,15 @@ Plans:
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
+
+### Phase 999.10: Rejected-word logging for word-list gap detection (BACKLOG)
+
+**Goal:** [Captured for future planning] — automatically capture words that get rejected as "not in dictionary" (NOT the too-short or duplicate rejection cases — those aren't list-coverage issues) into a review queue, so 999.9's word-list gap analysis has real data to work from instead of manual note-taking. Two implementation paths to decide between at planning time:
+1. **TelemetryDeck analytics event** — CLAUDE.md already selects TelemetryDeck as the project's analytics SDK (privacy-first, no consent popup), but it is NOT YET integrated into the app (no SDK reference anywhere in the codebase as of 2026-08-29). This path captures real rejected words from real players in the field, which is far more valuable than dev-only testing data, but requires standing up the TelemetryDeck integration first (not currently scheduled in any phase).
+2. **Local debug-only log** — simpler (no new dependency), but only captures words Patrick personally triggers during his own testing, not real player misses.
+Depends conceptually on 999.3 (differentiated invalid-word messaging) since both need to distinguish "not in dictionary" from other rejection reasons at the `GameViewModel` level.
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd:review-backlog when ready)
