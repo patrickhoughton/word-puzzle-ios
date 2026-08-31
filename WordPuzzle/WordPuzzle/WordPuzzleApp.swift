@@ -52,15 +52,22 @@ struct WordPuzzleApp: App {
                     // CONTEXT D-08 / MON-04: the entitlement check runs on EVERY app
                     // launch, from Transaction.currentEntitlements — never from a
                     // cached UserDefaults flag.
+                    //
+                    // RESEARCH Pitfall 2: these steps are ONE sequential task, not two
+                    // concurrent `.task` modifiers. SwiftUI gives no ordering guarantee
+                    // between separate `.task` blocks, so a concurrent version could run
+                    // the D-01 launch gate check while `isPremium` was still at its
+                    // default `false` — paywalling a genuinely premium user on cold
+                    // launch. Entitlement refresh is fast relative to parsing the
+                    // ~173K-word list, so sequencing costs effectively nothing.
                     await entitlementStore.refreshEntitlements()
                     await entitlementStore.loadProduct()
-                }
-                .task {
-                    // Phase 3: WordList enters the app here for the first time.
-                    // Puzzle generation is gated on isLoaded — GameViewModel stays
-                    // in .loading until the ~173K-word list is parsed.
                     await wordList.load()
-                    gameViewModel.startNewRound()
+
+                    // D-01 trigger 2: on relaunch, a free user already at the daily
+                    // limit goes straight to .paywalled — never sees a puzzle screen
+                    // they are not allowed to play.
+                    gameViewModel.requestNextRound(isPremium: entitlementStore.isPremium)
                 }
         }
         .modelContainer(modelContainer)

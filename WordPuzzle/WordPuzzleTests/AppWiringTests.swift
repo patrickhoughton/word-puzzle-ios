@@ -57,7 +57,7 @@ import SwiftData
         await list.load()
         #expect(list.isLoaded)
 
-        viewModel.startNewRound()
+        viewModel.requestNextRound(isPremium: false)
         #expect(viewModel.roundPhase == .playing)
         #expect(viewModel.puzzle != nil)
         #expect(viewModel.outerLetters.count == 6)
@@ -65,5 +65,27 @@ import SwiftData
         #expect(viewModel.totalWordCount >= 20)
         #expect(viewModel.maxPossibleScore > 0)
         #expect(viewModel.rank == .novice)
+    }
+
+    /// D-01 trigger 2: a free user who already hit the daily limit is paywalled at
+    /// LAUNCH, before any puzzle renders — the .loading -> .paywalled path, which never
+    /// touches .roundOver.
+    @Test func testLaunchGatePaywallsFreeUserAlreadyAtDailyLimit() async throws {
+        let container = try PersistenceStore.makeContainer(inMemory: true)
+        let store = PersistenceStore(container: container)
+        for _ in 0..<GameViewModel.freePuzzlesPerDay { store.recordRoundStarted() }
+
+        let list = WordList()
+        await list.load()
+        let viewModel = GameViewModel(wordList: list, persistenceStore: store)
+
+        viewModel.requestNextRound(isPremium: false)
+        #expect(viewModel.roundPhase == .paywalled)
+        #expect(viewModel.puzzle == nil)
+
+        // A premium user in the identical state plays instead.
+        let premiumViewModel = GameViewModel(wordList: list, persistenceStore: store)
+        premiumViewModel.requestNextRound(isPremium: true)
+        #expect(premiumViewModel.roundPhase == .playing)
     }
 }
