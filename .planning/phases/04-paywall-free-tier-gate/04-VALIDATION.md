@@ -30,7 +30,7 @@ created: 2026-08-31
 - **After every task commit:** Run the quick run command (`PersistenceStoreTests` + `GameViewModelTests`)
 - **After every plan wave:** Run the full suite command
 - **Before `/gsd:verify-work`:** Full suite must be green, PLUS both manual QA scripts (paywall-after-3rd-puzzle, restore-on-reinstall) executed and recorded
-- **Max feedback latency:** ~90 seconds
+- **Max feedback latency:** ~90 seconds for the per-task quick run; the per-wave full-suite gate is expected to take ~3-4 minutes (see Full suite command estimate above) and is an accepted exception to the 90s budget since it only runs once per wave, not per task
 
 ---
 
