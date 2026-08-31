@@ -1,3 +1,4 @@
+import StoreKit
 import SwiftUI
 
 /// The Phase 3 game screen. This is the ONLY view that touches GameViewModel —
@@ -7,6 +8,8 @@ import SwiftUI
 ///   ScoreBar -> WordDisplay -> hex grid -> control row (Shuffle / Delete / Finish)
 struct GameView: View {
     @Environment(GameViewModel.self) private var viewModel
+    @Environment(EntitlementStore.self) private var entitlementStore
+    @Environment(PersistenceStore.self) private var persistenceStore
 
     var body: some View {
         ZStack {
@@ -19,21 +22,53 @@ struct GameView: View {
             case .playing, .roundOver:
                 playingLayout
             case .paywalled:
-                // Placeholder only — plan 04-03 builds the real paywall screen (D-05).
+                // D-05: a true dead-end — nothing playable renders behind the paywall.
                 EmptyView()
             }
         }
-        // D-12: the missed-words reveal covers the screen; dismissing it
-        // immediately generates the next puzzle. No start screen exists.
-        .fullScreenCover(isPresented: .constant(viewModel.roundPhase == .roundOver)) {
-            MissedWordsView(
-                groups: viewModel.missedWordGroups,
-                pangrams: viewModel.pangramSet,
-                rank: viewModel.rank,
-                foundCount: viewModel.foundCount,
-                totalCount: viewModel.totalWordCount,
-                onContinue: { viewModel.startNewRound() }
-            )
+        // D-12: the missed-words reveal covers the screen; continuing asks the gate
+        // whether a next puzzle is allowed. D-01: the same cover shows the paywall when
+        // the free daily limit is reached (including the .loading -> .paywalled launch path).
+        .fullScreenCover(isPresented: .constant(
+            viewModel.roundPhase == .roundOver || viewModel.roundPhase == .paywalled
+        )) {
+            // RESEARCH Pitfall 5: the presented boolean covers BOTH phases, so this
+            // content closure MUST branch too. Always rendering MissedWordsView here
+            // would silently ship a paywall that never appears.
+            if viewModel.roundPhase == .paywalled {
+                PaywallView(
+                    priceText: entitlementStore.unlimitedProduct?.displayPrice ?? "—",
+                    resetDate: persistenceStore.nextResetDate(),
+                    puzzlesPlayedToday: persistenceStore.puzzlesPlayedToday(),
+                    currentStreak: persistenceStore.currentStreak(),
+                    todayScore: persistenceStore.todayTotalScore(),
+                    todayWordsFound: persistenceStore.todayTotalWordsFound(),
+                    onUnlock: {
+                        try await entitlementStore.purchaseUnlimited()
+                        // On success the gate re-runs and starts a round, which flips
+                        // roundPhase to .playing and dismisses this cover. Without this
+                        // the user would pay and stay stuck on the paywall.
+                        if entitlementStore.isPremium {
+                            viewModel.requestNextRound(isPremium: true)
+                        }
+                    },
+                    onRestore: {
+                        try await entitlementStore.restore()
+                        guard entitlementStore.isPremium else { return false }
+                        viewModel.requestNextRound(isPremium: true)
+                        return true
+                    }
+                )
+            } else {
+                MissedWordsView(
+                    groups: viewModel.missedWordGroups,
+                    pangrams: viewModel.pangramSet,
+                    rank: viewModel.rank,
+                    foundCount: viewModel.foundCount,
+                    totalCount: viewModel.totalWordCount,
+                    onContinue: { viewModel.requestNextRound(isPremium: entitlementStore.isPremium) }
+                )
+            }
         }
     }
 
@@ -43,7 +78,12 @@ struct GameView: View {
                 rank: viewModel.rank,
                 foundCount: viewModel.foundCount,
                 totalCount: viewModel.totalWordCount,
-                progress: viewModel.progressFraction
+                progress: viewModel.progressFraction,
+                // D-03: only free users see the counter; premium gets nil (nothing renders).
+                freePuzzlesRemaining: entitlementStore.isPremium
+                    ? nil
+                    : max(0, GameViewModel.freePuzzlesPerDay - persistenceStore.puzzlesPlayedToday()),
+                freePuzzlesPerDay: GameViewModel.freePuzzlesPerDay
             )
             .padding(.horizontal, GameTheme.lg)
             .padding(.top, GameTheme.lg)
