@@ -82,7 +82,12 @@ Plans:
   2. The paywall screen displays the price, a clear unlock CTA, and a "Restore Purchases" button that calls `AppStore.sync()`
   3. A sandbox purchase grants unlimited puzzles immediately and survives an app restart (verified via StoreKit 2, not UserDefaults)
   4. Tapping Restore Purchases on a device with a prior sandbox purchase restores premium status without requiring re-purchase
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 04-01-PLAN.md — RoundStartRecord model + PersistenceStore recordRoundStarted/today-totals/nextResetDate, existing-test updates (Wave 1)
+- [ ] 04-02-PLAN.md — RoundPhase.paywalled + requestNextRound(isPremium:) gate funnel + sequenced launch task (Wave 2)
+- [ ] 04-03-PLAN.md — PaywallView (countdown, today's stats, CTA, Restore) + ScoreBarView counter + GameView wiring (Wave 3)
+- [ ] 04-04-PLAN.md — Manual QA: paywall-after-3rd-puzzle end-to-end and sandbox restore-on-reinstall (Wave 4)
 **UI hint**: yes
 
 ### Phase 5: Polish, Compliance & App Store
@@ -105,7 +110,7 @@ Plans:
 | 1. Word Engine & Puzzle Generation | 3/3 | Complete | 2026-08-28 |
 | 2. Persistence & Entitlements | 5/5 | Complete   | 2026-08-29 |
 | 3. Core Game UI | 5/5 | Complete | 2026-08-29 |
-| 4. Paywall & Free Tier Gate | 0/? | Not started | - |
+| 4. Paywall & Free Tier Gate | 0/4 | Planned | - |
 | 5. Polish, Compliance & App Store | 0/? | Not started | - |
 
 ## Backlog
