@@ -138,4 +138,64 @@ final class GameViewModelTests {
         #expect(vm.roundPhase == .playing)
         #expect(vm.puzzle != nil)
     }
+
+    // MARK: - Phase 4 gate (MON-01 / D-01 / D-02)
+
+    /// D-02: starting a round consumes a free puzzle even if it is never finished.
+    /// The daily-limit count and the lifetime "games played" count must not be conflated.
+    @Test func testStartNewRoundRecordsRoundStartWithoutRecordingAGame() throws {
+        let container = try PersistenceStore.makeContainer(inMemory: true)
+        let store = PersistenceStore(container: container)
+        let vm = GameViewModel(wordList: wordList, persistenceStore: store)
+
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(store.puzzlesPlayedToday() == 1)
+        #expect(store.totalGamesPlayed() == 0)
+
+        // Abandoned — no finishRound() — then a second round starts.
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(store.puzzlesPlayedToday() == 2)
+        #expect(store.totalGamesPlayed() == 0)
+    }
+
+    /// D-01 branch 1: a free user at the daily limit is paywalled instead of getting a round.
+    @Test func testRequestNextRoundPaywallsFreeUserAtDailyLimit() throws {
+        let container = try PersistenceStore.makeContainer(inMemory: true)
+        let store = PersistenceStore(container: container)
+        let vm = GameViewModel(wordList: wordList, persistenceStore: store)
+
+        for _ in 0..<GameViewModel.freePuzzlesPerDay { store.recordRoundStarted() }
+
+        vm.requestNextRound(isPremium: false)
+        #expect(vm.roundPhase == .paywalled)
+        // No round was started, so the count did not move.
+        #expect(store.puzzlesPlayedToday() == GameViewModel.freePuzzlesPerDay)
+    }
+
+    /// D-01 branch 2: premium bypasses the limit entirely.
+    @Test func testRequestNextRoundAllowsPremiumUserAtDailyLimit() throws {
+        let container = try PersistenceStore.makeContainer(inMemory: true)
+        let store = PersistenceStore(container: container)
+        let vm = GameViewModel(wordList: wordList, persistenceStore: store)
+
+        for _ in 0..<GameViewModel.freePuzzlesPerDay { store.recordRoundStarted() }
+
+        vm.requestNextRound(isPremium: true)
+        #expect(vm.roundPhase == .playing)
+        #expect(store.puzzlesPlayedToday() == GameViewModel.freePuzzlesPerDay + 1)
+    }
+
+    /// MON-01: the 3rd free puzzle must still be playable — the wall is on the 4th.
+    @Test func testRequestNextRoundAllowsFreeUserBelowDailyLimit() throws {
+        let container = try PersistenceStore.makeContainer(inMemory: true)
+        let store = PersistenceStore(container: container)
+        let vm = GameViewModel(wordList: wordList, persistenceStore: store)
+
+        store.recordRoundStarted()
+        store.recordRoundStarted()
+
+        vm.requestNextRound(isPremium: false)
+        #expect(vm.roundPhase == .playing)
+        #expect(store.puzzlesPlayedToday() == GameViewModel.freePuzzlesPerDay)
+    }
 }

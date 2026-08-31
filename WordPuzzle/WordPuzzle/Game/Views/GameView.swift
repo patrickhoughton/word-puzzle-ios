@@ -18,6 +18,9 @@ struct GameView: View {
                     .font(GameTheme.bodyFont)
             case .playing, .roundOver:
                 playingLayout
+            case .paywalled:
+                // Placeholder only — plan 04-03 builds the real paywall screen (D-05).
+                EmptyView()
             }
         }
         // D-12: the missed-words reveal covers the screen; dismissing it

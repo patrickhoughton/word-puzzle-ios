@@ -20,7 +20,13 @@ struct MissedWordGroup: Identifiable, Equatable {
 @Observable
 final class GameViewModel {
 
-    enum RoundPhase: Equatable { case loading, playing, roundOver }
+    /// `paywalled` (Phase 4 / D-01): the free daily limit is reached and no new round
+    /// may begin. A true dead-end — D-05: nothing is playable behind the paywall.
+    enum RoundPhase: Equatable { case loading, playing, roundOver, paywalled }
+
+    /// MON-01: free (non-premium) users may START this many rounds per local calendar day.
+    /// Single source of truth — GameView reads this too, for the ScoreBarView counter (D-03).
+    static let freePuzzlesPerDay = 3
 
     // MARK: - Dependencies
     private let wordList: WordList
@@ -76,6 +82,26 @@ final class GameViewModel {
     }
 
     // MARK: - Round lifecycle
+    /// D-01: the SINGLE gate-check funnel for both paywall trigger points —
+    /// (1) "Next Puzzle" after finishing a round, and (2) the launch-time check on a
+    /// relaunch when the limit is already reached.
+    ///
+    /// Deliberately a discrete decision, NOT a reactive/derived `isLocked` boolean:
+    /// `puzzlesPlayedToday()` counts round STARTS (D-02), so a derived boolean would
+    /// become true the instant round 3 begins and would pre-empt round 3's own
+    /// missed-words recap. Ask the question only when a NEW round is requested.
+    ///
+    /// `isPremium` is passed in rather than injected — GameViewModel stays decoupled
+    /// from EntitlementStore's type and its existing test seams keep their shape.
+    func requestNextRound(isPremium: Bool) {
+        let startedToday = persistenceStore?.puzzlesPlayedToday() ?? 0
+        if !isPremium, startedToday >= Self.freePuzzlesPerDay {
+            roundPhase = .paywalled
+        } else {
+            startNewRound()
+        }
+    }
+
     /// D-12: generates the next puzzle and resets all round state.
     func startNewRound() {
         guard wordList.isLoaded, let generated = try? generatePuzzle(from: wordList) else {
@@ -86,7 +112,13 @@ final class GameViewModel {
     }
 
     /// Test seam — the deterministic path used by `startNewRound()`.
+    ///
+    /// D-02: recording the round start HERE (after a Puzzle actually exists) is what makes
+    /// an abandoned round count toward the daily limit. Deliberately not driven by
+    /// ScenePhase/background notifications — those are not guaranteed to fire before a
+    /// hard kill; writing at start time captures normal and abandoned rounds identically.
     func startNewRound(with puzzle: Puzzle) {
+        persistenceStore?.recordRoundStarted()
         self.puzzle = puzzle
         self.pangramSet = Set(puzzle.pangrams)
         self.maxPossibleScore = ScoreCalculator.score(for: puzzle.validWords, pangrams: pangramSet)
