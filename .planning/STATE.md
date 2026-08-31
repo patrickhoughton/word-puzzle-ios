@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 4 context gathered
-last_updated: "2026-08-31T19:35:35.490Z"
-last_activity: 2026-08-29
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-08-31T20:24:48.714Z"
+last_activity: 2026-08-31
 progress:
   total_phases: 15
   completed_phases: 3
-  total_plans: 13
-  completed_plans: 13
+  total_plans: 17
+  completed_plans: 14
   percent: 100
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-27)
 
 **Core value:** Endless, fresh word puzzles that generate algorithmically from a local dictionary — no internet, no content team, no ongoing maintenance.
-**Current focus:** Phase 03 — core-game-ui
+**Current focus:** Phase 04 — paywall-free-tier-gate
 
 ## Current Position
 
-Phase: 4
-Plan: Not started
+Phase: 04 (paywall-free-tier-gate) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-08-29
+Last activity: 2026-08-31
 
 Progress: [██████████] 100% (of planned plans; Phases 4-5 not yet planned)
 
@@ -61,6 +61,7 @@ Progress: [██████████] 100% (of planned plans; Phases 4-5 no
 | Phase 03-core-game-ui P03 | 25min | 3 tasks | 3 files |
 | Phase 03 P02 | 25min | 2 tasks | 5 files |
 | Phase 03 P04 | 12min | 2 tasks | 4 files |
+| Phase 04 P01 | 8min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,8 @@ Recent decisions affecting current work:
 - [Phase 03-02]: LetterGridView uses a single unified DragGesture(minimumDistance: 0) for both tap and drag-to-connect input, with HexFlowerLayout's trigonometry extracted into a stateless enum for unit testability
 - [Phase 03-04]: wordList @State declared without a default value (assigned only in init, same pattern as gameViewModel) to avoid constructing two WordList instances -- the plan's own example code textually built WordList() twice
 - [Phase 03-04]: AppWiringTests suite marked @Suite(.serialized) since the new launch-path test loads the full ENABLE word list, matching the project convention for word-list-loading test suites
+- [Phase 04]: puzzlesPlayedToday() now counts started rounds (RoundStartRecord) not finished rounds (GameRecord) -- the daily free-tier limit and lifetime stats are two structurally different counters (D-02)
+- [Phase 04]: todayTotalScore/todayTotalWordsFound/nextResetDate share a single todayBounds() day-boundary helper so the paywall countdown can never diverge from the daily-limit reset (D-06/D-07)
 
 ### Pending Todos
 
@@ -96,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T19:35:35.479Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-paywall-free-tier-gate/04-CONTEXT.md
+Last session: 2026-08-31T20:24:48.711Z
+Stopped at: Completed 04-01-PLAN.md
+Resume file: None

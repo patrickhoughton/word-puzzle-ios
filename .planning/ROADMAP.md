@@ -84,7 +84,7 @@ Plans:
   4. Tapping Restore Purchases on a device with a prior sandbox purchase restores premium status without requiring re-purchase
 **Plans**: 4 plans
 Plans:
-- [ ] 04-01-PLAN.md — RoundStartRecord model + PersistenceStore recordRoundStarted/today-totals/nextResetDate, existing-test updates (Wave 1)
+- [x] 04-01-PLAN.md — RoundStartRecord model + PersistenceStore recordRoundStarted/today-totals/nextResetDate, existing-test updates (Wave 1)
 - [ ] 04-02-PLAN.md — RoundPhase.paywalled + requestNextRound(isPremium:) gate funnel + sequenced launch task (Wave 2)
 - [ ] 04-03-PLAN.md — PaywallView (countdown, today's stats, CTA, Restore) + ScoreBarView counter + GameView wiring (Wave 3)
 - [ ] 04-04-PLAN.md — Manual QA: paywall-after-3rd-puzzle end-to-end and sandbox restore-on-reinstall (Wave 4)
