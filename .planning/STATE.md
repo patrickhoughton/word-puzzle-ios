@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-08-31T20:33:55.979Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-08-31T20:40:41.071Z"
 last_activity: 2026-08-31
 progress:
   total_phases: 15
   completed_phases: 3
   total_plans: 17
-  completed_plans: 15
+  completed_plans: 16
   percent: 100
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 ## Current Position
 
 Phase: 04 (paywall-free-tier-gate) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-08-31
 
@@ -63,6 +63,7 @@ Progress: [██████████] 100% (of planned plans; Phases 4-5 no
 | Phase 03 P04 | 12min | 2 tasks | 4 files |
 | Phase 04 P01 | 8min | 2 tasks | 4 files |
 | Phase 04-paywall-free-tier-gate P02 | 15min | 2 tasks | 5 files |
+| Phase 04 P03 | 12min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,8 @@ Recent decisions affecting current work:
 - [Phase 04-paywall-free-tier-gate]: recordRoundStarted() called as the FIRST statement inside startNewRound(with:), so an abandoned round still consumes a free puzzle without over-recording on wordList.isLoaded bail-outs
 - [Phase 04-paywall-free-tier-gate]: WordPuzzleApp's two separate launch .task modifiers merged into one sequenced task to eliminate a race that could paywall a premium user before entitlement refresh completed
 - [Phase 04-paywall-free-tier-gate]: [04-02 Rule 3] GameView.swift's RoundPhase switch needed a minimal .paywalled placeholder (EmptyView) to keep the build compiling after the new enum case was added -- the real paywall screen remains plan 04-03 scope
+- [Phase 04-paywall-free-tier-gate]: PaywallView is presentation-only (value-in/closure-out, zero @Environment) rendering the frozen D-05..D-09 contract; GameView's fullScreenCover branches content on roundPhase (.paywalled vs .roundOver) rather than using two separate covers
+- [Phase 04-paywall-free-tier-gate]: MissedWordsView onContinue now routes through requestNextRound(isPremium:) instead of the ungated startNewRound() -- closes the bypass RESEARCH Pitfall 5 warned about
 
 ### Pending Todos
 
@@ -104,6 +107,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T20:33:55.975Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-08-31T20:40:41.068Z
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None
