@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-08-31T20:24:48.714Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-08-31T20:33:55.979Z"
 last_activity: 2026-08-31
 progress:
   total_phases: 15
   completed_phases: 3
   total_plans: 17
-  completed_plans: 14
+  completed_plans: 15
   percent: 100
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 ## Current Position
 
 Phase: 04 (paywall-free-tier-gate) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-08-31
 
@@ -62,6 +62,7 @@ Progress: [██████████] 100% (of planned plans; Phases 4-5 no
 | Phase 03 P02 | 25min | 2 tasks | 5 files |
 | Phase 03 P04 | 12min | 2 tasks | 4 files |
 | Phase 04 P01 | 8min | 2 tasks | 4 files |
+| Phase 04-paywall-free-tier-gate P02 | 15min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -88,6 +89,10 @@ Recent decisions affecting current work:
 - [Phase 03-04]: AppWiringTests suite marked @Suite(.serialized) since the new launch-path test loads the full ENABLE word list, matching the project convention for word-list-loading test suites
 - [Phase 04]: puzzlesPlayedToday() now counts started rounds (RoundStartRecord) not finished rounds (GameRecord) -- the daily free-tier limit and lifetime stats are two structurally different counters (D-02)
 - [Phase 04]: todayTotalScore/todayTotalWordsFound/nextResetDate share a single todayBounds() day-boundary helper so the paywall countdown can never diverge from the daily-limit reset (D-06/D-07)
+- [Phase 04-paywall-free-tier-gate]: requestNextRound(isPremium:) is the ONLY place that decides whether a new round may begin -- both the post-finish Next Puzzle trigger and the launch-time gate check funnel through it
+- [Phase 04-paywall-free-tier-gate]: recordRoundStarted() called as the FIRST statement inside startNewRound(with:), so an abandoned round still consumes a free puzzle without over-recording on wordList.isLoaded bail-outs
+- [Phase 04-paywall-free-tier-gate]: WordPuzzleApp's two separate launch .task modifiers merged into one sequenced task to eliminate a race that could paywall a premium user before entitlement refresh completed
+- [Phase 04-paywall-free-tier-gate]: [04-02 Rule 3] GameView.swift's RoundPhase switch needed a minimal .paywalled placeholder (EmptyView) to keep the build compiling after the new enum case was added -- the real paywall screen remains plan 04-03 scope
 
 ### Pending Todos
 
@@ -99,6 +104,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T20:24:48.711Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-08-31T20:33:55.975Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None
