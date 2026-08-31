@@ -15,7 +15,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 - [ ] **Phase 1: Word Engine & Puzzle Generation** - Pangram-first puzzle generator with profanity-filtered ENABLE word list; fully unit-testable with no UI
 - [x] **Phase 2: Persistence & Entitlements** - SwiftData models for game history and daily usage; StoreKit 2 entitlement check for premium status (completed 2026-08-29)
 - [x] **Phase 3: Core Game UI** - Playable game on a real device: letter display, word input, validation feedback, scoring, end-of-round reveal, haptics (completed 2026-08-29)
-- [ ] **Phase 4: Paywall & Free Tier Gate** - 3-puzzle daily limit enforced; paywall screen with Restore Purchases; IAP purchase and restore flows sandbox-tested
+- [x] **Phase 4: Paywall & Free Tier Gate** - 3-puzzle daily limit enforced; paywall screen with Restore Purchases; IAP purchase and restore flows sandbox-tested (completed 2026-08-31)
 - [ ] **Phase 5: Polish, Compliance & App Store** - Sound effects, Dynamic Type, offline verification, privacy label, app icon, screenshots, ASO
 
 ## Phase Details
@@ -110,7 +110,7 @@ Plans:
 | 1. Word Engine & Puzzle Generation | 3/3 | Complete | 2026-08-28 |
 | 2. Persistence & Entitlements | 5/5 | Complete   | 2026-08-29 |
 | 3. Core Game UI | 5/5 | Complete | 2026-08-29 |
-| 4. Paywall & Free Tier Gate | 0/4 | Planned | - |
+| 4. Paywall & Free Tier Gate | 4/4 | Complete | 2026-08-31 |
 | 5. Polish, Compliance & App Store | 0/? | Not started | - |
 
 ## Backlog

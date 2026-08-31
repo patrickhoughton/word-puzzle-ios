@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 status: verifying
 stopped_at: Completed 04-04-PLAN.md (Phase 4 manual verification)
-last_updated: "2026-08-31T22:22:38.136Z"
+last_updated: "2026-08-31T22:40:12.978Z"
 last_activity: 2026-08-31
 progress:
   total_phases: 15
@@ -25,8 +25,8 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 
 ## Current Position
 
-Phase: 04 (paywall-free-tier-gate) — EXECUTING
-Plan: 4 of 4
+Phase: 999.1
+Plan: Not started
 Status: Phase complete — ready for verification
 Last activity: 2026-08-31
 
@@ -99,6 +99,7 @@ Recent decisions affecting current work:
 - [Phase 04-paywall-free-tier-gate]: MissedWordsView onContinue now routes through requestNextRound(isPremium:) instead of the ungated startNewRound() -- closes the bypass RESEARCH Pitfall 5 warned about
 - [Phase 04-paywall-free-tier-gate]: Local Simulator .storekit purchase testing (steps 15-17) is unreliable on this dev machine -- same class of Xcode 26.6/iOS 26.5 StoreKit-testing bug as the Phase 2 02-04 blocker, not a code defect. — Deferred to Task 2's real sandbox purchase as authoritative proof, per the established 02-05 precedent.
 - [Phase 04-paywall-free-tier-gate]: Restore Purchases negative-case error string verified only via a freshly created never-purchased sandbox tester -- App Store Connect 'Clear Purchase History' plus device sign-out/sign-in on an already-owning tester did not reliably reproduce it. — Apple's sandbox purchase-history-clear propagation is unreliable/delayed; a fresh tester sidesteps it entirely.
+- [Phase 04-paywall-free-tier-gate]: WordPuzzle.xcscheme's Run-action StoreKitConfigurationFileReference was manually corrected from a broken '../../WordPuzzle/WordPuzzle.storekit' path (written by Xcode's own Edit Scheme UI when restoring the config after Task 2's real-sandbox test) back to the working '../../../WordPuzzle/WordPuzzle.storekit' path. — Xcode's Edit Scheme dialog wrote a path one directory level short of the actual file location; flagging in case Xcode does this again on a future manual StoreKit Configuration change via its UI.
 
 ### Pending Todos
 
@@ -107,6 +108,7 @@ None yet.
 ### Blockers/Concerns
 
 - 02-04: EntitlementStoreTests — 3/5 tests (purchase/restore/clear) fail on this dev machine with SKInternalErrorDomain Code=3 / "notEntitled". Developer Mode was enabled and the Mac was fully rebooted; failures persist identically (CLI and Xcode GUI, both against Simulator). Root cause unresolved — likely an Xcode 26.6/iOS 26.5 Simulator SKTestSession bug, not a code defect (physical-device run gets further with a different error). Deferred to plan 02-05's real sandbox purchase test as the authoritative MON-02/MON-03 proof. See 02-04-SUMMARY.md Issues Encountered for full diagnosis.
+- gsd-tools 'phase complete' and 'roadmap update-plan-progress' checkbox/table regexes expect 'Phase 04' but ROADMAP.md headers use non-padded 'Phase 4' -- silently failed to update the top checklist line and Progress table row for Phase 4 (worked for Phases 2/3 previously, likely because those were invoked with non-padded phase numbers). Manually fixed for Phase 4; future phase completions should verify the checklist/table actually updated, not just trust the tool's roadmap_updated:true return value.
 
 ## Session Continuity
 
