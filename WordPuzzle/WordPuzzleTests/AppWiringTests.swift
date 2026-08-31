@@ -17,6 +17,24 @@ import SwiftData
         _ = store.bestScore()
         _ = store.totalWordsFound()
         _ = store.currentStreak()
+        _ = store.todayTotalScore()
+        _ = store.todayTotalWordsFound()
+        _ = store.nextResetDate()
+    }
+
+    /// Phase 4 / D-02: RoundStartRecord must be registered in the production schema.
+    /// If it is missing from ModelContainer(for:), this fails here rather than making
+    /// the daily free-puzzle limit silently never increment on device.
+    @Test func testRoundStartRecordIsRegisteredInProductionSchema() throws {
+        let storeURL = URL.temporaryDirectory
+            .appending(path: "AppWiringTests-\(UUID().uuidString).store")
+        defer { try? FileManager.default.removeItem(at: storeURL) }
+
+        let container = try PersistenceStore.makeContainer(url: storeURL)
+        let store = PersistenceStore(container: container)
+        let before = store.puzzlesPlayedToday()
+        store.recordRoundStarted()
+        #expect(store.puzzlesPlayedToday() == before + 1)
     }
 
     @Test func testEntitlementStoreStartsUnentitled() async {

@@ -94,6 +94,64 @@ import SwiftData
         #expect(store.totalWordsFound() == 30)
     }
 
+    // MARK: - D-02 started-vs-finished split / D-07 today totals
+
+    /// D-02's core constraint: the daily-limit count (started rounds) and RET-02's
+    /// lifetime "games played" count (finished rounds) are two different numbers.
+    @Test func testPuzzlesPlayedTodayCountsAbandonedRounds() throws {
+        let store = try makeInMemoryStore()
+        store.recordRoundStarted()
+        store.recordRoundStarted()
+        store.recordRoundStarted()
+        // Only one of the three rounds was actually finished.
+        store.record(score: 12, wordsFoundCount: 5)
+
+        #expect(store.puzzlesPlayedToday() == 3)
+        #expect(store.totalGamesPlayed() == 1)
+        #expect(store.totalWordsFound() == 5)
+        #expect(store.bestScore() == 12)
+    }
+
+    /// D-07: today's totals come from FINISHED rounds only and exclude earlier days.
+    @Test func testTodayTotalsSumFinishedRoundsForTodayOnly() throws {
+        let store = try makeInMemoryStore()
+        let now = Date()
+
+        store.recordRoundStarted(date: now)
+        store.recordRoundStarted(date: now)
+        store.record(score: 10, wordsFoundCount: 4, date: now)
+        store.record(score: 22, wordsFoundCount: 9, date: now)
+        store.record(score: 99, wordsFoundCount: 30, date: daysAgo(1, from: now))
+
+        #expect(store.todayTotalScore(now: now) == 32)
+        #expect(store.todayTotalWordsFound(now: now) == 13)
+    }
+
+    /// D-07 zero-data case: a day of nothing but abandoned rounds still renders
+    /// numerals (0), and the daily limit still counted those rounds.
+    @Test func testTodayTotalsAreZeroWhenAllRoundsAbandoned() throws {
+        let store = try makeInMemoryStore()
+        store.recordRoundStarted()
+        store.recordRoundStarted()
+        store.recordRoundStarted()
+
+        #expect(store.todayTotalScore() == 0)
+        #expect(store.todayTotalWordsFound() == 0)
+        #expect(store.puzzlesPlayedToday() == 3)
+    }
+
+    /// D-06 / RESEARCH Pitfall 4: the countdown target must be local midnight, the
+    /// SAME boundary puzzlesPlayedToday() uses — not a rolling 24-hour offset.
+    @Test func testNextResetDateIsLocalMidnight() throws {
+        let store = try makeInMemoryStore()
+        let calendar = Calendar.current
+        let now = Date()
+        let expected = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))!
+
+        #expect(store.nextResetDate(now: now) == expected)
+        #expect(store.nextResetDate(now: now) > now)
+    }
+
     // MARK: - RET-01 streak
 
     /// Helper: a date N days before `now`, at midday to stay clear of day boundaries.
