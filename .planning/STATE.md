@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-08-31T20:40:41.071Z"
+status: verifying
+stopped_at: Completed 04-04-PLAN.md (Phase 4 manual verification)
+last_updated: "2026-08-31T22:22:38.136Z"
 last_activity: 2026-08-31
 progress:
   total_phases: 15
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 17
-  completed_plans: 16
+  completed_plans: 17
   percent: 100
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 
 Phase: 04 (paywall-free-tier-gate) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-31
 
 Progress: [██████████] 100% (of planned plans; Phases 4-5 not yet planned)
@@ -64,6 +64,7 @@ Progress: [██████████] 100% (of planned plans; Phases 4-5 no
 | Phase 04 P01 | 8min | 2 tasks | 4 files |
 | Phase 04-paywall-free-tier-gate P02 | 15min | 2 tasks | 5 files |
 | Phase 04 P03 | 12min | 2 tasks | 4 files |
+| Phase 04 P04 | 75min | 2 tasks | 0 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,8 @@ Recent decisions affecting current work:
 - [Phase 04-paywall-free-tier-gate]: [04-02 Rule 3] GameView.swift's RoundPhase switch needed a minimal .paywalled placeholder (EmptyView) to keep the build compiling after the new enum case was added -- the real paywall screen remains plan 04-03 scope
 - [Phase 04-paywall-free-tier-gate]: PaywallView is presentation-only (value-in/closure-out, zero @Environment) rendering the frozen D-05..D-09 contract; GameView's fullScreenCover branches content on roundPhase (.paywalled vs .roundOver) rather than using two separate covers
 - [Phase 04-paywall-free-tier-gate]: MissedWordsView onContinue now routes through requestNextRound(isPremium:) instead of the ungated startNewRound() -- closes the bypass RESEARCH Pitfall 5 warned about
+- [Phase 04-paywall-free-tier-gate]: Local Simulator .storekit purchase testing (steps 15-17) is unreliable on this dev machine -- same class of Xcode 26.6/iOS 26.5 StoreKit-testing bug as the Phase 2 02-04 blocker, not a code defect. — Deferred to Task 2's real sandbox purchase as authoritative proof, per the established 02-05 precedent.
+- [Phase 04-paywall-free-tier-gate]: Restore Purchases negative-case error string verified only via a freshly created never-purchased sandbox tester -- App Store Connect 'Clear Purchase History' plus device sign-out/sign-in on an already-owning tester did not reliably reproduce it. — Apple's sandbox purchase-history-clear propagation is unreliable/delayed; a fresh tester sidesteps it entirely.
 
 ### Pending Todos
 
@@ -107,6 +110,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T20:40:41.068Z
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-08-31T22:22:38.133Z
+Stopped at: Completed 04-04-PLAN.md (Phase 4 manual verification)
 Resume file: None
