@@ -26,7 +26,7 @@ final class PersistenceStore {
         } else {
             configuration = ModelConfiguration(isStoredInMemoryOnly: inMemory)
         }
-        return try ModelContainer(for: GameRecord.self, configurations: configuration)
+        return try ModelContainer(for: GameRecord.self, RoundStartRecord.self, configurations: configuration)
     }
 
     // MARK: - Writing
@@ -41,20 +41,72 @@ final class PersistenceStore {
         return entry
     }
 
+    /// D-02: called once per round that actually STARTS (GameViewModel.startNewRound(with:)).
+    /// This — not `record(...)` — is what the daily free-puzzle limit counts, so a round
+    /// abandoned before "Finish Round" still consumes one of the day's three free puzzles.
+    @discardableResult
+    func recordRoundStarted(date: Date = .now) -> RoundStartRecord {
+        let entry = RoundStartRecord(date: date)
+        context.insert(entry)
+        try? context.save()
+        return entry
+    }
+
     // MARK: - Daily count
 
-    /// Number of sessions recorded during the current LOCAL calendar day.
-    /// Uses fetchCount so SQLite does the COUNT — never fetch(...).count here
-    /// (RESEARCH anti-pattern: avoids instantiating model objects that go unused).
+    /// Number of rounds STARTED during the current LOCAL calendar day (D-02) — this is
+    /// the free-tier daily limit counter. CHANGED in Phase 4: previously counted
+    /// GameRecord (finished rounds); now counts RoundStartRecord so an abandoned round
+    /// still consumes a free puzzle. Signature and day boundary are unchanged.
+    /// Uses fetchCount so SQLite does the COUNT — never fetch(...).count here.
     func puzzlesPlayedToday(now: Date = .now) -> Int {
-        let startOfDay = calendar.startOfDay(for: now)
-        guard let startOfNextDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
-            return 0
-        }
-        let descriptor = FetchDescriptor<GameRecord>(
+        let (startOfDay, startOfNextDay) = todayBounds(now: now)
+        let descriptor = FetchDescriptor<RoundStartRecord>(
             predicate: #Predicate { $0.date >= startOfDay && $0.date < startOfNextDay }
         )
         return (try? context.fetchCount(descriptor)) ?? 0
+    }
+
+    // MARK: - Today's totals (D-07)
+
+    /// D-07: sum of score across today's FINISHED rounds only (GameRecord, not
+    /// RoundStartRecord) — an abandoned round contributes 0, per D-02's constraint that
+    /// abandoned rounds must not contribute a score.
+    /// SUM is done in Swift: SwiftData has NO SUM pushdown (same reasoning as totalWordsFound()).
+    func todayTotalScore(now: Date = .now) -> Int {
+        let (startOfDay, startOfNextDay) = todayBounds(now: now)
+        let descriptor = FetchDescriptor<GameRecord>(
+            predicate: #Predicate { $0.date >= startOfDay && $0.date < startOfNextDay }
+        )
+        let records = (try? context.fetch(descriptor)) ?? []
+        return records.reduce(0) { $0 + $1.score }
+    }
+
+    /// D-07: sum of words found across today's FINISHED rounds only. See todayTotalScore().
+    func todayTotalWordsFound(now: Date = .now) -> Int {
+        let (startOfDay, startOfNextDay) = todayBounds(now: now)
+        let descriptor = FetchDescriptor<GameRecord>(
+            predicate: #Predicate { $0.date >= startOfDay && $0.date < startOfNextDay }
+        )
+        let records = (try? context.fetch(descriptor)) ?? []
+        return records.reduce(0) { $0 + $1.wordsFoundCount }
+    }
+
+    /// D-06 / RESEARCH Pitfall 4: the single source of truth for "when do free puzzles
+    /// reset". The paywall countdown MUST use this rather than duplicating calendar math
+    /// or using a rolling 24-hour offset — a rolling offset diverges from this boundary
+    /// across DST transitions and over the course of a session.
+    func nextResetDate(now: Date = .now) -> Date {
+        todayBounds(now: now).1
+    }
+
+    /// Local-calendar-day half-open interval [startOfDay, startOfNextDay).
+    /// Extracted because puzzlesPlayedToday / todayTotalScore / todayTotalWordsFound /
+    /// nextResetDate all need the identical boundary.
+    private func todayBounds(now: Date) -> (Date, Date) {
+        let startOfDay = calendar.startOfDay(for: now)
+        let startOfNextDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
+        return (startOfDay, startOfNextDay)
     }
 
     // MARK: - Lifetime stats (RET-02)

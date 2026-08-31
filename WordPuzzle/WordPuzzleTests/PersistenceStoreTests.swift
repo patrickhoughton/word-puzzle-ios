@@ -14,10 +14,16 @@ import SwiftData
     @Test func testPuzzlesPlayedTodayCountsTodaysSessions() throws {
         let store = try makeInMemoryStore()
         #expect(store.puzzlesPlayedToday() == 0)
+        // D-02: the daily limit counts STARTED rounds (RoundStartRecord), not finished
+        // ones (GameRecord). Each simulated session starts, then finishes.
+        store.recordRoundStarted()
         store.record(score: 10, wordsFoundCount: 4)
+        store.recordRoundStarted()
         store.record(score: 22, wordsFoundCount: 9)
+        store.recordRoundStarted()
         store.record(score: 5, wordsFoundCount: 3)
         #expect(store.puzzlesPlayedToday() == 3)
+        #expect(store.totalGamesPlayed() == 3)
     }
 
     @Test func testPuzzlesPlayedTodayExcludesEarlierDays() throws {
@@ -28,9 +34,13 @@ import SwiftData
         let lateYesterday = calendar.date(byAdding: .minute, value: -1, to: startOfToday)!
         let threeDaysAgo = calendar.date(byAdding: .day, value: -3, to: now)!
 
+        store.recordRoundStarted(date: lateYesterday)
         store.record(score: 40, wordsFoundCount: 15, date: lateYesterday)
+        store.recordRoundStarted(date: threeDaysAgo)
         store.record(score: 33, wordsFoundCount: 12, date: threeDaysAgo)
+        store.recordRoundStarted(date: now)
         store.record(score: 10, wordsFoundCount: 4, date: now)
+        store.recordRoundStarted(date: now)
         store.record(score: 12, wordsFoundCount: 5, date: now)
 
         #expect(store.puzzlesPlayedToday(now: now) == 2)
@@ -47,7 +57,9 @@ import SwiftData
         do {
             let container = try PersistenceStore.makeContainer(url: storeURL)
             let store = PersistenceStore(container: container)
+            store.recordRoundStarted()
             store.record(score: 10, wordsFoundCount: 4)
+            store.recordRoundStarted()
             store.record(score: 20, wordsFoundCount: 8)
             #expect(store.puzzlesPlayedToday() == 2)
         } // container released here — simulates app termination
