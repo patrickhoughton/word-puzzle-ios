@@ -27,7 +27,7 @@ A Spelling Bee-style word unscramble game for iPhone. Players are presented with
 | IAP | StoreKit 2 (native) | Apple's current Swift-first API, async/await, no third-party SDK needed | HIGH |
 | Word list | ENABLE word list (.txt, bundled) | Public domain, ~173K words, proven in word games, loads into a Swift Set for O(1) lookup | HIGH |
 | Word validation | Bundled Set<String> lookup (primary) + UITextChecker (secondary) | Bundled list gives control over valid words; UITextChecker used only for rejecting proper nouns | MEDIUM |
-| Persistence | @AppStorage / UserDefaults | Game state is tiny (score, daily count, IAP flag); UserDefaults is correct for under 512KB | HIGH |
+| Persistence | SwiftData (game history/stats) + @AppStorage (flags, seeds) | Game history/streak/lifetime-stat queries fit SwiftData's query model better than hand-rolled UserDefaults encoding; simple flags stay in UserDefaults. Decided during Phase 2 discuss-phase (2026-08-28), overriding the original UserDefaults-only recommendation below | HIGH |
 | Analytics | TelemetryDeck | Privacy-first, Swift-native SPM package, no consent popup required, 100K signals/month free | HIGH |
 | Minimum iOS | iOS 17 | Required for @Observable macro; covers ~90%+ of active devices as of 2025 | HIGH |
 ## Architecture Pattern
@@ -51,11 +51,11 @@ A Spelling Bee-style word unscramble game for iPhone. Players are presented with
 ### Persistence
 | Data | Storage | Why |
 |------|---------|-----|
-| IAP unlock state | `@AppStorage("isPremium")` | Simple Bool, auto-synced with UserDefaults |
+| IAP entitlement | `Transaction.currentEntitlements` (StoreKit 2, source of truth) | Not a UserDefaults flag — re-derived from StoreKit on every launch, per Phase 2 decision |
 | Daily puzzle count | `@AppStorage("dailyCount")` + date key | Reset logic is a handful of lines |
 | Current puzzle seed | `@AppStorage("puzzleSeed")` | Deterministic puzzle from seed = easy save/resume |
 | Found words this round | In-memory `[String]` | Not worth persisting mid-round; user can restart |
-| Historical scores | `@AppStorage` with encoded Data | If you add history, encode a small Codable struct |
+| Game history, daily streak, lifetime stats | SwiftData (`PersistenceStore`) | Queryable history (streaks, lifetime totals) is a better fit for SwiftData than hand-rolled UserDefaults encoding — decided in Phase 2 discuss-phase (2026-08-28) |
 ### Analytics — TelemetryDeck
 ## App Store Connect — What to Know for First Submission
 ### Developer Program
@@ -83,7 +83,7 @@ A Spelling Bee-style word unscramble game for iPhone. Players are presented with
 | **TCA (The Composable Architecture)** | Steep learning curve, overkill for a solo dev's first iOS app with a single game mechanic |
 | **RevenueCat / Adapty** | Third-party IAP SDKs add cost and dependency for a single non-consumable; StoreKit 2 handles it natively |
 | **Firebase Analytics** | Collects extensive personal data, requires consent popups, complex privacy label — wrong fit for a privacy-simple game |
-| **Core Data / SwiftData** | Overkill for game state that fits in UserDefaults; adds schema migration complexity you don't need |
+| **Core Data** | SwiftData is the modern, lower-boilerplate equivalent for the same needs — no reason to use the older API |
 | **UITextChecker as sole word validator** | Apple's dictionary varies by iOS version; gives you no control over word list; Spelling Bee games need a defined word set |
 | **SOWPODS / Official Scrabble dictionary** | Copyright-restricted; you cannot bundle it commercially without licensing |
 | **SpriteKit / Unity** | Project constraint correctly rules these out; SwiftUI handles all UI needs for this mechanic |
@@ -98,7 +98,7 @@ A Spelling Bee-style word unscramble game for iPhone. Players are presented with
 | ENABLE word list | HIGH | Public domain status confirmed; widely used in commercial word games |
 | Bundled Set<String> for lookups | HIGH | Standard Swift pattern; O(1) lookup confirmed; memory footprint is acceptable |
 | TelemetryDeck as analytics | HIGH | 100K free signals/month confirmed; no consent popup confirmed; Swift SPM package available |
-| UserDefaults/@AppStorage for state | HIGH | Correct tool for this data size; SwiftData would be premature |
+| UserDefaults/@AppStorage for flags/seeds; SwiftData for game history/stats | HIGH | Right-sized split: flags stay in UserDefaults, queryable history/stats use SwiftData (Phase 2 decision, 2026-08-28) |
 | UITextChecker as secondary validator | MEDIUM | Works well but Apple's dictionary is not fixed across OS versions; don't rely on it as primary |
 | App Store submission steps | MEDIUM | Based on developer blog checklists and Apple docs; review policies can change; verify against current App Review Guidelines before submitting |
 ## Sources
