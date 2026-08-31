@@ -146,15 +146,6 @@ Plans:
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
 
-### Phase 999.5: Two-finger rotate-to-shuffle gesture (BACKLOG)
-
-**Goal:** [Captured for future planning] — a two-finger twisting/rotation gesture on the honeycomb grid as an alternative (or addition) to the Shuffle button, rotating the 6 outer letters. Non-trivial: `LetterGridView` currently has exactly ONE gesture recognizer by design (a single-touch `DragGesture(minimumDistance: 0)` handling both tap-to-append and drag-to-connect, per Phase 3's RESEARCH Pattern 3 / Pitfall 1 gesture-contention finding). Adding a two-finger `RotationGesture` means composing a second, multi-touch recognizer alongside the existing one without reintroducing that contention risk — will need its own on-device gesture-contention verification pass, same as Phase 3's 03-05 checkpoint.
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd:review-backlog when ready)
-
 ### Phase 999.6: Double-tap-to-shuffle gesture (BACKLOG)
 
 **Goal:** [Captured for future planning] — a double-tap gesture as an alternative (or addition) to the Shuffle button. **Trigger decided: double-tap any empty area of the screen** (off the honeycomb tiles) — this avoids the conflict where double-tapping a tile is already legitimate input (appends that letter twice, e.g. a double letter in the word being built). Implementation note: `LetterGridView`'s existing single `DragGesture(minimumDistance: 0)` is scoped to the tiles themselves for hit-testing, so an empty-area double-tap recognizer would live on the surrounding container/background view, not compete with the grid's own gesture — should avoid the contention risk that made 999.5 (rotate gesture, tile-scoped) trickier.
