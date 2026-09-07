@@ -102,7 +102,7 @@ Plans:
   5. App Store listing has a custom icon, at least 3 screenshots from the final TestFlight build, and keyword fields targeting "spelling bee unlimited," "word puzzle offline," and "word game no subscription"
 **Plans**: 8 plans
 Plans:
-- [ ] 05-01-PLAN.md — Kenney CC0 SFX assets (converted to WAV) + SoundManager AVAudioPlayer pool with enabled gate (Wave 1)
+- [x] 05-01-PLAN.md — Kenney CC0 SFX assets (converted to WAV) + SoundManager AVAudioPlayer pool with enabled gate (Wave 1)
 - [ ] 05-02-PLAN.md — GameTheme fonts to Dynamic Type text styles + clamped @ScaledMetric hex tile letters (Wave 1)
 - [ ] 05-03-PLAN.md — ImageRenderer icon generator, concept checkpoint, three opaque 1024x1024 appearance slots (Wave 1)
 - [ ] 05-04-PLAN.md — TARGETED_DEVICE_FAMILY decision + ITSAppUsesNonExemptEncryption=NO + scripts/compliance-guards.sh (Wave 2)

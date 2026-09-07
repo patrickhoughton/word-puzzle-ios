@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 5 context gathered
-last_updated: "2026-09-07T15:23:46.629Z"
-last_activity: 2026-08-31
+status: executing
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-09-07T16:20:34.212Z"
+last_activity: 2026-09-07
 progress:
   total_phases: 15
   completed_phases: 4
-  total_plans: 17
-  completed_plans: 17
+  total_plans: 25
+  completed_plans: 18
   percent: 100
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-27)
 
 **Core value:** Endless, fresh word puzzles that generate algorithmically from a local dictionary — no internet, no content team, no ongoing maintenance.
-**Current focus:** Phase 04 — paywall-free-tier-gate
+**Current focus:** Phase 05 — polish-compliance-app-store
 
 ## Current Position
 
-Phase: 999.1
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-08-31
+Phase: 05 (polish-compliance-app-store) — EXECUTING
+Plan: 2 of 8
+Status: Ready to execute
+Last activity: 2026-09-07
 
 Progress: [██████████] 100% (of planned plans; Phases 4-5 not yet planned)
 
@@ -65,6 +65,7 @@ Progress: [██████████] 100% (of planned plans; Phases 4-5 no
 | Phase 04-paywall-free-tier-gate P02 | 15min | 2 tasks | 5 files |
 | Phase 04 P03 | 12min | 2 tasks | 4 files |
 | Phase 04 P04 | 75min | 2 tasks | 0 files |
+| Phase 05 P01 | 20min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -100,6 +101,8 @@ Recent decisions affecting current work:
 - [Phase 04-paywall-free-tier-gate]: Local Simulator .storekit purchase testing (steps 15-17) is unreliable on this dev machine -- same class of Xcode 26.6/iOS 26.5 StoreKit-testing bug as the Phase 2 02-04 blocker, not a code defect. — Deferred to Task 2's real sandbox purchase as authoritative proof, per the established 02-05 precedent.
 - [Phase 04-paywall-free-tier-gate]: Restore Purchases negative-case error string verified only via a freshly created never-purchased sandbox tester -- App Store Connect 'Clear Purchase History' plus device sign-out/sign-in on an already-owning tester did not reliably reproduce it. — Apple's sandbox purchase-history-clear propagation is unreliable/delayed; a fresh tester sidesteps it entirely.
 - [Phase 04-paywall-free-tier-gate]: WordPuzzle.xcscheme's Run-action StoreKitConfigurationFileReference was manually corrected from a broken '../../WordPuzzle/WordPuzzle.storekit' path (written by Xcode's own Edit Scheme UI when restoring the config after Task 2's real-sandbox test) back to the working '../../../WordPuzzle/WordPuzzle.storekit' path. — Xcode's Edit Scheme dialog wrote a path one directory level short of the actual file location; flagging in case Xcode does this again on a future manual StoreKit Configuration change via its UI.
+- [Phase 05]: [Phase 05-01] Used Kenney Interface Sounds pack (not UI Audio) -- confirmation_*/error_*/maximize_* clip families map directly onto the four D-01 sound events; both packs are CC0 so this satisfies D-02
+- [Phase 05]: [Phase 05-01] SoundManager.sessionCategory is fixed at .ambient (never .playback) per RESEARCH Pitfall 3, so SFX respect the hardware silent switch
 
 ### Pending Todos
 
@@ -112,6 +115,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-07T15:23:46.619Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-polish-compliance-app-store/05-CONTEXT.md
+Last session: 2026-09-07T16:20:34.206Z
+Stopped at: Completed 05-01-PLAN.md
+Resume file: None
