@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// The in-progress word display above the hex grid (D-04).
 ///
@@ -66,7 +67,8 @@ struct WordDisplayView: View {
         }
         // RET-03: haptic on every accepted word. Counter-based trigger per Pitfall 3.
         .sensoryFeedback(.success, trigger: acceptedCount)
-        .sensoryFeedback(.impact(weight: .heavy, intensity: 1.0), trigger: rejectedCount)
+        // Rejected haptic is a manual double-hit UIImpactFeedbackGenerator burst (below),
+        // stronger than a single SwiftUI .sensoryFeedback(.impact) shot.
         .onChange(of: acceptedCount) { _, _ in showAcceptedFeedback() }
         .onChange(of: rejectedCount) { _, _ in showRejectedFeedback() }
     }
@@ -109,8 +111,16 @@ struct WordDisplayView: View {
         withAnimation(.linear(duration: 0.06).repeatCount(6, autoreverses: true)) {
             shakeAmount = 16
         }
+        // Manual double-hit: a single .impact(weight: .heavy, intensity: 1.0) is
+        // the ceiling for one SwiftUI .sensoryFeedback shot. Two rapid heavy
+        // UIImpactFeedbackGenerator hits read as noticeably stronger.
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.prepare()
+        generator.impactOccurred(intensity: 1.0)
         Task { @MainActor in
-            try? await Task.sleep(for: .milliseconds(420))
+            try? await Task.sleep(for: .milliseconds(80))
+            generator.impactOccurred(intensity: 1.0)
+            try? await Task.sleep(for: .milliseconds(340))
             withAnimation(.linear(duration: 0.06)) { shakeAmount = 0 }
             try? await Task.sleep(for: .milliseconds(700))
             withAnimation(.easeOut(duration: 0.2)) { feedbackText = nil }
