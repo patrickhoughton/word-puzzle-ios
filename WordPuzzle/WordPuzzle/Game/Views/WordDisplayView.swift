@@ -66,7 +66,7 @@ struct WordDisplayView: View {
         }
         // RET-03: haptic on every accepted word. Counter-based trigger per Pitfall 3.
         .sensoryFeedback(.success, trigger: acceptedCount)
-        .sensoryFeedback(.error, trigger: rejectedCount)
+        .sensoryFeedback(.impact(weight: .heavy, intensity: 1.0), trigger: rejectedCount)
         .onChange(of: acceptedCount) { _, _ in showAcceptedFeedback() }
         .onChange(of: rejectedCount) { _, _ in showRejectedFeedback() }
     }
@@ -106,11 +106,11 @@ struct WordDisplayView: View {
     private func showRejectedFeedback() {
         feedbackIsError = true
         feedbackText = "Not a valid word"
-        withAnimation(.linear(duration: 0.06).repeatCount(5, autoreverses: true)) {
-            shakeAmount = 10
+        withAnimation(.linear(duration: 0.06).repeatCount(6, autoreverses: true)) {
+            shakeAmount = 16
         }
         Task { @MainActor in
-            try? await Task.sleep(for: .milliseconds(360))
+            try? await Task.sleep(for: .milliseconds(420))
             withAnimation(.linear(duration: 0.06)) { shakeAmount = 0 }
             try? await Task.sleep(for: .milliseconds(700))
             withAnimation(.easeOut(duration: 0.2)) { feedbackText = nil }
