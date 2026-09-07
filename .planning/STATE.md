@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 5 context gathered
-last_updated: "2026-09-07T15:23:46.629Z"
-last_activity: 2026-08-31
+status: executing
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-09-07T16:23:43.600Z"
+last_activity: 2026-09-07
 progress:
   total_phases: 15
   completed_phases: 4
-  total_plans: 17
-  completed_plans: 17
-  percent: 100
+  total_plans: 25
+  completed_plans: 18
+  percent: 72
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-27)
 
 **Core value:** Endless, fresh word puzzles that generate algorithmically from a local dictionary — no internet, no content team, no ongoing maintenance.
-**Current focus:** Phase 04 — paywall-free-tier-gate
+**Current focus:** Phase 05 — polish-compliance-app-store
 
 ## Current Position
 
-Phase: 999.1
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-08-31
+Phase: 05
+Plan: 2 of 8 in current phase
+Status: Plan 05-02 complete
+Last activity: 2026-09-07
 
-Progress: [██████████] 100% (of planned plans; Phases 4-5 not yet planned)
+Progress: [██████████] 100% (of planned plans; Phase 5 plans 01/03-08 tracked separately by parallel executors)
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ Progress: [██████████] 100% (of planned plans; Phases 4-5 no
 | Phase 04-paywall-free-tier-gate P02 | 15min | 2 tasks | 5 files |
 | Phase 04 P03 | 12min | 2 tasks | 4 files |
 | Phase 04 P04 | 75min | 2 tasks | 0 files |
+| Phase 05 P02 | 17min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -100,6 +101,7 @@ Recent decisions affecting current work:
 - [Phase 04-paywall-free-tier-gate]: Local Simulator .storekit purchase testing (steps 15-17) is unreliable on this dev machine -- same class of Xcode 26.6/iOS 26.5 StoreKit-testing bug as the Phase 2 02-04 blocker, not a code defect. — Deferred to Task 2's real sandbox purchase as authoritative proof, per the established 02-05 precedent.
 - [Phase 04-paywall-free-tier-gate]: Restore Purchases negative-case error string verified only via a freshly created never-purchased sandbox tester -- App Store Connect 'Clear Purchase History' plus device sign-out/sign-in on an already-owning tester did not reliably reproduce it. — Apple's sandbox purchase-history-clear propagation is unreliable/delayed; a fresh tester sidesteps it entirely.
 - [Phase 04-paywall-free-tier-gate]: WordPuzzle.xcscheme's Run-action StoreKitConfigurationFileReference was manually corrected from a broken '../../WordPuzzle/WordPuzzle.storekit' path (written by Xcode's own Edit Scheme UI when restoring the config after Task 2's real-sandbox test) back to the working '../../../WordPuzzle/WordPuzzle.storekit' path. — Xcode's Edit Scheme dialog wrote a path one directory level short of the actual file location; flagging in case Xcode does this again on a future manual StoreKit Configuration change via its UI.
+- [Phase 05]: [Phase 05-02]: GameTheme's four font tokens keep their original names but now resolve to Dynamic Type text styles (largeTitle/title3/body/footnote); HexTileView's letter is the sole sanctioned fixed-point Font.system(size:) usage, clamped to 40pt via HexTileView.clampedLetterSize(scaled:) so the 70pt hexagon never overflows at AX1-AX5 sizes
 
 ### Pending Todos
 
@@ -109,9 +111,11 @@ None yet.
 
 - 02-04: EntitlementStoreTests — 3/5 tests (purchase/restore/clear) fail on this dev machine with SKInternalErrorDomain Code=3 / "notEntitled". Developer Mode was enabled and the Mac was fully rebooted; failures persist identically (CLI and Xcode GUI, both against Simulator). Root cause unresolved — likely an Xcode 26.6/iOS 26.5 Simulator SKTestSession bug, not a code defect (physical-device run gets further with a different error). Deferred to plan 02-05's real sandbox purchase test as the authoritative MON-02/MON-03 proof. See 02-04-SUMMARY.md Issues Encountered for full diagnosis.
 - gsd-tools 'phase complete' and 'roadmap update-plan-progress' checkbox/table regexes expect 'Phase 04' but ROADMAP.md headers use non-padded 'Phase 4' -- silently failed to update the top checklist line and Progress table row for Phase 4 (worked for Phases 2/3 previously, likely because those were invoked with non-padded phase numbers). Manually fixed for Phase 4; future phase completions should verify the checklist/table actually updated, not just trust the tool's roadmap_updated:true return value.
+- 05-02: `state update-progress` and `state record-metric` both write `percent: 100` and `status: completed` into STATE.md frontmatter regardless of the actual completed/total ratio (their own JSON output correctly reported 72%/18 of 25, but the file write used a stale/hardcoded 100). Manually corrected frontmatter to `percent: 72` / `status: executing` after each call in this session; future plan executions in this phase should verify frontmatter percent/status after running these commands rather than trusting them.
+- 05-02: This worktree's git branch (`worktree-agent-a14f6787ea2461fe8`) was found stale at session start — zero unique commits, sitting at the exact merge-base with `main`, missing all of Phase 4's implementation and all Phase 5 planning docs (including this plan's own PLAN.md). Fixed via `git merge --ff-only main` (verified safe via `git merge-base` showing no divergence) before any work began. Other parallel worktree agents executing sibling 05-XX plans may have hit the same staleness.
 
 ## Session Continuity
 
-Last session: 2026-09-07T15:23:46.619Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-polish-compliance-app-store/05-CONTEXT.md
+Last session: 2026-09-07T16:23:43.597Z
+Stopped at: Completed 05-02-PLAN.md
+Resume file: None
