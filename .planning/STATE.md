@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-01-PLAN.md, 05-02-PLAN.md, 05-03-PLAN.md (Wave 1)
-last_updated: "2026-09-07T16:24:09.660Z"
+stopped_at: Completed 05-05-PLAN.md (Wave 2, resumed after rate-limit interruption)
+last_updated: "2026-09-07T16:40:07.484Z"
 last_activity: 2026-09-07
 progress:
   total_phases: 15
   completed_phases: 4
   total_plans: 25
-  completed_plans: 20
-  percent: 80
+  completed_plans: 21
+  percent: 84
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 ## Current Position
 
 Phase: 05 (polish-compliance-app-store) — EXECUTING
-Plan: 3 of 8 complete (05-01, 05-02, 05-03) — Wave 1 done
-Status: Starting Wave 2
+Plan: 4 of 8 complete (05-01, 05-02, 05-03, 05-05) — Wave 1 done, Wave 2 in progress
+Status: Executing Wave 2
 Last activity: 2026-09-07
 
-Progress: [████████░░] 80% (20/25 plans across milestone; Phase 5 Wave 1 complete, Wave 2 next)
+Progress: [████████░░] 84% (21/25 plans across milestone; Phase 5 Wave 1 complete, Wave 2 in progress)
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Progress: [████████░░] 80% (20/25 plans across milestone; Ph
 | Phase 05 P01 | 20min | 2 tasks | 7 files |
 | Phase 05 P02 | 17min | 2 tasks | 3 files |
 | Phase 05 P03 | 10min | 3 tasks | 5 files |
+| Phase 05-polish-compliance-app-store P05 | 9min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -108,6 +109,8 @@ Recent decisions affecting current work:
 - [Phase 05]: [Phase 05-02]: GameTheme's four font tokens keep their original names but now resolve to Dynamic Type text styles (largeTitle/title3/body/footnote); HexTileView's letter is the sole sanctioned fixed-point Font.system(size:) usage, clamped to 40pt via HexTileView.clampedLetterSize(scaled:) so the 70pt hexagon never overflows at AX1-AX5 sizes
 - [Phase 05]: D-08: Patrick chose app icon Concept A (single gold hexagon, bold black 'W') over Concept B (honeycomb cluster), no refinements -- A stays legible at 40x40 and in the tinted monochrome slot where B collapses into an indistinct dot cluster
 - [Phase 05]: App icon is generated via scripts/GenerateAppIcon.swift (SwiftUI ImageRenderer + alpha-flattening), never hand-painted -- PNGs are reproducible outputs, the script is the source of truth
+- [Phase 05-polish-compliance-app-store]: [Phase 05-05]: Sound preference lives in exactly one place -- GameView's @AppStorage(SoundManager.soundEffectsEnabledKey) -- bound into SettingsView and read by three onChange handlers; all four D-01 sound events route through SoundEffect.forSubmission/forRoundPhase, never a duplicated inline mapping
+- [Phase 05-polish-compliance-app-store]: [Phase 05-05]: The launch-time round_end sound firing on the .loading -> .paywalled cold-launch path (free user already at daily limit) is intentional D-01 behavior, not a bug -- left for plan 05-06's manual device pass to evaluate
 
 ### Pending Todos
 
@@ -122,6 +125,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-07T16:24:09.657Z
-Stopped at: Completed 05-01-PLAN.md, 05-02-PLAN.md, 05-03-PLAN.md (Wave 1)
+Last session: 2026-09-07T16:40:07.481Z
+Stopped at: Completed 05-05-PLAN.md (Wave 2, resumed after rate-limit interruption)
 Resume file: None
