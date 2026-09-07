@@ -100,7 +100,16 @@ Plans:
   3. All text in the app scales correctly when the largest Dynamic Type size is selected in iOS Settings
   4. The privacy nutrition label in App Store Connect accurately reflects zero data collection and the app passes the App Store privacy questionnaire
   5. App Store listing has a custom icon, at least 3 screenshots from the final TestFlight build, and keyword fields targeting "spelling bee unlimited," "word puzzle offline," and "word game no subscription"
-**Plans**: TBD
+**Plans**: 8 plans
+Plans:
+- [ ] 05-01-PLAN.md — Kenney CC0 SFX assets (converted to WAV) + SoundManager AVAudioPlayer pool with enabled gate (Wave 1)
+- [ ] 05-02-PLAN.md — GameTheme fonts to Dynamic Type text styles + clamped @ScaledMetric hex tile letters (Wave 1)
+- [ ] 05-03-PLAN.md — ImageRenderer icon generator, concept checkpoint, three opaque 1024x1024 appearance slots (Wave 1)
+- [ ] 05-04-PLAN.md — TARGETED_DEVICE_FAMILY decision + ITSAppUsesNonExemptEncryption=NO + scripts/compliance-guards.sh (Wave 2)
+- [ ] 05-05-PLAN.md — SettingsView sound toggle, GameView gear entry point, four D-01 SFX call sites (Wave 2)
+- [ ] 05-06-PLAN.md — Manual QA: AX5 Dynamic Type on every screen, sound behaviour, Airplane Mode on device (Wave 3)
+- [ ] 05-07-PLAN.md — 6.9in Simulator captures + captioned 1320x2868 App Store screenshots (Wave 3)
+- [ ] 05-08-PLAN.md — App Store Connect: Data Not Collected privacy label, listing metadata, keywords, uploads (Wave 4)
 **UI hint**: yes
 
 ## Progress
@@ -111,7 +120,7 @@ Plans:
 | 2. Persistence & Entitlements | 5/5 | Complete   | 2026-08-29 |
 | 3. Core Game UI | 5/5 | Complete | 2026-08-29 |
 | 4. Paywall & Free Tier Gate | 4/4 | Complete | 2026-08-31 |
-| 5. Polish, Compliance & App Store | 0/? | Not started | - |
+| 5. Polish, Compliance & App Store | 0/8 | Planned | - |
 
 ## Backlog
 
