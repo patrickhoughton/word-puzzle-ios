@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-01-PLAN.md, 05-02-PLAN.md, 05-03-PLAN.md (Wave 1)
-last_updated: "2026-09-07T16:24:09.660Z"
+stopped_at: Completed 05-04-PLAN.md (compliance decisions)
+last_updated: "2026-09-07T16:37:00.899Z"
 last_activity: 2026-09-07
 progress:
   total_phases: 15
   completed_phases: 4
   total_plans: 25
-  completed_plans: 20
-  percent: 80
+  completed_plans: 21
+  percent: 84
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 ## Current Position
 
 Phase: 05 (polish-compliance-app-store) — EXECUTING
-Plan: 3 of 8 complete (05-01, 05-02, 05-03) — Wave 1 done
-Status: Starting Wave 2
+Plan: 4 of 8 complete (05-01, 05-02, 05-03, 05-04) — Wave 1 + 05-04 (Wave 2) done
+Status: Ready to execute remaining Wave 2/3 plans
 Last activity: 2026-09-07
 
-Progress: [████████░░] 80% (20/25 plans across milestone; Phase 5 Wave 1 complete, Wave 2 next)
+Progress: [████████░░] 84% (21/25 plans across milestone; Phase 5 plans 01-04 complete)
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Progress: [████████░░] 80% (20/25 plans across milestone; Ph
 | Phase 05 P01 | 20min | 2 tasks | 7 files |
 | Phase 05 P02 | 17min | 2 tasks | 3 files |
 | Phase 05 P03 | 10min | 3 tasks | 5 files |
+| Phase 05 P04 | 7min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -108,6 +109,8 @@ Recent decisions affecting current work:
 - [Phase 05]: [Phase 05-02]: GameTheme's four font tokens keep their original names but now resolve to Dynamic Type text styles (largeTitle/title3/body/footnote); HexTileView's letter is the sole sanctioned fixed-point Font.system(size:) usage, clamped to 40pt via HexTileView.clampedLetterSize(scaled:) so the 70pt hexagon never overflows at AX1-AX5 sizes
 - [Phase 05]: D-08: Patrick chose app icon Concept A (single gold hexagon, bold black 'W') over Concept B (honeycomb cluster), no refinements -- A stays legible at 40x40 and in the tinted monochrome slot where B collapses into an indistinct dot cluster
 - [Phase 05]: App icon is generated via scripts/GenerateAppIcon.swift (SwiftUI ImageRenderer + alpha-flattening), never hand-painted -- PNGs are reproducible outputs, the script is the source of truth
+- [Phase 05-04]: device-family-keep-ipad: Patrick chose to keep TARGETED_DEVICE_FAMILY = "1,2" (iPhone + iPad), accepting that plan 05-07 must add a 13" iPad screenshot set and plan 05-06 must add an iPad layout smoke test
+- [Phase 05-04]: Encryption export compliance declared: INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO added to both app-target build configs; app makes zero network calls so uses no encryption
 
 ### Pending Todos
 
@@ -119,9 +122,10 @@ None yet.
 - gsd-tools 'phase complete' and 'roadmap update-plan-progress' checkbox/table regexes expect 'Phase 04' but ROADMAP.md headers use non-padded 'Phase 4' -- silently failed to update the top checklist line and Progress table row for Phase 4 (worked for Phases 2/3 previously, likely because those were invoked with non-padded phase numbers). Manually fixed for Phase 4; future phase completions should verify the checklist/table actually updated, not just trust the tool's roadmap_updated:true return value.
 - 05-02: `state update-progress` and `state record-metric` both write `percent: 100` and `status: completed` into STATE.md frontmatter regardless of the actual completed/total ratio (their own JSON output correctly reported 72%/18 of 25, but the file write used a stale/hardcoded 100). Manually corrected frontmatter to `percent: 72` / `status: executing` after each call in this session; future plan executions in this phase should verify frontmatter percent/status after running these commands rather than trusting them.
 - 05-02: This worktree's git branch (`worktree-agent-a14f6787ea2461fe8`) was found stale at session start — zero unique commits, sitting at the exact merge-base with `main`, missing all of Phase 4's implementation and all Phase 5 planning docs (including this plan's own PLAN.md). Fixed via `git merge --ff-only main` (verified safe via `git merge-base` showing no divergence) before any work began. Other parallel worktree agents executing sibling 05-XX plans may have hit the same staleness.
+- 05-04: device-family-keep-ipad decision (Patrick chose to keep TARGETED_DEVICE_FAMILY = "1,2") adds scope not currently in any Phase 5 plan: plan 05-07 (Screenshots) was originally scoped iPhone-only and now needs an added 13" iPad (2064x2752) screenshot set; plan 05-06 (Manual QA) was originally scoped iPhone-only and now needs an iPad layout smoke test (the fixed 70pt hex geometry has never been validated at iPad width). Flagging before Wave 3 executes so this is visible scope drift, not a silent gap.
 
 ## Session Continuity
 
-Last session: 2026-09-07T16:24:09.657Z
-Stopped at: Completed 05-01-PLAN.md, 05-02-PLAN.md, 05-03-PLAN.md (Wave 1)
+Last session: 2026-09-07T16:37:00.896Z
+Stopped at: Completed 05-04-PLAN.md (compliance decisions)
 Resume file: None
