@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-01-PLAN.md, 05-02-PLAN.md (Wave 1)
-last_updated: "2026-09-07T16:23:43.600Z"
+stopped_at: Completed 05-01-PLAN.md, 05-02-PLAN.md, 05-03-PLAN.md (Wave 1)
+last_updated: "2026-09-07T16:24:09.660Z"
 last_activity: 2026-09-07
 progress:
   total_phases: 15
   completed_phases: 4
   total_plans: 25
-  completed_plans: 19
-  percent: 76
+  completed_plans: 20
+  percent: 80
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 ## Current Position
 
 Phase: 05 (polish-compliance-app-store) — EXECUTING
-Plan: 2 of 8 complete (05-01, 05-02)
-Status: Wave 1 in progress
+Plan: 3 of 8 complete (05-01, 05-02, 05-03) — Wave 1 done
+Status: Starting Wave 2
 Last activity: 2026-09-07
 
-Progress: [████░░░░░░] 76% (19/25 plans across milestone; Phase 5 Wave 1: 2/3 plans merged)
+Progress: [████████░░] 80% (20/25 plans across milestone; Phase 5 Wave 1 complete, Wave 2 next)
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Progress: [████░░░░░░] 76% (19/25 plans across milestone; Ph
 | Phase 04 P04 | 75min | 2 tasks | 0 files |
 | Phase 05 P01 | 20min | 2 tasks | 7 files |
 | Phase 05 P02 | 17min | 2 tasks | 3 files |
+| Phase 05 P03 | 10min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,8 @@ Recent decisions affecting current work:
 - [Phase 05]: [Phase 05-01] Used Kenney Interface Sounds pack (not UI Audio) -- confirmation_*/error_*/maximize_* clip families map directly onto the four D-01 sound events; both packs are CC0 so this satisfies D-02
 - [Phase 05]: [Phase 05-01] SoundManager.sessionCategory is fixed at .ambient (never .playback) per RESEARCH Pitfall 3, so SFX respect the hardware silent switch
 - [Phase 05]: [Phase 05-02]: GameTheme's four font tokens keep their original names but now resolve to Dynamic Type text styles (largeTitle/title3/body/footnote); HexTileView's letter is the sole sanctioned fixed-point Font.system(size:) usage, clamped to 40pt via HexTileView.clampedLetterSize(scaled:) so the 70pt hexagon never overflows at AX1-AX5 sizes
+- [Phase 05]: D-08: Patrick chose app icon Concept A (single gold hexagon, bold black 'W') over Concept B (honeycomb cluster), no refinements -- A stays legible at 40x40 and in the tinted monochrome slot where B collapses into an indistinct dot cluster
+- [Phase 05]: App icon is generated via scripts/GenerateAppIcon.swift (SwiftUI ImageRenderer + alpha-flattening), never hand-painted -- PNGs are reproducible outputs, the script is the source of truth
 
 ### Pending Todos
 
@@ -119,6 +122,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-07T16:23:43.597Z
-Stopped at: Completed 05-01-PLAN.md, 05-02-PLAN.md (Wave 1)
+Last session: 2026-09-07T16:24:09.657Z
+Stopped at: Completed 05-01-PLAN.md, 05-02-PLAN.md, 05-03-PLAN.md (Wave 1)
 Resume file: None
