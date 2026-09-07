@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-04-PLAN.md, 05-05-PLAN.md (Wave 2 done)
-last_updated: "2026-09-07T16:40:07.484Z"
+stopped_at: Completed 05-06-PLAN.md (Manual QA, Wave 3 in progress)
+last_updated: "2026-09-07T18:20:00.000Z"
 last_activity: 2026-09-07
 progress:
   total_phases: 15
   completed_phases: 4
   total_plans: 25
-  completed_plans: 22
-  percent: 88
+  completed_plans: 23
+  percent: 92
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 ## Current Position
 
 Phase: 05 (polish-compliance-app-store) — EXECUTING
-Plan: 5 of 8 complete (05-01, 05-02, 05-03, 05-04, 05-05) — Wave 1 + Wave 2 done
-Status: Starting Wave 3
+Plan: 6 of 8 complete (05-01 through 05-06) — Wave 1 + Wave 2 done, Wave 3 in progress (05-07 remaining)
+Status: Executing Wave 3
 Last activity: 2026-09-07
 
-Progress: [█████████░] 88% (22/25 plans across milestone; Phase 5 Waves 1-2 complete, Wave 3 next)
+Progress: [█████████░] 92% (23/25 plans across milestone; Phase 5 Wave 3: 1/2 plans done)
 
 ## Performance Metrics
 
@@ -70,6 +70,7 @@ Progress: [█████████░] 88% (22/25 plans across milestone; Ph
 | Phase 05 P03 | 10min | 3 tasks | 5 files |
 | Phase 05 P04 | 7min | 3 tasks | 2 files |
 | Phase 05-polish-compliance-app-store P05 | 9min | 2 tasks | 3 files |
+| Phase 05-polish-compliance-app-store P06 | ~90min | 3 tasks | 5 files (+ live fixes: sound retune, haptic, AX5 truncation) |
 
 ## Accumulated Context
 
@@ -114,6 +115,8 @@ Recent decisions affecting current work:
 - [Phase 05-04]: Encryption export compliance declared: INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO added to both app-target build configs; app makes zero network calls so uses no encryption
 - [Phase 05-polish-compliance-app-store]: [Phase 05-05]: Sound preference lives in exactly one place -- GameView's @AppStorage(SoundManager.soundEffectsEnabledKey) -- bound into SettingsView and read by three onChange handlers; all four D-01 sound events route through SoundEffect.forSubmission/forRoundPhase, never a duplicated inline mapping
 - [Phase 05-polish-compliance-app-store]: [Phase 05-05]: The launch-time round_end sound firing on the .loading -> .paywalled cold-launch path (free user already at daily limit) is intentional D-01 behavior, not a bug -- left for plan 05-06's manual device pass to evaluate
+- [Phase 05-06]: word_rejected.wav retuned live during QA (Patrick's request, not a plan task): error_008 -> error_003 -> final error_004 @ -9dB gain, auditioned against the full Kenney error_* family. Rejected-word haptic upgraded from single .sensoryFeedback(.error) to a manual double-hit UIImpactFeedbackGenerator(.heavy) burst -- a single .impact(weight: .heavy, intensity: 1.0) shot was confirmed too weak on physical hardware.
+- [Phase 05-06]: AX5 text truncation ("Novi...", "0 of 7...", "Tap or drag...", "F...") was a real bug caught only on a physical device (Simulator's wider logical screen masked it). Fixed via shrink-to-fit (lineLimit(1) + minimumScaleFactor) in ScoreBarView and WordDisplayView, plus GameView's controlRow splitting Finish Round onto its own row ONLY at dynamicTypeSize.isAccessibilitySize. A ScrollView-based fix was explicitly considered and rejected due to gesture-conflict risk with LetterGridView/WordDisplayView's DragGesture usage.
 
 ### Pending Todos
 
@@ -131,6 +134,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-07T16:40:07.481Z
-Stopped at: Completed 05-04-PLAN.md, 05-05-PLAN.md (Wave 2 done)
+Last session: 2026-09-07T18:20:00.000Z
+Stopped at: Completed 05-06-PLAN.md (Manual QA)
 Resume file: None

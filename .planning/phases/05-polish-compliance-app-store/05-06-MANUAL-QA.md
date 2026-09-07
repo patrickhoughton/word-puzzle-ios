@@ -1,7 +1,7 @@
 ---
 phase: 5
 plan: 06
-status: in-progress
+status: complete
 ---
 
 ## Manual QA Results — Phase 05
@@ -18,6 +18,6 @@ status: in-progress
 | Sound preference survives app restart | UX-02 | pass | Verified both directions on physical device: toggled OFF, force-quit, relaunched -- still OFF. Toggled ON, force-quit, relaunched -- still ON. |
 | SFX silenced by hardware mute switch | UX-02 | pass | With toggle ON and the physical ring/silent switch flipped to silent, a valid word submission produced no sound -- correct `.ambient` session category behavior. |
 | iPad — GameView layout does not stretch or clip the hex grid | UX-04 | pass | Verified on iPad Pro 13-inch (M5) Simulator: hex tiles render as proper undistorted hexagons at their fixed 70pt size (small/centered rather than filling the screen, as expected -- not stretched, not clipped). Score bar and "Tap or drag letters" fully visible, Shuffle/Delete/Finish Round all reachable at the bottom, no truncation at default iPad text size. Confirmed playable (letter tap + submission tested live). Lots of unused white space around the hex grid -- a design opportunity for a future iPad-specific layout pass, not a defect; matches the plan's stated bar ("not broken," not "custom-designed for iPad"). Caveat: the Settings gear icon was NOT visible in this screenshot, matching the same Simulator-only rendering quirk already confirmed on iPhone 17 Simulator (renders fine on a real iPhone) -- not independently verified on a physical iPad since none is available; assumed to be the same Simulator quirk rather than an iPad-specific defect. |
-| Airplane Mode — full gameplay on a physical iPhone | UX-01 | pending | |
+| Airplane Mode — full gameplay on a physical iPhone | UX-01 | pass | Verified on Patrick's iPhone 15 Pro, iOS 26.6.1. App launched once online first (StoreKit sync precondition satisfied). With Wi-Fi and cellular both off: word list loaded and a puzzle appeared with no hang/crash, tap/drag letter input worked, valid and invalid word submission worked (score/rank updated, sounds played), Shuffle worked, Finish Round showed the missed-words reveal, starting another round from the reveal worked, and the Settings gear/toggle worked. Turning Airplane Mode back off returned the app to normal behavior with no restart needed. Paywall-specific offline checks (price rendering, Restore Purchases behavior) could not be exercised -- this device's signed-in Apple ID already holds an entitlement (from earlier Phase 2/4 sandbox testing), so `Transaction.currentEntitlements` correctly reports premium immediately and the app never reaches the paywall. This is the same MON-04 behavior already documented in Phase 02-05 (STATE.md), not a defect. Per Patrick: record as expected/deferred rather than chase a never-purchased sandbox tester tonight. |
 
-Physical device: Patrick's iPhone 15 Pro (iPhone16,1) is connected and paired (`available (paired)` per `xcrun devicectl list devices`).
+Physical device: Patrick's iPhone 15 Pro (iPhone16,1), iOS 26.6.1.
