@@ -37,7 +37,7 @@
 - [ ] **UX-01**: All game features work fully offline — no network connection required
 - [ ] **UX-02**: User can toggle sound effects on/off in a settings screen
 - [ ] **UX-03**: App supports Dynamic Type — all text scales correctly with system font size settings
-- [ ] **UX-04**: App has a polished custom icon and App Store screenshots that communicate the core value prop
+- [x] **UX-04**: App has a polished custom icon and App Store screenshots that communicate the core value prop
 - [ ] **UX-05**: Privacy nutrition label is complete and accurate; app does not collect personal data
 
 ## v2 Requirements
@@ -90,7 +90,7 @@
 | UX-01 | Phase 5 | Pending |
 | UX-02 | Phase 5 | Pending |
 | UX-03 | Phase 5 | Pending |
-| UX-04 | Phase 5 | Pending |
+| UX-04 | Phase 5 | Complete |
 | UX-05 | Phase 5 | Pending |
 
 **Coverage:**
