@@ -17,6 +17,11 @@ struct GameView: View {
     // Default true: sound on out of the box, discoverable, and mutable in one tap.
     @AppStorage(SoundManager.soundEffectsEnabledKey) private var soundEffectsEnabled = true
     @State private var isShowingSettings = false
+    // UX-03 gap fix: "Finish Round" doesn't fit next to Shuffle/Delete at
+    // accessibility Dynamic Type sizes even shrunk to scale factor 0.3 -- an
+    // abbreviated label at large sizes is the standard accessible pattern
+    // (matches how system apps shorten labels rather than fight the metrics).
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         ZStack {
@@ -169,7 +174,30 @@ struct GameView: View {
         }
     }
 
+    // UX-03 gap fix: at accessibility Dynamic Type sizes, Finish Round moves to
+    // its own full-width row below Shuffle/Delete instead of sharing a single
+    // HStack row where "Finish Round" doesn't fit even shrunk to scale factor 0.3.
+    // Now that ScoreBarView and WordDisplayView shrink-to-fit rather than grow,
+    // this one extra row fits without pushing content off the bottom of the screen.
     private var controlRow: some View {
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: GameTheme.sm) {
+                    iconButtonsRow
+                    finishRoundButton
+                        .frame(maxWidth: .infinity)
+                }
+            } else {
+                HStack(spacing: GameTheme.md) {
+                    iconButtonsRow
+                    Spacer()
+                    finishRoundButton
+                }
+            }
+        }
+    }
+
+    private var iconButtonsRow: some View {
         HStack(spacing: GameTheme.md) {
             Button {
                 viewModel.shuffleOuterLetters()
@@ -188,20 +216,21 @@ struct GameView: View {
                     .frame(minWidth: GameTheme.minTapTarget, minHeight: GameTheme.minTapTarget)
             }
             .accessibilityLabel(Text("Delete Last Letter"))
-
-            Spacer()
-
-            // D-10: the round ends ONLY here. No timer, no auto-end when all
-            // words are found.
-            Button {
-                viewModel.finishRound()
-            } label: {
-                Text("Finish Round")
-                    .font(GameTheme.bodyFont)
-                    .frame(minHeight: GameTheme.minTapTarget)
-                    .padding(.horizontal, GameTheme.md)
-            }
-            .buttonStyle(.borderedProminent)
         }
+    }
+
+    // D-10: the round ends ONLY here. No timer, no auto-end when all words are found.
+    private var finishRoundButton: some View {
+        Button {
+            viewModel.finishRound()
+        } label: {
+            Text("Finish Round")
+                .font(GameTheme.bodyFont)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .frame(minHeight: GameTheme.minTapTarget)
+                .padding(.horizontal, GameTheme.md)
+        }
+        .buttonStyle(.borderedProminent)
     }
 }

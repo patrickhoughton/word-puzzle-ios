@@ -47,9 +47,15 @@ struct WordDisplayView: View {
                 .frame(minHeight: 40)
                 .opacity(feedbackText == nil ? 0 : 1)
 
+            // UX-03 gap fix: shrink-to-fit on one line at accessibility Dynamic
+            // Type sizes instead of truncating ("Tap or drag..."). Kept single-line
+            // (not wrapped) so this box's height never grows and pushes the hex
+            // grid / control row off the bottom of the screen (no ScrollView here).
             Text(word.isEmpty ? "Tap or drag letters" : word.uppercased())
                 .font(GameTheme.headingFont)
                 .foregroundStyle(word.isEmpty ? Color.secondary : Color.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
                 .frame(maxWidth: .infinity)
                 .padding(GameTheme.md)
                 .background(GameTheme.secondarySurface, in: RoundedRectangle(cornerRadius: 12))

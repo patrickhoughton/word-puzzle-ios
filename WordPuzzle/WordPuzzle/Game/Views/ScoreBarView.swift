@@ -19,20 +19,30 @@ struct ScoreBarView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: GameTheme.sm) {
+            // UX-03 gap fix: shrink-to-fit on one line at accessibility Dynamic
+            // Type sizes instead of truncating ("Novi...", "0 of 7...") or
+            // wrapping, which would grow this row's height and risk pushing the
+            // control row off the bottom of the screen (no ScrollView here).
             HStack {
                 Text(rank.displayName)
                     .font(GameTheme.headingFont)
                     .foregroundStyle(Color.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
                 Spacer()
                 Text("\(foundCount) of \(totalCount) words")
                     .font(GameTheme.labelFont)
                     .foregroundStyle(Color.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
             }
 
             if let freePuzzlesRemaining {
                 Text("\(freePuzzlesRemaining) of \(freePuzzlesPerDay) free puzzles today")
                     .font(GameTheme.labelFont)
                     .foregroundStyle(Color.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
 
