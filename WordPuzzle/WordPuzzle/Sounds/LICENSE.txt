@@ -8,6 +8,6 @@ credited here voluntarily.
 Source clips (Ogg Vorbis) were converted to 44100 Hz mono 16-bit PCM WAV
 for AVAudioPlayer compatibility:
   word_accepted.wav  <- Audio/confirmation_001.ogg
-  word_rejected.wav  <- Audio/error_008.ogg
+  word_rejected.wav  <- Audio/error_003.ogg
   pangram_found.wav  <- Audio/maximize_006.ogg
   round_end.wav      <- Audio/confirmation_004.ogg
