@@ -1,0 +1,13 @@
+Sound effects derived from Kenney "Interface Sounds"
+https://kenney.nl/assets/interface-sounds
+License: Creative Commons Zero (CC0 1.0 Universal)
+https://creativecommons.org/publicdomain/zero/1.0/
+Free for personal, educational and commercial use. Attribution is optional;
+credited here voluntarily.
+
+Source clips (Ogg Vorbis) were converted to 44100 Hz mono 16-bit PCM WAV
+for AVAudioPlayer compatibility:
+  word_accepted.wav  <- Audio/confirmation_001.ogg
+  word_rejected.wav  <- Audio/error_008.ogg
+  pangram_found.wav  <- Audio/maximize_006.ogg
+  round_end.wav      <- Audio/confirmation_004.ogg
