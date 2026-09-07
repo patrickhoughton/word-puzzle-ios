@@ -103,7 +103,7 @@ Plans:
 **Plans**: 8 plans
 Plans:
 - [x] 05-01-PLAN.md — Kenney CC0 SFX assets (converted to WAV) + SoundManager AVAudioPlayer pool with enabled gate (Wave 1)
-- [ ] 05-02-PLAN.md — GameTheme fonts to Dynamic Type text styles + clamped @ScaledMetric hex tile letters (Wave 1)
+- [x] 05-02-PLAN.md — GameTheme fonts to Dynamic Type text styles + clamped @ScaledMetric hex tile letters (Wave 1)
 - [ ] 05-03-PLAN.md — ImageRenderer icon generator, concept checkpoint, three opaque 1024x1024 appearance slots (Wave 1)
 - [ ] 05-04-PLAN.md — TARGETED_DEVICE_FAMILY decision + ITSAppUsesNonExemptEncryption=NO + scripts/compliance-guards.sh (Wave 2)
 - [ ] 05-05-PLAN.md — SettingsView sound toggle, GameView gear entry point, four D-01 SFX call sites (Wave 2)

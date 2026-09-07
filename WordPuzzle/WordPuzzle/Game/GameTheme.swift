@@ -20,11 +20,19 @@ enum GameTheme {
     /// Apple HIG minimum tap target.
     static let minTapTarget: CGFloat = 44
 
-    // MARK: - Typography (UI-SPEC "Typography" — exactly 4 sizes, 2 weights)
-    static let displayFont = Font.system(size: 34, weight: .semibold)
-    static let headingFont = Font.system(size: 20, weight: .semibold)
-    static let bodyFont = Font.system(size: 17, weight: .regular)
-    static let labelFont = Font.system(size: 13, weight: .regular)
+    // MARK: - Typography (05-UI-SPEC.md "Typography" — 4 roles, 2 weights)
+    // UX-03 / D-04: these are Dynamic Type TEXT STYLES, not fixed point sizes.
+    // Only text-style-based fonts participate in Dynamic Type; a fixed-point-size
+    // font never scales regardless of the user's setting (RESEARCH Pitfall 6).
+    // At the default ("Large") category these render at exactly the Phase 3 sizes —
+    // largeTitle 34, title3 20, body 17, footnote 13 — so the visual hierarchy is
+    // unchanged, but all four now scale together with the system setting.
+    // Never reintroduce a fixed-point-size font here; HexTileView's clamped letter
+    // size is the ONLY sanctioned exception in the app (D-05).
+    static let displayFont = Font.largeTitle.weight(.semibold)
+    static let headingFont = Font.title3.weight(.semibold)
+    static let bodyFont    = Font.body
+    static let labelFont   = Font.footnote
 
     // MARK: - Color (UI-SPEC "Color" — 60/30/10 split)
     /// Dominant 60% — screen backgrounds.
