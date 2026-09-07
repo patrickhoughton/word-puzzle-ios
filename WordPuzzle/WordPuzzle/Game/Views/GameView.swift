@@ -11,6 +11,13 @@ struct GameView: View {
     @Environment(EntitlementStore.self) private var entitlementStore
     @Environment(PersistenceStore.self) private var persistenceStore
 
+    // UX-02 / D-03: the sound preference is a single Bool flag, so it uses @AppStorage —
+    // the project convention for simple flags (same as dailyCount / puzzleSeed).
+    // Deliberately NOT a new @Observable store (RESEARCH "Anti-Patterns to Avoid").
+    // Default true: sound on out of the box, discoverable, and mutable in one tap.
+    @AppStorage(SoundManager.soundEffectsEnabledKey) private var soundEffectsEnabled = true
+    @State private var isShowingSettings = false
+
     var body: some View {
         ZStack {
             GameTheme.dominant.ignoresSafeArea()
@@ -70,10 +77,55 @@ struct GameView: View {
                 )
             }
         }
+        // A sheet, not a fullScreenCover: unlike the paywall, Settings is dismissable.
+        .sheet(isPresented: $isShowingSettings) {
+            SettingsView(
+                soundEffectsEnabled: $soundEffectsEnabled,
+                onDone: { isShowingSettings = false }
+            )
+        }
+        // UX-02 / D-01. Counter-based triggers, matching WordDisplayView's haptics:
+        // a Bool would silently stop firing on two consecutive identical outcomes
+        // (RESEARCH Pitfall 3).
+        .onChange(of: viewModel.acceptedSubmissionCount) { _, _ in
+            guard case let .accepted(_, _, isPangram) = viewModel.lastOutcome else { return }
+            SoundManager.shared.play(
+                SoundEffect.forSubmission(accepted: true, isPangram: isPangram),
+                enabled: soundEffectsEnabled
+            )
+        }
+        .onChange(of: viewModel.rejectedSubmissionCount) { _, _ in
+            SoundManager.shared.play(
+                SoundEffect.forSubmission(accepted: false, isPangram: false),
+                enabled: soundEffectsEnabled
+            )
+        }
+        // D-01 groups round end and paywall shown into one sound. forRoundPhase returns
+        // nil for .loading/.playing, so entering a round is silent.
+        .onChange(of: viewModel.roundPhase) { _, newPhase in
+            guard let effect = SoundEffect.forRoundPhase(newPhase) else { return }
+            SoundManager.shared.play(effect, enabled: soundEffectsEnabled)
+        }
     }
 
     private var playingLayout: some View {
         VStack(spacing: 0) {
+            HStack {
+                Spacer()
+                Button {
+                    isShowingSettings = true
+                } label: {
+                    Image(systemName: "gearshape")
+                        .font(GameTheme.headingFont)
+                        .foregroundStyle(Color.secondary)
+                        .frame(minWidth: GameTheme.minTapTarget, minHeight: GameTheme.minTapTarget)
+                }
+                .contentShape(Rectangle())
+                .accessibilityLabel(Text(SettingsView.settingsEntryAccessibilityLabel))
+            }
+            .padding(.horizontal, GameTheme.lg)
+            .padding(.top, GameTheme.sm)
+
             ScoreBarView(
                 rank: viewModel.rank,
                 foundCount: viewModel.foundCount,
@@ -86,7 +138,7 @@ struct GameView: View {
                 freePuzzlesPerDay: GameViewModel.freePuzzlesPerDay
             )
             .padding(.horizontal, GameTheme.lg)
-            .padding(.top, GameTheme.lg)
+            .padding(.top, GameTheme.sm)
 
             Spacer(minLength: GameTheme.md)
 
