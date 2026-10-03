@@ -45,7 +45,11 @@ struct FramedScreenshot: View {
         return CGSize(width: width, height: width * aspect)
     }
 
-    private var cornerRadius: CGFloat { 72 * unit * (deviceWidthFraction / 0.78) }
+    /// iPhone screens have proportionally rounder corners than iPad screens; using
+    /// the iPhone ratio on iPad clips the status bar text in the corners.
+    private var cornerRadius: CGFloat {
+        deviceSize.width * (canvas.height / canvas.width > 1.8 ? 0.07 : 0.03)
+    }
 
     var body: some View {
         ZStack {

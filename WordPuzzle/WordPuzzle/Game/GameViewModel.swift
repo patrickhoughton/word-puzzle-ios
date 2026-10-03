@@ -104,6 +104,16 @@ final class GameViewModel {
 
     /// D-12: generates the next puzzle and resets all round state.
     func startNewRound() {
+        #if DEBUG
+        // App Store screenshot staging (05-07): `-ScreenshotPuzzle harmony:r` pins every
+        // round to a known, photogenic puzzle. Compiled out of Release builds.
+        if wordList.isLoaded,
+           let spec = UserDefaults.standard.string(forKey: "ScreenshotPuzzle"),
+           let staged = stagedPuzzle(spec: spec, from: wordList) {
+            startNewRound(with: staged)
+            return
+        }
+        #endif
         guard wordList.isLoaded, let generated = try? generatePuzzle(from: wordList) else {
             roundPhase = .loading
             return

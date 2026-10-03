@@ -40,6 +40,26 @@ func generatePuzzle(from wordList: WordList, maxAttempts: Int = 1000) throws -> 
     throw GeneratorError.exhaustedRetries
 }
 
+#if DEBUG
+/// Builds the puzzle for a `"<pangram>:<center>"` spec (e.g. `"harmony:r"`), applying
+/// the same validity rule as `generatePuzzle`. DEBUG-only: used to stage App Store
+/// screenshots on a fixed puzzle. Returns nil for a malformed spec.
+func stagedPuzzle(spec: String, from wordList: WordList) -> Puzzle? {
+    let parts = spec.lowercased().split(separator: ":")
+    guard parts.count == 2, parts[1].count == 1, let center = parts[1].first else { return nil }
+    let letters = Set(parts[0])
+    guard letters.count == 7, letters.contains(center) else { return nil }
+    let valid = wordList.words.filter { isValidPuzzleWord($0, letters: letters, center: center) }
+    let validArray = Array(valid)
+    return Puzzle(
+        letters: letters,
+        centerLetter: center,
+        validWords: validArray,
+        pangrams: validArray.filter { Set($0) == letters }
+    )
+}
+#endif
+
 /// Returns true if `word` satisfies all Spelling Bee validity rules (D-05):
 /// - At least 4 letters
 /// - Contains the center letter
