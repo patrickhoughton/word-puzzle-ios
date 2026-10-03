@@ -108,7 +108,7 @@ Plans:
 - [x] 05-04-PLAN.md — TARGETED_DEVICE_FAMILY decision + ITSAppUsesNonExemptEncryption=NO + scripts/compliance-guards.sh (Wave 2)
 - [x] 05-05-PLAN.md — SettingsView sound toggle, GameView gear entry point, four D-01 SFX call sites (Wave 2)
 - [x] 05-06-PLAN.md — Manual QA: AX5 Dynamic Type on every screen, sound behaviour, Airplane Mode on device (Wave 3)
-- [ ] 05-07-PLAN.md — 6.9in Simulator captures + captioned 1320x2868 App Store screenshots (Wave 3)
+- [x] 05-07-PLAN.md — 6.9in Simulator captures + captioned 1320x2868 App Store screenshots (Wave 3)
 - [ ] 05-08-PLAN.md — App Store Connect: Data Not Collected privacy label, listing metadata, keywords, uploads (Wave 4)
 **UI hint**: yes
 
@@ -120,7 +120,7 @@ Plans:
 | 2. Persistence & Entitlements | 5/5 | Complete   | 2026-08-29 |
 | 3. Core Game UI | 5/5 | Complete | 2026-08-29 |
 | 4. Paywall & Free Tier Gate | 4/4 | Complete | 2026-08-31 |
-| 5. Polish, Compliance & App Store | 0/8 | Planned | - |
+| 5. Polish, Compliance & App Store | 7/8 | In Progress | - |
 
 ## Backlog
 
