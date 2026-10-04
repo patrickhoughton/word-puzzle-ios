@@ -71,9 +71,22 @@ enum GameTheme {
     static let celebrationCornerRadius: CGFloat = 12
     static let celebrationShadowOpacity: Double = 0.15
     static let celebrationShadowRadius: CGFloat = 8
-    static let overflowShimmerSeconds: Double = 2.0
-    static let overflowShimmerWidthFraction: CGFloat = 0.4
-    static let overflowShimmerOpacity: Double = 0.6
-    static let overflowGlowOpacity: Double = 0.6
-    static let overflowGlowRadius: CGFloat = 8
+    // Overflow (> 100%) bar: thick molten-gold capsule drawn over the plain bar's slot (no layout change).
+    static let overflowBarHeight: CGFloat = 10
+    static let overflowGold = Color(red: 0.96, green: 0.72, blue: 0.00)       // #F5B800, explicit (not tint-dependent)
+    static let overflowGoldDeep = Color(red: 0.88, green: 0.52, blue: 0.00)   // amber
+    static let overflowGoldLight = Color(red: 1.00, green: 0.89, blue: 0.48)  // pale gold
+    static let overflowFlowSeconds: Double = 2.4          // gradient drift period
+    static let overflowShimmerSeconds: Double = 1.4
+    static let overflowShimmerWidthFraction: CGFloat = 0.35
+    static let overflowShimmerOpacity: Double = 0.85
+    static let overflowGlowOpacityRange: ClosedRange<Double> = 0.45...0.9
+    static let overflowGlowRadiusRange: ClosedRange<CGFloat> = 5...14
+    static let overflowGlowPulseSeconds: Double = 1.6
+    static let overflowSparkleCount: Int = 14
+    static let overflowSparkleRise: CGFloat = 34          // pts sparkles drift above the bar
+    static let overflowBurstSeconds: Double = 0.9
+    static let overflowBurstParticles: Int = 22
+    static let overflowBurstScale: CGFloat = 1.8          // bar's vertical pop on first crossing 100%
+    static let overflowBurstAnimation: Animation = .spring(response: 0.25, dampingFraction: 0.45)
 }
