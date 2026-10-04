@@ -17,7 +17,7 @@ import Testing
         #expect(RankTier.tier(score: 70, maxScore: 100) == .master)
         #expect(RankTier.tier(score: 99, maxScore: 100) == .master)
         #expect(RankTier.tier(score: 100, maxScore: 100) == .legend)
-        #expect(RankTier.tier(score: 150, maxScore: 100) == .legend)
+        #expect(RankTier.tier(score: 150, maxScore: 100) == .mythicGrandmaster)
     }
 
     @Test func testZeroMaxScoreDoesNotDivideByZero() {
@@ -34,14 +34,24 @@ import Testing
     }
 
     @Test func testDisplayNamesMatchD09Exactly() {
-        #expect(RankTier.allCases.count == 10)
+        #expect(RankTier.allCases.count == 11)
         #expect(RankTier.allCases.map(\.displayName) == [
             "Novice", "Rookie", "Apprentice", "Wordsmith", "Adept",
-            "Skilled", "Expert", "Virtuoso", "Master", "Legend"
+            "Skilled", "Expert", "Virtuoso", "Master", "Legend", "Mythic Grandmaster"
         ])
     }
 
     @Test func testThresholdPercentagesMatchD09Exactly() {
-        #expect(RankTier.allCases.map(\.thresholdPercent) == [0, 2, 5, 8, 15, 25, 40, 50, 70, 100])
+        #expect(RankTier.allCases.map(\.thresholdPercent) == [0, 2, 5, 8, 15, 25, 40, 50, 70, 100, 100])
+    }
+
+    @Test func testMythicGrandmasterRequiresStrictlyMoreThanMax() {
+        #expect(RankTier.tier(score: 100, maxScore: 100) == .legend)
+        #expect(RankTier.tier(score: 101, maxScore: 100) == .mythicGrandmaster)
+        #expect(RankTier.tier(score: 1001, maxScore: 1000) == .mythicGrandmaster)
+        #expect(RankTier.tier(score: 1000, maxScore: 1000) == .legend)
+        #expect(RankTier.mythicGrandmaster.requiredScore(maxScore: 100) == 101)
+        #expect(RankTier.mythicGrandmaster.requiredScore(maxScore: 0) == 0)
+        #expect(RankTier.mythicGrandmaster > RankTier.legend)
     }
 }
