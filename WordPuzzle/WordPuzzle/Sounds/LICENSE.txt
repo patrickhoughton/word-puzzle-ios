@@ -11,3 +11,6 @@ for AVAudioPlayer compatibility:
   word_rejected.wav  <- Audio/error_004.ogg (gain reduced -9dB for a softer, less punitive feel)
   pangram_found.wav  <- Audio/maximize_006.ogg
   round_end.wav      <- Audio/confirmation_004.ogg
+  pangram_sweep.wav    <- Audio/maximize_008.ogg  (Phase 8 sweep fanfare)
+  sweep_tick.wav       <- Audio/tick_002.ogg      (Phase 8 sweep tally tick)
+  length_complete.wav  <- Audio/confirmation_002.ogg (Phase 8 length-completion chime)
