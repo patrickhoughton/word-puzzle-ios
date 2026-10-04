@@ -148,11 +148,16 @@ Plans:
 ### Phase 8: All-Pangrams Bonus
 **Goal**: an extra scoring bonus for finding every pangram in a puzzle, not just the per-word +7 pangram bonus that already exists. Context: `Puzzle.pangrams` is already a plural array (a puzzle can have more than one pangram, per `PuzzleGenerator`'s `pangrams = validArray.filter { Set($0) == letters }`), and `ScoreCalculator.points(for:isPangram:)` already awards +7 per individual pangram found — but there's currently no reward tied to clearing the *complete set*. Needs: (1) UI/feedback for "you found all N pangrams!" (likely surfaced in `MissedWordsView`'s pangram badge or a distinct end-of-round callout), (2) a bonus formula decision (flat bonus vs. scaled by pangram count), (3) confirming how often multi-pangram puzzles actually occur in practice (worth checking before investing UI work, since a bonus that almost never triggers isn't worth much). **Expanded 2026-10-04 (discuss-phase):** also includes a length-completion bonus (+L for finding every word of length L). See 08-CONTEXT.md.
 **Depends on**: Phase 5
-**Requirements**: TBD
-**Plans**: 0 plans
+**Requirements**: BON-01..BON-08 (phase-local IDs derived from 08-CONTEXT D-01..D-18; see 08-RESEARCH Phase Requirements)
+**Plans**: 6 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 8 to break down)
+- [ ] 08-01-PLAN.md — Bonus formulas, hidden Mythic Grandmaster tier, CompletionEvent + celebration copy/timing, GameTheme tokens (Wave 1, TDD)
+- [ ] 08-02-PLAN.md — Kenney CC0 sweep fanfare / tick / length chime + SoundEffect cases and replace-sound rule (Wave 1)
+- [ ] 08-03-PLAN.md — GameViewModel sweep + length-completion detection, celebration queue, unclamped progress (Wave 2, TDD)
+- [ ] 08-04-PLAN.md — ScoreBarView counter/overflow/Mythic, Found Words pangram line + group bonus, MissedWords bonus lines (Wave 2)
+- [ ] 08-05-PLAN.md — Celebration views + GameView wiring: sequential pill/tally drain, sounds, haptics, announcements (Wave 3)
+- [ ] 08-06-PLAN.md — Wi-Fi device install + on-device approval (Wave 4, checkpoint)
 **UI hint**: yes
 **Promoted from**: backlog 999.8 (2026-10-04, built into v1.0 before submission)
 
