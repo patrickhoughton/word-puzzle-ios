@@ -18,6 +18,7 @@ Endless, fresh word puzzles that generate algorithmically from a local dictionar
 - [x] App generates unlimited puzzles algorithmically (no curated content) — Phase 1 (word-engine-puzzle-generation) built it; Phase 3 verified Finish Round → Next Puzzle generates a fresh puzzle end-to-end on device
 - [x] Free tier: limited puzzles per day (e.g., 3 free puzzles) — Phase 4 (paywall-free-tier-gate), verified end-to-end on Simulator 2026-08-31 (abandoned rounds count toward the limit; paywall triggers on the 4th request, not the 3rd)
 - [x] Premium unlock: one-time IAP removes daily limit for unlimited play — Phase 4 (paywall-free-tier-gate), verified via real StoreKit sandbox purchase and restore-after-reinstall on a physical iPhone 15 Pro 2026-08-31
+- [x] Rejected words show distinct feedback per reason (too short, missing center letter, not a word, already found; duplicates get gentle, silent feedback) — Phase 6 (differentiated-invalid-word-messaging), verified on a physical iPhone 15 Pro 2026-10-04
 
 ### Active
 
@@ -78,4 +79,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-31 after Phase 4 (paywall-free-tier-gate) completion — the free-tier daily limit, paywall screen, and real StoreKit sandbox purchase/restore flows are built, wired into the app, and human-verified end-to-end (Simulator for the gate mechanics, physical iPhone for the real sandbox purchase and restore-across-reinstall). Remaining active requirements (offline verification, App Store availability) are Phase 5 work.*
+*Last updated: 2026-10-04 after Phase 6 (differentiated-invalid-word-messaging) completion — the single "Not a valid word" message was replaced with typed per-reason rejection feedback; duplicates get a gentle gray message with a light haptic and no sound. Verified on device.*
