@@ -26,9 +26,82 @@ final class GameViewModelTests {
         )
     }
 
+    private func pangramFixturePuzzle() -> Puzzle {
+        Puzzle(
+            letters: Set("acdelns"),
+            centerLetter: "a",
+            validWords: ["cane", "clan", "lance", "lanes", "candle", "decals", "scaled", "candles"],
+            pangrams: ["candles"]
+        )
+    }
+
     private func submit(_ word: String, on vm: GameViewModel) -> Bool {
         for ch in word { vm.append(ch) }
         return vm.submitCurrentWord()
+    }
+
+    // MARK: - Phase 7 foundWordGroups
+
+    @Test func testFoundWordGroupsEmptyBeforeAnyWord() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        #expect(vm.foundWordGroups.map(\.length) == [4, 5, 6, 7])
+        #expect(vm.foundWordGroups.map(\.total) == [2, 2, 3, 1])
+        #expect(vm.foundWordGroups.allSatisfy { $0.found.isEmpty })
+        #expect(vm.foundWordGroups.allSatisfy { !$0.isComplete })
+    }
+
+    @Test func testFoundWordGroupsIncludeEveryLengthAscending() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        #expect(submit("lance", on: vm) == true)
+        let groups = vm.foundWordGroups
+        #expect(groups.map(\.length) == [4, 5, 6, 7])
+        #expect(groups[1].found.map(\.text) == ["lance"])
+        #expect(groups[0].found.isEmpty)
+        #expect(groups[2].found.isEmpty)
+        #expect(groups[3].found.isEmpty)
+    }
+
+    @Test func testFoundWordGroupsAlphabetical() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        #expect(submit("scaled", on: vm) == true)
+        #expect(submit("candle", on: vm) == true)
+        #expect(submit("decals", on: vm) == true)
+        let group6 = vm.foundWordGroups.first { $0.length == 6 }
+        #expect(group6?.found.map(\.text) == ["candle", "decals", "scaled"])
+    }
+
+    @Test func testFoundWordGroupsCountsAndCompletion() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        #expect(submit("cane", on: vm) == true)
+        #expect(submit("clan", on: vm) == true)
+        let groups = vm.foundWordGroups
+        #expect(groups[0].found.count == 2)
+        #expect(groups[0].total == 2)
+        #expect(groups[0].isComplete == true)
+        #expect(groups[1].isComplete == false)
+        #expect(groups[1].found.count == 0)
+        #expect(groups[1].total == 2)
+    }
+
+    @Test func testFoundWordGroupsPointsAndPangram() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        #expect(submit("candles", on: vm) == true)
+        #expect(submit("cane", on: vm) == true)
+        #expect(submit("lance", on: vm) == true)
+        let groups = vm.foundWordGroups
+        #expect(groups[3].found == [FoundWord(text: "candles", points: 14, isPangram: true)])
+        #expect(groups[0].found == [FoundWord(text: "cane", points: 1, isPangram: false)])
+        #expect(groups[1].found == [FoundWord(text: "lance", points: 5, isPangram: false)])
+    }
+
+    @Test func testFoundWordGroupsEmptyWithoutPuzzle() {
+        let vm = GameViewModel(wordList: wordList)
+        #expect(vm.foundWordGroups == [])
     }
 
     @Test func testAppendAndSubmitBuildsWord() {
