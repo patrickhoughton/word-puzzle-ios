@@ -19,7 +19,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 - [ ] **Phase 5: Polish, Compliance & App Store** - Sound effects, Dynamic Type, offline verification, privacy label, app icon, screenshots, ASO
 - [x] **Phase 6: Differentiated Invalid-Word Messaging** - Distinct feedback for too-short, not-in-dictionary and already-found submissions (completed 2026-10-04)
 - [x] **Phase 7: Found Words View** - In-round list of found words, grouped by length (completed 2026-10-04)
-- [ ] **Phase 8: All-Pangrams Bonus** - Extra bonus and callout for finding every pangram in a puzzle
+- [x] **Phase 8: All-Pangrams Bonus** - Extra bonus and callout for finding every pangram in a puzzle (completed 2026-10-04)
 - [ ] **Phase 9: Player Stats Screen** - Lifetime stats and streak surfaced in a player-visible screen
 - [ ] **Phase 10: Double-Tap Shuffle** - Double-tap empty space to shuffle the outer letters
 - [ ] **Phase 11: Long-Press Center Shuffle** - Long-press the center tile to shuffle, coexisting with tap-to-append
@@ -157,7 +157,7 @@ Plans:
 - [x] 08-03-PLAN.md — GameViewModel sweep + length-completion detection, celebration queue, unclamped progress (Wave 2, TDD)
 - [x] 08-04-PLAN.md — ScoreBarView counter/overflow/Mythic, Found Words pangram line + group bonus, MissedWords bonus lines (Wave 2)
 - [x] 08-05-PLAN.md — Celebration views + GameView wiring: sequential pill/tally drain, sounds, haptics, announcements (Wave 3)
-- [ ] 08-06-PLAN.md — Wi-Fi device install + on-device approval (Wave 4, checkpoint)
+- [x] 08-06-PLAN.md — Wi-Fi device install + on-device approval (Wave 4, checkpoint)
 **UI hint**: yes
 **Promoted from**: backlog 999.8 (2026-10-04, built into v1.0 before submission)
 
@@ -216,7 +216,7 @@ Plans:
 | 5. Polish, Compliance & App Store | 7/8 | In Progress | - |
 | 6. Differentiated Invalid-Word Messaging | 2/2 | Complete | 2026-10-04 |
 | 7. Found Words View | 3/3 | Complete | 2026-10-04 |
-| 8. All-Pangrams Bonus | 5/6 | In Progress|  |
+| 8. All-Pangrams Bonus | 6/6 | Complete   | 2026-10-04 |
 | 9. Player Stats Screen | 0/0 | Not started | - |
 | 10. Double-Tap Shuffle | 0/0 | Not started | - |
 | 11. Long-Press Center Shuffle | 0/0 | Not started | - |
@@ -228,7 +228,7 @@ Plans:
 
 **Goal:** [Captured for future planning] — Patrick suspects the bundled word list is missing words players would expect to be valid. Current list is `enable-clean.txt` (~172,678 words, the profanity-filtered ENABLE list, per CLAUDE.md's original tech-stack choice). **Scope constraint:** do NOT source or diff against Words With Friends' official word list — it's proprietary to Zynga/EA, not public domain, same reasoning CLAUDE.md already uses to rule out the official Scrabble/SOWPODS dictionary ("cannot bundle without licensing"). Safe approach instead: cross-reference `enable-clean.txt` against other public-domain or freely-licensed word lists (e.g. SCOWL) to find and fill genuine gaps, and/or gather specific examples of rejected words players expected to work as concrete test cases before changing the list.
 **Requirements:** TBD
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans complete
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
