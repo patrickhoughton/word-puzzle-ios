@@ -28,16 +28,12 @@ final class WordListTests {
     }
 
     @Test func testWordSetLookupIsO1() async throws {
-        // O(1) Set.contains: 10,000 lookups should complete in <500ms.
-        // An O(n) linear scan of 170K words would take seconds for 10K calls.
-        // This threshold definitively proves the Set (not Array) implementation.
-        let lowercasedKey = "puzzle" // Pre-compute to avoid allocation overhead skewing timing
-        let start = Date()
-        for _ in 0..<10_000 {
-            _ = wordList.words.contains(lowercasedKey)
-        }
-        let elapsed = Date().timeIntervalSince(start)
-        #expect(elapsed < 0.500, "10,000 Set lookups took \(elapsed)s — expected < 0.500s for O(1)")
+        // O(1) lookup is guaranteed by the storage type, so pin the type at compile time:
+        // this line stops compiling if `words` ever becomes an Array (O(n) contains).
+        // A wall-clock threshold was used before but flaked under full-suite load.
+        let words: Set<String> = wordList.words
+        #expect(words.contains("puzzle"))
+        #expect(!words.contains("zzzzzzz"))
     }
 
     @Test func testPangramPoolPopulated() async throws {
