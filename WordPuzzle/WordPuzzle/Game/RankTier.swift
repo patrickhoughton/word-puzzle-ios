@@ -1,6 +1,6 @@
 import Foundation
 
-/// CONTEXT D-09 (locked): an original 10-tier ladder — deliberately NOT NYT
+/// CONTEXT D-09 (locked): an original 10-tier ladder plus a hidden 11th tier (Phase 8 D-06) — deliberately NOT NYT
 /// Spelling Bee's own tier names (App Store 4.3 clone-risk avoidance) — using
 /// the same percentage-of-max-score thresholds. Tier names are exact and must
 /// not be reworded (03-UI-SPEC.md Copywriting Contract).
@@ -15,6 +15,7 @@ enum RankTier: Int, CaseIterable, Comparable, Sendable {
     case virtuoso
     case master
     case legend
+    case mythicGrandmaster
 
     /// Percentage of the puzzle's max possible score required to reach this tier.
     var thresholdPercent: Double {
@@ -29,6 +30,8 @@ enum RankTier: Int, CaseIterable, Comparable, Sendable {
         case .virtuoso:   return 50
         case .master:     return 70
         case .legend:     return 100
+        // Entry is STRICTLY above 100% (D-06); see tier(score:maxScore:).
+        case .mythicGrandmaster: return 100
         }
     }
 
@@ -44,6 +47,8 @@ enum RankTier: Int, CaseIterable, Comparable, Sendable {
         case .virtuoso:   return "Virtuoso"
         case .master:     return "Master"
         case .legend:     return "Legend"
+        // Sanctioned exception to the 03-UI-SPEC exact-names rule (Phase 8 D-06).
+        case .mythicGrandmaster: return "Mythic Grandmaster"
         }
     }
 
@@ -51,14 +56,18 @@ enum RankTier: Int, CaseIterable, Comparable, Sendable {
     /// Rounds DOWN, matching NYT behaviour.
     func requiredScore(maxScore: Int) -> Int {
         guard maxScore > 0 else { return 0 }
+        if self == .mythicGrandmaster { return maxScore + 1 }
         return Int((thresholdPercent / 100 * Double(maxScore)).rounded(.down))
     }
 
     /// Highest tier whose requirement is met by `score`.
     static func tier(score: Int, maxScore: Int) -> RankTier {
         guard maxScore > 0 else { return .novice }
+        // D-06: hidden tier, strictly above max (bonuses are excluded from maxScore, D-03).
+        if score > maxScore { return .mythicGrandmaster }
         var result = RankTier.novice
-        for tier in RankTier.allCases where score >= tier.requiredScore(maxScore: maxScore) {
+        for tier in RankTier.allCases where tier != .mythicGrandmaster
+            && score >= tier.requiredScore(maxScore: maxScore) {
             result = tier
         }
         return result

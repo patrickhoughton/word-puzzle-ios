@@ -32,4 +32,23 @@ import Foundation
         #expect(total == 20)
         #expect(ScoreCalculator.score(for: [], pangrams: []) == 0)
     }
+
+    @Test func testPangramBonusPerWordIsSeven() {
+        #expect(ScoreCalculator.pangramBonusPerWord == 7)
+    }
+
+    @Test func testSweepBonusIsSevenPerPangram() {
+        #expect(ScoreCalculator.sweepBonus(pangramCount: 0) == 0)
+        #expect(ScoreCalculator.sweepBonus(pangramCount: 1) == 7)
+        #expect(ScoreCalculator.sweepBonus(pangramCount: 3) == 21)
+        #expect(ScoreCalculator.sweepBonus(pangramCount: 40) == 280)
+        #expect(ScoreCalculator.sweepBonus(pangramCount: -1) == 0)
+    }
+
+    @Test func testLengthCompletionBonusEqualsLength() {
+        #expect(ScoreCalculator.lengthCompletionBonus(length: 4) == 4)
+        #expect(ScoreCalculator.lengthCompletionBonus(length: 5) == 5)
+        #expect(ScoreCalculator.lengthCompletionBonus(length: 8) == 8)
+        #expect(ScoreCalculator.lengthCompletionBonus(length: 3) == 0)
+    }
 }
