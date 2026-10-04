@@ -63,5 +63,52 @@ enum LegacySchemaV1: VersionedSchema {
         #expect(store.totalGamesPlayed() == 3)
         #expect(store.bestScore() == 61)
         #expect(store.totalWordsFound() == 41)
+
+        let records = try container.mainContext.fetch(FetchDescriptor<GameRecord>())
+        #expect(records.count == 3)
+        #expect(records.allSatisfy { $0.rankRaw == nil && $0.pangramsFound == nil && $0.hadSweep == nil })
+
+        store.record(score: 99, wordsFoundCount: 30, date: day, rank: .legend, pangramsFound: 2, hadSweep: true)
+        #expect(store.totalGamesPlayed() == 4)
+        #expect(store.bestScore() == 99)
+        let all = try container.mainContext.fetch(FetchDescriptor<GameRecord>())
+        let row = try #require(all.first { $0.score == 99 })
+        #expect(row.rankRaw == RankTier.legend.rawValue)
+        #expect(row.pangramsFound == 2)
+        #expect(row.hadSweep == true)
+    }
+
+    @Test func testMigratedStoreStaysReadableAcrossReopen() throws {
+        let url = tempStoreURL()
+        defer { removeStore(at: url) }
+        let day = Date(timeIntervalSince1970: 1_790_000_000)
+        try writeLegacyStore(at: url, day: day)
+
+        do {
+            let container = try PersistenceStore.makeContainer(url: url)
+            let store = PersistenceStore(container: container)
+            store.record(score: 99, wordsFoundCount: 30, date: day, rank: .legend, pangramsFound: 2, hadSweep: true)
+            #expect(store.totalGamesPlayed() == 4)
+        }
+        let reopened = try PersistenceStore.makeContainer(url: url)
+        #expect(PersistenceStore(container: reopened).totalGamesPlayed() == 4)
+    }
+
+    @Test func testRecordWithoutNewFieldsLeavesThemNil() throws {
+        let container = try PersistenceStore.makeContainer(inMemory: true)
+        let store = PersistenceStore(container: container)
+        store.record(score: 10, wordsFoundCount: 4)
+        let row = try #require(try container.mainContext.fetch(FetchDescriptor<GameRecord>()).first)
+        #expect(row.rankRaw == nil && row.pangramsFound == nil && row.hadSweep == nil)
+    }
+
+    @Test func testRecordPersistsNewFields() throws {
+        let container = try PersistenceStore.makeContainer(inMemory: true)
+        let store = PersistenceStore(container: container)
+        store.record(score: 50, wordsFoundCount: 10, rank: .mythicGrandmaster, pangramsFound: 0, hadSweep: false)
+        let row = try #require(try container.mainContext.fetch(FetchDescriptor<GameRecord>()).first)
+        #expect(row.rankRaw == 10)
+        #expect(row.pangramsFound == 0)
+        #expect(row.hadSweep == false)
     }
 }

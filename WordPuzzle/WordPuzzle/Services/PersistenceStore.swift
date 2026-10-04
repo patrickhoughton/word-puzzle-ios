@@ -33,9 +33,12 @@ final class PersistenceStore {
 
     /// Records one finished session and saves immediately so the value survives
     /// an app termination that happens before the next autosave.
+    /// Phase 9 D-15: rank/pangramsFound/hadSweep are defaulted so the frozen Phase 2 call sites compile unchanged.
     @discardableResult
-    func record(score: Int, wordsFoundCount: Int, date: Date = .now) -> GameRecord {
-        let entry = GameRecord(date: date, score: score, wordsFoundCount: wordsFoundCount)
+    func record(score: Int, wordsFoundCount: Int, date: Date = .now,
+                rank: RankTier? = nil, pangramsFound: Int? = nil, hadSweep: Bool? = nil) -> GameRecord {
+        let entry = GameRecord(date: date, score: score, wordsFoundCount: wordsFoundCount,
+                               rankRaw: rank?.rawValue, pangramsFound: pangramsFound, hadSweep: hadSweep)
         context.insert(entry)
         try? context.save()
         return entry
