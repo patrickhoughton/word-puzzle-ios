@@ -20,6 +20,17 @@ struct MissedWordsView: View {
     var sweepBonus: Int = 0
     /// Phase 8: total length-completion bonuses earned this round (0 = hide).
     var lengthBonusTotal: Int = 0
+    /// Phase 9 D-04: lifetime best score and current streak, read by GameView AFTER finishRound()
+    /// recorded this round, so they include it. The summary line shows only when onShowStats is set.
+    var bestScore: Int = 0
+    var currentStreak: Int = 0
+    var onShowStats: (() -> Void)? = nil
+
+    static let statsSummaryAccessibilityHint = "Opens your stats"
+    static func statsSummaryLine(bestScore: Int, currentStreak: Int) -> String { "Best \(bestScore) · Streak \(currentStreak)" }
+    static func statsSummaryAccessibilityLabel(bestScore: Int, currentStreak: Int) -> String {
+        "Best score \(bestScore), streak \(currentStreak) \(currentStreak == 1 ? "day" : "days")"
+    }
 
     static func sweepLine(bonus: Int) -> String { CompletionCelebration.sweepHeadline(bonus: bonus) }
     static func lengthBonusLine(total: Int) -> String { "Length bonuses \(CompletionCelebration.bonusText(total))" }
@@ -47,6 +58,28 @@ struct MissedWordsView: View {
                     .padding(.horizontal, GameTheme.lg)
                     .padding(.bottom, GameTheme.lg)
                 }
+            }
+
+            if let onShowStats {
+                Button(action: onShowStats) {
+                    HStack(spacing: GameTheme.xs) {
+                        Text(Self.statsSummaryLine(bestScore: bestScore, currentStreak: currentStreak))
+                            .font(GameTheme.bodyFont)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                        Image(systemName: "chevron.right")
+                            .font(GameTheme.labelFont)
+                            .accessibilityHidden(true)
+                    }
+                    .foregroundStyle(Color.secondary)
+                    .frame(maxWidth: .infinity, minHeight: GameTheme.minTapTarget)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .padding(.top, GameTheme.sm)
+                .accessibilityLabel(Text(Self.statsSummaryAccessibilityLabel(bestScore: bestScore, currentStreak: currentStreak)))
+                .accessibilityHint(Text(Self.statsSummaryAccessibilityHint))
+                .accessibilityIdentifier("roundOverStatsSummary")
             }
 
             Button(action: onContinue) {
@@ -156,5 +189,19 @@ struct MissedWordsView: View {
         onContinue: {},
         sweepBonus: 21,
         lengthBonusTotal: 12
+    )
+}
+
+#Preview("With stats summary") {
+    MissedWordsView(
+        groups: [MissedWordGroup(length: 4, words: ["cane", "clan"])],
+        pangrams: [],
+        rank: .adept,
+        foundCount: 12,
+        totalCount: 16,
+        onContinue: {},
+        bestScore: 142,
+        currentStreak: 4,
+        onShowStats: {}
     )
 }
