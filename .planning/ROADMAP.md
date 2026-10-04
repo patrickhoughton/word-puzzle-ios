@@ -17,6 +17,13 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 - [x] **Phase 3: Core Game UI** - Playable game on a real device: letter display, word input, validation feedback, scoring, end-of-round reveal, haptics (completed 2026-08-29)
 - [x] **Phase 4: Paywall & Free Tier Gate** - 3-puzzle daily limit enforced; paywall screen with Restore Purchases; IAP purchase and restore flows sandbox-tested (completed 2026-08-31)
 - [ ] **Phase 5: Polish, Compliance & App Store** - Sound effects, Dynamic Type, offline verification, privacy label, app icon, screenshots, ASO
+- [ ] **Phase 6: Differentiated Invalid-Word Messaging** - Distinct feedback for too-short, not-in-dictionary and already-found submissions
+- [ ] **Phase 7: Found Words View** - In-round list of found words, grouped by length
+- [ ] **Phase 8: All-Pangrams Bonus** - Extra bonus and callout for finding every pangram in a puzzle
+- [ ] **Phase 9: Player Stats Screen** - Lifetime stats and streak surfaced in a player-visible screen
+- [ ] **Phase 10: Double-Tap Shuffle** - Double-tap empty space to shuffle the outer letters
+- [ ] **Phase 11: Long-Press Center Shuffle** - Long-press the center tile to shuffle, coexisting with tap-to-append
+- [ ] **Phase 12: First-Launch Tutorial** - First-launch onboarding that teaches the core mechanics
 
 ## Phase Details
 
@@ -111,6 +118,84 @@ Plans:
 - [x] 05-07-PLAN.md — 6.9in Simulator captures + captioned 1320x2868 App Store screenshots (Wave 3)
 - [ ] 05-08-PLAN.md — App Store Connect: Data Not Collected privacy label, listing metadata, keywords, uploads (Wave 4)
 **UI hint**: yes
+**Note (2026-10-04)**: 05-08 finishes after Phase 12 -- v1.0 submission is on hold so the backlog features ship in v1.0; screenshots are re-captured and uploaded then.
+
+### Phase 6: Differentiated Invalid-Word Messaging
+**Goal**: replace the single generic "Not a valid word" rejection message with distinct feedback for each rejection reason: word too short (< 4 letters), word not in the dictionary/doesn't use valid letters, and word already found this round (duplicate). Currently `GameViewModel.submitCurrentWord()` returns a plain `Bool` and `WordDisplayView` shows one hardcoded string for every failure case, so the player can't tell why a word was rejected.
+**Depends on**: Phase 5
+**Requirements**: TBD
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 6 to break down)
+**UI hint**: yes
+**Promoted from**: backlog 999.3 (2026-10-04, built into v1.0 before submission)
+
+### Phase 7: Found Words View
+**Goal**: let the player see the words they've already found during the current round, grouped by length (same organizing pattern as `MissedWordsView`'s round-end reveal). Currently `GameViewModel` already tracks found words internally (used to compute the missed-words set at round end), but there's no in-round view surfacing them — the player only sees a running count in `ScoreBarView`, not the actual word list.
+**Depends on**: Phase 5
+**Requirements**: TBD
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 7 to break down)
+**UI hint**: yes
+**Promoted from**: backlog 999.2 (2026-10-04, built into v1.0 before submission)
+
+### Phase 8: All-Pangrams Bonus
+**Goal**: an extra scoring bonus for finding every pangram in a puzzle, not just the per-word +7 pangram bonus that already exists. Context: `Puzzle.pangrams` is already a plural array (a puzzle can have more than one pangram, per `PuzzleGenerator`'s `pangrams = validArray.filter { Set($0) == letters }`), and `ScoreCalculator.points(for:isPangram:)` already awards +7 per individual pangram found — but there's currently no reward tied to clearing the *complete set*. Needs: (1) UI/feedback for "you found all N pangrams!" (likely surfaced in `MissedWordsView`'s pangram badge or a distinct end-of-round callout), (2) a bonus formula decision (flat bonus vs. scaled by pangram count), (3) confirming how often multi-pangram puzzles actually occur in practice (worth checking before investing UI work, since a bonus that almost never triggers isn't worth much).
+**Depends on**: Phase 5
+**Requirements**: TBD
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 8 to break down)
+**UI hint**: yes
+**Promoted from**: backlog 999.8 (2026-10-04, built into v1.0 before submission)
+
+### Phase 9: Player Stats Screen
+**Goal**: surface `PersistenceStore`'s existing lifetime stats (`totalGamesPlayed`, `bestScore`, `totalWordsFound`, `currentStreak`, `puzzlesPlayedToday`) in a UI the player can actually see. The data has existed since Phase 2; no view currently reads it. Natural fit alongside Phase 5's settings screen.
+**Depends on**: Phase 5
+**Requirements**: TBD
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 9 to break down)
+**UI hint**: yes
+**Promoted from**: backlog 999.1 (2026-10-04, built into v1.0 before submission)
+
+### Phase 10: Double-Tap Shuffle
+**Goal**: a double-tap gesture as an alternative (or addition) to the Shuffle button. **Trigger decided: double-tap any empty area of the screen** (off the honeycomb tiles) — this avoids the conflict where double-tapping a tile is already legitimate input (appends that letter twice, e.g. a double letter in the word being built). Implementation note: `LetterGridView`'s existing single `DragGesture(minimumDistance: 0)` is scoped to the tiles themselves for hit-testing, so an empty-area double-tap recognizer would live on the surrounding container/background view, not compete with the grid's own gesture — should avoid the contention risk that made 999.5 (rotate gesture, tile-scoped) trickier.
+**Depends on**: Phase 5
+**Requirements**: TBD
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 10 to break down)
+**UI hint**: yes
+**Promoted from**: backlog 999.6 (2026-10-04, built into v1.0 before submission)
+
+### Phase 11: Long-Press Center Shuffle
+**Goal**: long-press (or "hard press") on the gold center tile as an alternative (or addition) to the Shuffle button. **Hardware note:** true pressure-sensitive 3D Touch was removed from iPhones starting with the XR/11 generation; Apple's replacement, Haptic Touch, is functionally a long-press with a delay + haptic confirmation — so "long press" and "hard press" are the same gesture on all currently-shipping iPhones, not two separate inputs to build. Conflict to resolve at design time: the center tile is currently part of the single unified `DragGesture(minimumDistance: 0)` hit-test area in `LetterGridView` (tapping it appends the center letter), so a long-press recognizer on that same tile needs to coexist with tap-to-append without misfiring — likely resolved via a time threshold (a fast tap still appends; holding past ~0.5s triggers shuffle instead) rather than a fully separate `LongPressGesture`, to avoid the two-recognizer contention risk noted in 999.5.
+**Depends on**: Phase 5
+**Requirements**: TBD
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 11 to break down)
+**UI hint**: yes
+**Promoted from**: backlog 999.7 (2026-10-04, built into v1.0 before submission)
+
+### Phase 12: First-Launch Tutorial
+**Goal**: a first-time-user tutorial/onboarding flow that teaches the core mechanics (tap/drag letters to build a word, center letter is required, swipe down to submit, shuffle, pangrams) before or during their first round. Currently there is no onboarding at all — `ContentView` loads straight into `GameView` for every launch, first-time or not. Needs a "has the user seen this before" flag (likely `@AppStorage`, consistent with the project's existing flags/seeds persistence split) and a decision on format (overlay walkthrough vs. a scripted first puzzle vs. a standalone intro screen).
+**Depends on**: Phases 6-11 (teaches the mechanics and screens they add)
+**Requirements**: TBD
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 12 to break down)
+**UI hint**: yes
+**Promoted from**: backlog 999.4 (2026-10-04, built into v1.0 before submission)
 
 ## Progress
 
@@ -121,71 +206,15 @@ Plans:
 | 3. Core Game UI | 5/5 | Complete | 2026-08-29 |
 | 4. Paywall & Free Tier Gate | 4/4 | Complete | 2026-08-31 |
 | 5. Polish, Compliance & App Store | 7/8 | In Progress | - |
+| 6. Differentiated Invalid-Word Messaging | 0/0 | Not started | - |
+| 7. Found Words View | 0/0 | Not started | - |
+| 8. All-Pangrams Bonus | 0/0 | Not started | - |
+| 9. Player Stats Screen | 0/0 | Not started | - |
+| 10. Double-Tap Shuffle | 0/0 | Not started | - |
+| 11. Long-Press Center Shuffle | 0/0 | Not started | - |
+| 12. First-Launch Tutorial | 0/0 | Not started | - |
 
 ## Backlog
-
-### Phase 999.1: Player stats screen (BACKLOG)
-
-**Goal:** [Captured for future planning] — surface `PersistenceStore`'s existing lifetime stats (`totalGamesPlayed`, `bestScore`, `totalWordsFound`, `currentStreak`, `puzzlesPlayedToday`) in a UI the player can actually see. The data has existed since Phase 2; no view currently reads it. Natural fit alongside Phase 5's settings screen.
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd:review-backlog when ready)
-
-### Phase 999.2: Found words view (BACKLOG)
-
-**Goal:** [Captured for future planning] — let the player see the words they've already found during the current round, grouped by length (same organizing pattern as `MissedWordsView`'s round-end reveal). Currently `GameViewModel` already tracks found words internally (used to compute the missed-words set at round end), but there's no in-round view surfacing them — the player only sees a running count in `ScoreBarView`, not the actual word list.
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd:review-backlog when ready)
-
-### Phase 999.3: Differentiated invalid-word messaging (BACKLOG)
-
-**Goal:** [Captured for future planning] — replace the single generic "Not a valid word" rejection message with distinct feedback for each rejection reason: word too short (< 4 letters), word not in the dictionary/doesn't use valid letters, and word already found this round (duplicate). Currently `GameViewModel.submitCurrentWord()` returns a plain `Bool` and `WordDisplayView` shows one hardcoded string for every failure case, so the player can't tell why a word was rejected.
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd:review-backlog when ready)
-
-### Phase 999.4: First-launch tutorial (BACKLOG)
-
-**Goal:** [Captured for future planning] — a first-time-user tutorial/onboarding flow that teaches the core mechanics (tap/drag letters to build a word, center letter is required, swipe down to submit, shuffle, pangrams) before or during their first round. Currently there is no onboarding at all — `ContentView` loads straight into `GameView` for every launch, first-time or not. Needs a "has the user seen this before" flag (likely `@AppStorage`, consistent with the project's existing flags/seeds persistence split) and a decision on format (overlay walkthrough vs. a scripted first puzzle vs. a standalone intro screen).
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd:review-backlog when ready)
-
-### Phase 999.6: Double-tap-to-shuffle gesture (BACKLOG)
-
-**Goal:** [Captured for future planning] — a double-tap gesture as an alternative (or addition) to the Shuffle button. **Trigger decided: double-tap any empty area of the screen** (off the honeycomb tiles) — this avoids the conflict where double-tapping a tile is already legitimate input (appends that letter twice, e.g. a double letter in the word being built). Implementation note: `LetterGridView`'s existing single `DragGesture(minimumDistance: 0)` is scoped to the tiles themselves for hit-testing, so an empty-area double-tap recognizer would live on the surrounding container/background view, not compete with the grid's own gesture — should avoid the contention risk that made 999.5 (rotate gesture, tile-scoped) trickier.
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd:review-backlog when ready)
-
-### Phase 999.7: Long-press center letter to shuffle (BACKLOG)
-
-**Goal:** [Captured for future planning] — long-press (or "hard press") on the gold center tile as an alternative (or addition) to the Shuffle button. **Hardware note:** true pressure-sensitive 3D Touch was removed from iPhones starting with the XR/11 generation; Apple's replacement, Haptic Touch, is functionally a long-press with a delay + haptic confirmation — so "long press" and "hard press" are the same gesture on all currently-shipping iPhones, not two separate inputs to build. Conflict to resolve at design time: the center tile is currently part of the single unified `DragGesture(minimumDistance: 0)` hit-test area in `LetterGridView` (tapping it appends the center letter), so a long-press recognizer on that same tile needs to coexist with tap-to-append without misfiring — likely resolved via a time threshold (a fast tap still appends; holding past ~0.5s triggers shuffle instead) rather than a fully separate `LongPressGesture`, to avoid the two-recognizer contention risk noted in 999.5.
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd:review-backlog when ready)
-
-### Phase 999.8: Bonus for finding all pangrams (BACKLOG)
-
-**Goal:** [Captured for future planning] — an extra scoring bonus for finding every pangram in a puzzle, not just the per-word +7 pangram bonus that already exists. Context: `Puzzle.pangrams` is already a plural array (a puzzle can have more than one pangram, per `PuzzleGenerator`'s `pangrams = validArray.filter { Set($0) == letters }`), and `ScoreCalculator.points(for:isPangram:)` already awards +7 per individual pangram found — but there's currently no reward tied to clearing the *complete set*. Needs: (1) UI/feedback for "you found all N pangrams!" (likely surfaced in `MissedWordsView`'s pangram badge or a distinct end-of-round callout), (2) a bonus formula decision (flat bonus vs. scaled by pangram count), (3) confirming how often multi-pangram puzzles actually occur in practice (worth checking before investing UI work, since a bonus that almost never triggers isn't worth much).
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd:review-backlog when ready)
 
 ### Phase 999.9: Word list coverage review (BACKLOG)
 
@@ -201,7 +230,7 @@ Plans:
 **Goal:** [Captured for future planning] — automatically capture words that get rejected as "not in dictionary" (NOT the too-short or duplicate rejection cases — those aren't list-coverage issues) into a review queue, so 999.9's word-list gap analysis has real data to work from instead of manual note-taking. Two implementation paths to decide between at planning time:
 1. **TelemetryDeck analytics event** — CLAUDE.md already selects TelemetryDeck as the project's analytics SDK (privacy-first, no consent popup), but it is NOT YET integrated into the app (no SDK reference anywhere in the codebase as of 2026-08-29). This path captures real rejected words from real players in the field, which is far more valuable than dev-only testing data, but requires standing up the TelemetryDeck integration first (not currently scheduled in any phase).
 2. **Local debug-only log** — simpler (no new dependency), but only captures words Patrick personally triggers during his own testing, not real player misses.
-Depends conceptually on 999.3 (differentiated invalid-word messaging) since both need to distinguish "not in dictionary" from other rejection reasons at the `GameViewModel` level.
+Depends conceptually on Phase 6 (differentiated invalid-word messaging, promoted from 999.3) since both need to distinguish "not in dictionary" from other rejection reasons at the `GameViewModel` level.
 **Requirements:** TBD
 **Plans:** 0 plans
 

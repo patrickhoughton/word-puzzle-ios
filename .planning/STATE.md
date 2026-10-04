@@ -124,6 +124,8 @@ Recent decisions affecting current work:
 
 - [Phase 05-08]: Patrick decided (2026-10-04) to BUILD BACKLOG ITEMS 999.1-999.8 INTO v1.0 before submitting -- v1.0 submission is on hold. 05-08 metadata partly pushed via API (subtitle, categories, description, keywords, promo text, MANUAL release, age rating); build 1.0 (1) uploaded. Screenshots get re-captured/uploaded after the backlog lands. Device testing uses direct Wi-Fi installs: `bash scripts/install-on-device.sh`.
 
+- [Backlog review 2026-10-04]: Promoted 999.3->Phase 6, 999.2->7, 999.8->8, 999.1->9, 999.6->10, 999.7->11, 999.4->12 (tutorial last so it teaches everything). 999.9/999.10/999.11 stay in backlog. gsd-tools `phase add` would have numbered new phases 1000+ (its regex treats "Phase 999.x" headers as the max phase), so promotion was done by hand -- use `phase insert` or manual edits for future promotions.
+
 ### Pending Todos
 
 None yet.
@@ -141,5 +143,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-10-03T16:30:00.000Z
-Stopped at: 05-08 in progress (metadata partly pushed, build uploaded); submission on hold for backlog 999.1-999.8 -> promote via /gsd:review-backlog
+Stopped at: 05-08 in progress (metadata partly pushed, build uploaded); submission on hold for backlog 999.1-999.8 -> backlog promoted to Phases 6-12; next /gsd:discuss-phase 6
 Resume file: None
