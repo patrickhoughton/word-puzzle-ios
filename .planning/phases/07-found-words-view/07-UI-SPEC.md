@@ -1,7 +1,8 @@
 ---
 phase: 07
 slug: found-words-view
-status: draft
+status: approved
+reviewed_at: 2026-10-04
 shadcn_initialized: false
 preset: none
 created: 2026-10-04
@@ -55,6 +56,9 @@ Reuse the existing 4 roles (Dynamic Type text styles, 2 weights: regular + semib
 | Label | `labelFont` | 13pt | regular | system default | Subtitle "<Rank> — N of M words"; "Pangram" badge |
 
 Rules:
+- Line height: system default for every role. Do not override with `.lineSpacing`.
+- Focal point: the sheet's visual anchor is the "Found Words" title + rank/count subtitle, then the first group header. Rows are secondary; points and chevron are tertiary (secondary color).
+- At default sizes, the pangram treatment matches `MissedWordsView.wordRow` exactly (D-14). The icon-only badge applies at accessibility sizes only.
 - No fixed point sizes. Sheet title is centered Heading (not Display) because the sheet opens at the medium detent and vertical space is scarce.
 - "+N" points: `bodyFont`, `Color.secondary`, right-aligned, monospaced digits (`.monospacedDigit()`), `.lineLimit(1).minimumScaleFactor(0.5)`.
 - Group header: `.lineLimit(1).minimumScaleFactor(0.5)` (Phase 5 shrink-to-fit pattern); never wraps.
