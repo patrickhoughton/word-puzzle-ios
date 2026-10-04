@@ -24,6 +24,16 @@ struct GameView: View {
     // abbreviated label at large sizes is the standard accessible pattern
     // (matches how system apps shorten labels rather than fight the metrics).
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    // Phase 8: celebration overlay state. Driven only by the drain Task below (RESEARCH Pattern 3).
+    @State private var activeCelebration: CompletionEvent?
+    @State private var sweepStep = 0
+    @State private var sweepIsFinal = false
+    @State private var celebrationTask: Task<Void, Never>?
+    // Counter-based haptic triggers (Phase 3 Pitfall 3), bumped by the drain at the visual moment,
+    // NOT at submission, so they never coincide with WordDisplayView's per-word .success.
+    @State private var lengthHapticCount = 0
+    @State private var sweepHapticCount = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ZStack {
@@ -80,7 +90,9 @@ struct GameView: View {
                     rank: viewModel.rank,
                     foundCount: viewModel.foundCount,
                     totalCount: viewModel.totalWordCount,
-                    onContinue: { viewModel.requestNextRound(isPremium: entitlementStore.isPremium) }
+                    onContinue: { viewModel.requestNextRound(isPremium: entitlementStore.isPremium) },
+                    sweepBonus: viewModel.sweepBonus,
+                    lengthBonusTotal: viewModel.lengthBonusTotal
                 )
             }
         }
@@ -99,7 +111,9 @@ struct GameView: View {
                 rank: viewModel.rank,
                 foundCount: viewModel.foundCount,
                 totalCount: viewModel.totalWordCount,
-                onDone: { isShowingFoundWords = false }
+                onDone: { isShowingFoundWords = false },
+                foundPangrams: viewModel.foundPangramCount,
+                totalPangrams: viewModel.totalPangramCount
             )
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
@@ -109,10 +123,12 @@ struct GameView: View {
         // (RESEARCH Pitfall 3).
         .onChange(of: viewModel.acceptedSubmissionCount) { _, _ in
             guard case let .accepted(_, _, isPangram) = viewModel.lastOutcome else { return }
-            SoundManager.shared.play(
-                SoundEffect.forSubmission(accepted: true, isPangram: isPangram),
-                enabled: soundEffectsEnabled
-            )
+            let earnedBonus = !viewModel.lastSubmissionBonusEvents.isEmpty
+            // UI-SPEC 5: a celebration's own sound replaces the per-word sound (no double-play).
+            if let effect = SoundEffect.forAcceptedSubmission(isPangram: isPangram, earnedBonus: earnedBonus) {
+                SoundManager.shared.play(effect, enabled: soundEffectsEnabled)
+            }
+            if earnedBonus { startCelebrationDrainIfNeeded() }
         }
         .onChange(of: viewModel.rejectedSubmissionCount) { _, _ in
             // Phase 6 D-05: a duplicate ("already found") plays no sound; forRejection returns nil.
@@ -124,10 +140,118 @@ struct GameView: View {
         // nil for .loading/.playing, so entering a round is silent.
         .onChange(of: viewModel.roundPhase) { _, newPhase in
             // Phase 7: never let the found-words sheet survive a round end and reappear next round.
-            if newPhase != .playing { isShowingFoundWords = false }
+            if newPhase != .playing {
+                isShowingFoundWords = false
+                cancelCelebrations()
+            }
             guard let effect = SoundEffect.forRoundPhase(newPhase) else { return }
             SoundManager.shared.play(effect, enabled: soundEffectsEnabled)
         }
+        .sensoryFeedback(.success, trigger: lengthHapticCount)
+        .sensoryFeedback(.success, trigger: sweepHapticCount)
+    }
+
+    @ViewBuilder private var celebrationOverlay: some View {
+        switch activeCelebration {
+        case let .lengthComplete(length, bonus):
+            LengthCompletePill(length: length, bonus: bonus)
+                .transition(reduceMotion ? .opacity : .opacity.combined(with: .offset(y: -GameTheme.lengthPillSlideOffset)))
+        case let .pangramSweep(bonus, pangrams):
+            SweepTallyCard(bonus: bonus, pangrams: pangrams, step: sweepStep, isFinal: sweepIsFinal,
+                           showsWords: CompletionCelebration.sweepShowsWords(pangramCount: pangrams.count))
+                .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: GameTheme.sweepCardInScale)))
+        case nil:
+            EmptyView()
+        }
+    }
+
+    // MARK: - Phase 8 celebration drain (sequential, one cancellable Task)
+
+    private func startCelebrationDrainIfNeeded() {
+        guard celebrationTask == nil else { return }   // a running drain picks up newly queued events
+        celebrationTask = Task { @MainActor in
+            await pause(GameTheme.celebrationLeadInSeconds)
+            while !Task.isCancelled, let event = viewModel.dequeueCelebration() {
+                switch event {
+                case let .lengthComplete(length, bonus): await playLengthCelebration(length: length, bonus: bonus)
+                case let .pangramSweep(bonus, pangrams): await playSweepCelebration(bonus: bonus, pangrams: pangrams)
+                }
+            }
+            // Only the live drain clears state: a cancelled drain must not nil out a newer drain's handle.
+            guard !Task.isCancelled else { return }
+            activeCelebration = nil
+            celebrationTask = nil
+        }
+    }
+
+    private func cancelCelebrations() {
+        celebrationTask?.cancel()
+        celebrationTask = nil
+        activeCelebration = nil
+        sweepStep = 0
+        sweepIsFinal = false
+    }
+
+    private func pause(_ seconds: Double) async { try? await Task.sleep(for: .seconds(seconds)) }
+
+    private func announce(_ text: String) { AccessibilityNotification.Announcement(text).post() }
+
+    private func playLengthCelebration(length: Int, bonus: Int) async {
+        withAnimation(.easeOut(duration: reduceMotion ? GameTheme.reduceMotionCrossfadeSeconds : GameTheme.lengthPillInSeconds)) {
+            activeCelebration = .lengthComplete(length: length, bonus: bonus)
+        }
+        SoundManager.shared.play(.lengthComplete, enabled: soundEffectsEnabled)
+        lengthHapticCount += 1
+        announce(CompletionCelebration.lengthAnnouncement(length: length, bonus: bonus))
+        await pause(GameTheme.lengthPillInSeconds + GameTheme.lengthPillHoldSeconds)
+        guard !Task.isCancelled else { return }
+        withAnimation(.easeIn(duration: GameTheme.celebrationFadeOutSeconds)) { activeCelebration = nil }
+        await pause(GameTheme.celebrationFadeOutSeconds)
+    }
+
+    private func playSweepCelebration(bonus: Int, pangrams: [String]) async {
+        let n = pangrams.count
+        sweepStep = 0
+        if reduceMotion {
+            // No scale, no per-step animation, no ticks; single fanfare + haptic.
+            sweepIsFinal = true
+            withAnimation(.easeInOut(duration: GameTheme.reduceMotionCrossfadeSeconds)) {
+                activeCelebration = .pangramSweep(bonus: bonus, pangrams: pangrams)
+            }
+            finishSweep(bonus: bonus)
+            await pause(GameTheme.reduceMotionCrossfadeSeconds + GameTheme.reduceMotionHoldSeconds)
+            guard !Task.isCancelled else { return }
+            withAnimation(.easeInOut(duration: GameTheme.reduceMotionCrossfadeSeconds)) { activeCelebration = nil }
+            await pause(GameTheme.reduceMotionCrossfadeSeconds)
+            return
+        }
+        sweepIsFinal = false
+        withAnimation(GameTheme.sweepCardAnimation) {
+            activeCelebration = .pangramSweep(bonus: bonus, pangrams: pangrams)
+        }
+        await pause(GameTheme.sweepCardInSeconds)
+        let stepDuration = CompletionCelebration.sweepStepDuration(pangramCount: n)
+        for step in 1...max(1, n) {
+            guard !Task.isCancelled else { return }
+            withAnimation(.default) { sweepStep = step }
+            if CompletionCelebration.shouldTick(step: step, pangramCount: n) {
+                SoundManager.shared.play(.sweepTick, enabled: soundEffectsEnabled)
+            }
+            await pause(stepDuration)
+        }
+        guard !Task.isCancelled else { return }
+        withAnimation(.default) { sweepIsFinal = true }
+        finishSweep(bonus: bonus)
+        await pause(GameTheme.sweepHeadlineHoldSeconds)
+        guard !Task.isCancelled else { return }
+        withAnimation(.easeIn(duration: GameTheme.celebrationFadeOutSeconds)) { activeCelebration = nil }
+        await pause(GameTheme.celebrationFadeOutSeconds)
+    }
+
+    private func finishSweep(bonus: Int) {
+        SoundManager.shared.play(.pangramSweep, enabled: soundEffectsEnabled)   // D-10 fanfare on the final frame
+        sweepHapticCount += 1
+        announce(CompletionCelebration.sweepAnnouncement(bonus: bonus))
     }
 
     private var playingLayout: some View {
@@ -162,7 +286,9 @@ struct GameView: View {
                     freePuzzlesRemaining: entitlementStore.isPremium
                         ? nil
                         : max(0, GameViewModel.freePuzzlesPerDay - persistenceStore.puzzlesPlayedToday()),
-                    freePuzzlesPerDay: GameViewModel.freePuzzlesPerDay
+                    freePuzzlesPerDay: GameViewModel.freePuzzlesPerDay,
+                    foundPangrams: viewModel.foundPangramCount,
+                    totalPangrams: viewModel.totalPangramCount
                 )
             }
             .buttonStyle(ScoreBarButtonStyle())
@@ -190,6 +316,11 @@ struct GameView: View {
                 isInputDisabled: viewModel.isShuffling,
                 onLetterTouched: { viewModel.append($0) }
             )
+            .overlay(alignment: .top) {
+                celebrationOverlay
+                    .padding(.top, GameTheme.lg)
+                    .allowsHitTesting(false)
+            }
 
             Spacer(minLength: GameTheme.xl)
 
