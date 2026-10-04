@@ -168,7 +168,7 @@ Plans:
 **Plans**: 6 plans
 
 Plans:
-- [ ] 09-01-PLAN.md — GameRecord optional rank/pangrams/sweep fields, legacy-store migration test (spiked first), record() defaults, finishRound wiring (Wave 1)
+- [x] 09-01-PLAN.md — GameRecord optional rank/pangrams/sweep fields, legacy-store migration test (spiked first), record() defaults, finishRound wiring (Wave 1)
 - [ ] 09-02-PLAN.md — PlayerStats snapshot + StatsView (hero, TODAY/LIFETIME grids, best rank glow, count-up, AX collapse, VoiceOver), OverflowGlow extraction (Wave 1)
 - [ ] 09-03-PLAN.md — PersistenceStore stats queries (longest streak, averages, best rank, pangram/sweep totals, at-risk) + playerStats(now:) aggregator (Wave 2)
 - [ ] 09-04-PLAN.md — Settings "Stats" push row + MissedWordsView "Best B · Streak S" summary line (Wave 2)
@@ -222,7 +222,7 @@ Plans:
 | 6. Differentiated Invalid-Word Messaging | 2/2 | Complete | 2026-10-04 |
 | 7. Found Words View | 3/3 | Complete | 2026-10-04 |
 | 8. All-Pangrams Bonus | 6/6 | Complete   | 2026-10-04 |
-| 9. Player Stats Screen | 0/0 | Not started | - |
+| 9. Player Stats Screen | 1/6 | In Progress|  |
 | 10. Double-Tap Shuffle | 0/0 | Not started | - |
 | 11. Long-Press Center Shuffle | 0/0 | Not started | - |
 | 12. First-Launch Tutorial | 0/0 | Not started | - |
