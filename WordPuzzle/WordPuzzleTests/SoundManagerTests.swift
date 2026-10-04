@@ -34,8 +34,36 @@ import AVFoundation
 
     // MARK: - SoundEffect case count
 
-    @Test func testAllCasesCountIsFour() {
-        #expect(SoundEffect.allCases.count == 4)
+    @Test func testAllCasesCountIsSeven() {
+        #expect(SoundEffect.allCases.count == 7)
+    }
+
+    // MARK: - Phase 8 effects (D-10, D-16)
+
+    @Test func testNewPhase8RawValues() {
+        #expect(SoundEffect.pangramSweep.rawValue == "pangram_sweep")
+        #expect(SoundEffect.sweepTick.rawValue == "sweep_tick")
+        #expect(SoundEffect.lengthComplete.rawValue == "length_complete")
+    }
+
+    @Test func testSweepFanfareIsDistinctFromPangramFound() {
+        #expect(SoundEffect.pangramSweep != SoundEffect.pangramFound)
+    }
+
+    @Test func testForAcceptedSubmissionWithoutBonusMatchesForSubmission() {
+        #expect(SoundEffect.forAcceptedSubmission(isPangram: false, earnedBonus: false) == .wordAccepted)
+        #expect(SoundEffect.forAcceptedSubmission(isPangram: true, earnedBonus: false) == .pangramFound)
+    }
+
+    @Test func testForAcceptedSubmissionWithBonusIsSilent() {
+        #expect(SoundEffect.forAcceptedSubmission(isPangram: true, earnedBonus: true) == nil)
+        #expect(SoundEffect.forAcceptedSubmission(isPangram: false, earnedBonus: true) == nil)
+    }
+
+    @Test func testDisabledGateCoversSweepFanfare() {
+        let manager = SoundManager(preloadPlayers: false)
+        manager.play(.pangramSweep, enabled: false)
+        #expect(manager.attemptedPlayCount == 0)
     }
 
     // MARK: - forSubmission mapping (D-01)
