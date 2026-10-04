@@ -19,6 +19,7 @@ Endless, fresh word puzzles that generate algorithmically from a local dictionar
 - [x] Free tier: limited puzzles per day (e.g., 3 free puzzles) — Phase 4 (paywall-free-tier-gate), verified end-to-end on Simulator 2026-08-31 (abandoned rounds count toward the limit; paywall triggers on the 4th request, not the 3rd)
 - [x] Premium unlock: one-time IAP removes daily limit for unlimited play — Phase 4 (paywall-free-tier-gate), verified via real StoreKit sandbox purchase and restore-after-reinstall on a physical iPhone 15 Pro 2026-08-31
 - [x] Rejected words show distinct feedback per reason (too short, missing center letter, not a word, already found; duplicates get gentle, silent feedback) — Phase 6 (differentiated-invalid-word-messaging), verified on a physical iPhone 15 Pro 2026-10-04
+- [x] Player can view the words found so far in the current round, grouped by length with per-length progress (tap the score bar) — Phase 7 (found-words-view), verified on a physical iPhone 15 Pro 2026-10-04
 
 ### Active
 
@@ -79,4 +80,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-04 after Phase 6 (differentiated-invalid-word-messaging) completion — the single "Not a valid word" message was replaced with typed per-reason rejection feedback; duplicates get a gentle gray message with a light haptic and no sound. Verified on device.*
+*Last updated: 2026-10-04 after Phase 7 (found-words-view) completion — tapping the score bar opens a medium/large Found Words sheet grouped by length (shortest first, alphabetical, +N points, pangram parity with the missed-words screen). Verified on device.*
