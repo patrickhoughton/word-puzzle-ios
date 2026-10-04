@@ -139,7 +139,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — FoundWord/FoundWordGroup + GameViewModel.foundWordGroups (tested) and FoundWordsView with frozen copy (Wave 1)
+- [x] 07-01-PLAN.md — FoundWord/FoundWordGroup + GameViewModel.foundWordGroups (tested) and FoundWordsView with frozen copy (Wave 1)
 - [ ] 07-02-PLAN.md — ScoreBarView chevron + button style, GameView score-bar Button and medium/large found-words sheet (Wave 2)
 - [ ] 07-03-PLAN.md — Wi-Fi device install + on-device verification checkpoint (Wave 3)
 **UI hint**: yes
