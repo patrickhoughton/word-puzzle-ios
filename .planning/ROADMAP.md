@@ -155,7 +155,7 @@ Plans:
 - [x] 08-01-PLAN.md — Bonus formulas, hidden Mythic Grandmaster tier, CompletionEvent + celebration copy/timing, GameTheme tokens (Wave 1, TDD)
 - [x] 08-02-PLAN.md — Kenney CC0 sweep fanfare / tick / length chime + SoundEffect cases and replace-sound rule (Wave 1)
 - [ ] 08-03-PLAN.md — GameViewModel sweep + length-completion detection, celebration queue, unclamped progress (Wave 2, TDD)
-- [ ] 08-04-PLAN.md — ScoreBarView counter/overflow/Mythic, Found Words pangram line + group bonus, MissedWords bonus lines (Wave 2)
+- [x] 08-04-PLAN.md — ScoreBarView counter/overflow/Mythic, Found Words pangram line + group bonus, MissedWords bonus lines (Wave 2)
 - [ ] 08-05-PLAN.md — Celebration views + GameView wiring: sequential pill/tally drain, sounds, haptics, announcements (Wave 3)
 - [ ] 08-06-PLAN.md — Wi-Fi device install + on-device approval (Wave 4, checkpoint)
 **UI hint**: yes
