@@ -82,7 +82,7 @@ Dimmed flame (zero streak): `.secondary` at 0.4 opacity (add `GameTheme.dimmedFl
 
 ### Screen structure (`StatsView`, value-in/closure-out, takes a `PlayerStats` snapshot + `onDone`)
 `ScrollView` > `VStack(alignment: .leading, spacing: lg)`, horizontal padding `lg`, background `dominant`. Order top to bottom:
-1. Nudge line (new player only, see states). `bodyFont`, `.secondary`, centered, wrapped in secondarySurface? No: plain text, `md` bottom spacing.
+1. Nudge line (new player only, see states). `bodyFont`, `.secondary`, centered, plain text (no card).
 2. Hero streak card (full width, secondarySurface, radius 12, padding `md`). Leading `flame.fill` at `displayFont`; trailing VStack: `"N day streak"` (number in displayFont, "day streak" in headingFont, baseline aligned) and `"Longest: M"` (labelFont, `.secondary`) beneath. Hint line below in bodyFont when at-risk or zero streak.
 3. Section header `TODAY` then 2-column `LazyVGrid` (`GridItem(.flexible(), spacing: sm)` x2, row spacing `sm`): Puzzles today, Score, Words found. (3 tiles; last tile sits alone in the left column. Do not stretch it.)
 4. Section header `LIFETIME` then 2-column grid, order: Best score, Games played, Average score, Words found, Avg words / game, Pangrams found, Pangram sweeps. (7 tiles.)
