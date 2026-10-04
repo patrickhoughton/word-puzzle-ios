@@ -35,6 +35,17 @@ final class GameViewModelTests {
         )
     }
 
+    /// Phase 8: two pangrams of different lengths, so the sweep fires only on the second.
+    /// Lengths: 4 ["bead"], 5 ["cabin","dance"], 7 ["cabined"], 8 ["abidance"].
+    private func twoPangramFixturePuzzle() -> Puzzle {
+        Puzzle(
+            letters: Set("abcdein"),
+            centerLetter: "a",
+            validWords: ["bead", "cabin", "dance", "cabined", "abidance"],
+            pangrams: ["cabined", "abidance"]
+        )
+    }
+
     private func submit(_ word: String, on vm: GameViewModel) -> Bool {
         for ch in word { vm.append(ch) }
         return vm.submitCurrentWord()
@@ -127,10 +138,12 @@ final class GameViewModelTests {
         let vm = GameViewModel(wordList: wordList)
         vm.startNewRound(with: fixturePuzzle())
         #expect(submit("cane", on: vm) == true)
-        #expect(vm.score == 1)
+        // Phase 8 D-14: "cane" is the only 4-letter word, so +4 length bonus.
+        #expect(vm.score == 5)
         #expect(vm.foundCount == 1)
         #expect(submit("lance", on: vm) == true)
-        #expect(vm.score == 6)
+        // 5 points + 5 length bonus ("lance" is the only 5-letter word).
+        #expect(vm.score == 15)
         #expect(vm.foundCount == 2)
     }
 
@@ -168,7 +181,8 @@ final class GameViewModelTests {
         vm.startNewRound(with: fixturePuzzle())
         #expect(submit("cane", on: vm) == true)
         #expect(submit("cane", on: vm) == false)
-        #expect(vm.score == 1)
+        // Phase 8 D-14: "cane" is the only 4-letter word, so +4 length bonus.
+        #expect(vm.score == 5)
         #expect(vm.foundCount == 1)
     }
 
@@ -316,10 +330,170 @@ final class GameViewModelTests {
         #expect(submit("cane", on: vm) == true)
         #expect(submit("cane", on: vm) == false)
         #expect(vm.lastOutcome == .rejected(.alreadyFound))
-        #expect(vm.score == 1)
+        // Phase 8 D-14: "cane" is the only 4-letter word, so +4 length bonus.
+        #expect(vm.score == 5)
         #expect(vm.foundWords == ["cane"])
         #expect(vm.acceptedSubmissionCount == 1)
         #expect(vm.rejectedSubmissionCount == 1)
+    }
+
+    // MARK: - Phase 8 completion bonuses
+
+    @Test func testOnlyPangramSweepStacksWithLengthBonus() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        #expect(submit("candles", on: vm) == true)
+        #expect(vm.score == 28)
+        #expect(vm.lastOutcome == .accepted(word: "candles", points: 14, isPangram: true))
+        let expected: [CompletionEvent] = [
+            .lengthComplete(length: 7, bonus: 7),
+            .pangramSweep(bonus: 7, pangrams: ["candles"])
+        ]
+        #expect(vm.lastSubmissionBonusEvents == expected)
+        #expect(vm.pendingCelebrations == vm.lastSubmissionBonusEvents)
+        #expect(vm.sweepBonus == 7)
+        #expect(vm.lengthBonusTotal == 7)
+        #expect(vm.maxPossibleScore == 44)
+        #expect(vm.foundPangramCount == 1)
+        #expect(vm.totalPangramCount == 1)
+    }
+
+    @Test func testSweepAwardsOnlyWhenLastPangramFound() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: twoPangramFixturePuzzle())
+        #expect(submit("cabined", on: vm) == true)
+        #expect(vm.score == 21)
+        #expect(vm.sweepBonus == 0)
+        #expect(vm.lastSubmissionBonusEvents == [.lengthComplete(length: 7, bonus: 7)])
+        #expect(vm.foundPangramCount == 1)
+        #expect(vm.totalPangramCount == 2)
+        #expect(submit("abidance", on: vm) == true)
+        #expect(vm.score == 58)
+        let expected: [CompletionEvent] = [
+            .lengthComplete(length: 8, bonus: 8),
+            .pangramSweep(bonus: 14, pangrams: ["cabined", "abidance"])
+        ]
+        #expect(vm.lastSubmissionBonusEvents == expected)
+        #expect(vm.sweepBonus == 14)
+    }
+
+    @Test func testLengthBonusOnlyWhenGroupComplete() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: twoPangramFixturePuzzle())
+        #expect(submit("cabin", on: vm) == true)
+        #expect(vm.score == 5)
+        #expect(vm.lastSubmissionBonusEvents.isEmpty)
+        #expect(submit("dance", on: vm) == true)
+        #expect(vm.score == 15)
+        #expect(vm.lastSubmissionBonusEvents == [.lengthComplete(length: 5, bonus: 5)])
+        #expect(vm.completedLengths == [5])
+    }
+
+    @Test func testLengthBonusAwardedOncePerLength() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        #expect(submit("cane", on: vm) == true)
+        #expect(submit("clan", on: vm) == true)
+        #expect(vm.lengthBonusTotal == 4)
+        #expect(vm.completedLengths == [4])
+        let scoreBefore = vm.score
+        #expect(submit("cane", on: vm) == false)
+        #expect(vm.lengthBonusTotal == 4)
+        #expect(vm.score == scoreBefore)
+    }
+
+    @Test func testEmptyPangramSetNeverSweeps() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(submit("tentacled", on: vm) == true)
+        #expect(vm.score == 9)
+        #expect(vm.lastSubmissionBonusEvents.isEmpty)
+        #expect(vm.sweepBonus == 0)
+        for w in ["cane", "lance", "candle", "canted", "dental"] {
+            _ = submit(w, on: vm)
+        }
+        #expect(vm.sweepBonus == 0)
+        let hasSweep = vm.pendingCelebrations.contains {
+            if case .pangramSweep = $0 { return true }
+            return false
+        }
+        #expect(!hasSweep)
+    }
+
+    @Test func testWordOutsideValidWordsNeverAwardsLengthBonus() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(submit("tentacled", on: vm) == true)
+        #expect(vm.completedLengths.isEmpty)
+        #expect(vm.lengthBonusTotal == 0)
+    }
+
+    @Test func testMaxPossibleScoreExcludesBonuses() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        #expect(vm.maxPossibleScore == 44)
+        _ = submit("candles", on: vm)
+        #expect(vm.maxPossibleScore == 44)
+    }
+
+    @Test func testProgressFractionExceedsOneAndRankIsMythic() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        for w in ["cane", "clan", "lance", "lanes", "candle", "decals", "scaled", "candles"] {
+            #expect(submit(w, on: vm) == true)
+        }
+        #expect(vm.score == 73)
+        #expect(abs(vm.progressFraction - 73.0 / 44.0) < 1e-9)
+        #expect(vm.rank == .mythicGrandmaster)
+        #expect(vm.sweepBonus == 7)
+        #expect(vm.lengthBonusTotal == 22)
+    }
+
+    @Test func testProgressFractionZeroWithoutPuzzle() {
+        let vm = GameViewModel(wordList: wordList)
+        #expect(vm.progressFraction == 0)
+    }
+
+    @Test func testFinishRoundPersistsBonusInclusiveScore() throws {
+        let container = try PersistenceStore.makeContainer(inMemory: true)
+        let store = PersistenceStore(container: container)
+        let vm = GameViewModel(wordList: wordList, persistenceStore: store)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        _ = submit("candles", on: vm)
+        vm.finishRound()
+        #expect(store.bestScore() == 28)
+    }
+
+    @Test func testStartNewRoundResetsBonusState() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        _ = submit("candles", on: vm)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        #expect(vm.sweepBonus == 0)
+        #expect(vm.lengthBonusTotal == 0)
+        #expect(vm.completedLengths.isEmpty)
+        #expect(vm.pendingCelebrations.isEmpty)
+        #expect(vm.lastSubmissionBonusEvents.isEmpty)
+        #expect(vm.foundPangramCount == 0)
+        #expect(vm.totalPangramCount == 1)
+        #expect(vm.acceptedSubmissionCount == 1)
+    }
+
+    @Test func testDequeueCelebrationIsFIFO() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        _ = submit("candles", on: vm)
+        #expect(vm.dequeueCelebration() == .lengthComplete(length: 7, bonus: 7))
+        #expect(vm.dequeueCelebration() == .pangramSweep(bonus: 7, pangrams: ["candles"]))
+        #expect(vm.dequeueCelebration() == nil)
+    }
+
+    @Test func testBonusStateIsCurrentWhenAcceptedCounterChanges() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        _ = submit("candles", on: vm)
+        #expect(vm.lastSubmissionBonusEvents.count == 2)
+        #expect(vm.acceptedSubmissionCount == 1)
     }
 
     @Test func testRejectionMessagesAreExact() {
