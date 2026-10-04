@@ -1,15 +1,28 @@
 import AVFoundation
 import Foundation
 
-/// UX-02 / D-01: the four events that produce a sound effect.
+/// UX-02 / D-01: the events that produce a sound effect (four from UX-02, three added in Phase 8).
 /// Raw values are the bundled filenames (see Sounds/LICENSE.txt).
 enum SoundEffect: String, CaseIterable {
     case wordAccepted = "word_accepted"
     case wordRejected = "word_rejected"
     case pangramFound = "pangram_found"
     case roundEnd     = "round_end"
+    /// Phase 8 D-10: the pangram-sweep fanfare, played on the tally's final frame. Distinct from pangramFound.
+    case pangramSweep   = "pangram_sweep"
+    /// Phase 8 D-10: one tick per tally step (throttled to <= 12, CompletionCelebration.shouldTick).
+    case sweepTick      = "sweep_tick"
+    /// Phase 8 D-16: lighter chime when a length group is completed.
+    case lengthComplete = "length_complete"
 
     static let fileExtension = "wav"
+
+    /// Phase 8 UI-SPEC 5: when the accepted word earned a completion bonus, the celebration's own
+    /// sound (length chime, or tally ticks + sweep fanfare) REPLACES the per-word accept/pangram sound,
+    /// so nothing double-plays. Returns nil in that case.
+    static func forAcceptedSubmission(isPangram: Bool, earnedBonus: Bool) -> SoundEffect? {
+        earnedBonus ? nil : forSubmission(accepted: true, isPangram: isPangram)
+    }
 
     /// D-01: a pangram gets a distinct, bigger sound than a plain accept.
     /// Rejection always wins -- a rejected word is never counted as a pangram.
@@ -79,7 +92,7 @@ final class SoundManager {
         }
     }
 
-    /// No-op when `enabled` is false. All four call sites in GameView pass the
+    /// No-op when `enabled` is false. All call sites in GameView pass the
     /// `@AppStorage(SoundManager.soundEffectsEnabledKey)` value straight through.
     func play(_ effect: SoundEffect, enabled: Bool) {
         guard enabled else { return }
