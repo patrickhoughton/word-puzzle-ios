@@ -123,11 +123,12 @@ Plans:
 ### Phase 6: Differentiated Invalid-Word Messaging
 **Goal**: replace the single generic "Not a valid word" rejection message with distinct feedback for each rejection reason: word too short (< 4 letters), word not in the dictionary/doesn't use valid letters, and word already found this round (duplicate). Currently `GameViewModel.submitCurrentWord()` returns a plain `Bool` and `WordDisplayView` shows one hardcoded string for every failure case, so the player can't tell why a word was rejected.
 **Depends on**: Phase 5
-**Requirements**: TBD
-**Plans**: 0 plans
+**Requirements**: D-01, D-02, D-03, D-04, D-05, D-06, D-07 (CONTEXT decisions)
+**Plans**: 2 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 6 to break down)
+- [ ] 06-01-PLAN.md — RejectionReason enum, per-reason guards, message strings, SoundEffect.forRejection + unit tests
+- [ ] 06-02-PLAN.md — WordDisplayView/GameView per-reason feedback, device install, on-device haptic/sound check
 **UI hint**: yes
 **Promoted from**: backlog 999.3 (2026-10-04, built into v1.0 before submission)
 

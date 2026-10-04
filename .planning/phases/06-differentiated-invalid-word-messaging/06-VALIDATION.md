@@ -38,10 +38,13 @@ created: 2026-10-04
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| (planner fills) | — | — | D-01/D-02/D-07 reasons + precedence | unit | quick run (GameViewModelTests) | ✅ extend | ⬜ pending |
-| (planner fills) | — | — | D-02 duplicate leaves score/foundWords unchanged | unit | quick run (GameViewModelTests) | ✅ extend | ⬜ pending |
-| (planner fills) | — | — | D-03/D-04 exact message strings | unit | quick run | ✅ extend | ⬜ pending |
-| (planner fills) | — | — | D-05 no reject sound for duplicate | unit | quick run (SoundManagerTests) | ✅ extend | ⬜ pending |
+| 06-01-T1 | 06-01 | 1 | D-01/D-02/D-07 reasons + precedence | unit | quick run (GameViewModelTests) | ✅ extend | ⬜ pending |
+| 06-01-T1 | 06-01 | 1 | D-02 duplicate leaves score/foundWords unchanged | unit | quick run (GameViewModelTests) | ✅ extend | ⬜ pending |
+| 06-01-T1 | 06-01 | 1 | D-03/D-04 exact message strings | unit | quick run (GameViewModelTests) | ✅ extend | ⬜ pending |
+| 06-01-T2 | 06-01 | 1 | D-05 no reject sound for duplicate | unit | quick run (SoundManagerTests) | ✅ extend | ⬜ pending |
+| 06-02-T1 | 06-02 | 2 | D-03/D-05/D-06 view + sound wiring compiles, suite green | build + unit | full suite command | ✅ | ⬜ pending |
+| 06-02-T2 | 06-02 | 2 | Device install | script | `bash scripts/install-on-device.sh Debug` | ✅ | ⬜ pending |
+| 06-02-T3 | 06-02 | 2 | D-05/D-06 haptics/sound/color | manual | see Manual-Only | n/a | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
