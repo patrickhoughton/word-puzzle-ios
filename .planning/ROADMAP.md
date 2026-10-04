@@ -135,11 +135,13 @@ Plans:
 ### Phase 7: Found Words View
 **Goal**: let the player see the words they've already found during the current round, grouped by length (same organizing pattern as `MissedWordsView`'s round-end reveal). Currently `GameViewModel` already tracks found words internally (used to compute the missed-words set at round end), but there's no in-round view surfacing them — the player only sees a running count in `ScoreBarView`, not the actual word list.
 **Depends on**: Phase 5
-**Requirements**: TBD
-**Plans**: 0 plans
+**Requirements**: FW-ENTRY, FW-DATA, FW-ROW, FW-EMPTY, FW-ISOLATION (internal IDs mapping CONTEXT D-01..D-17)
+**Plans**: 3 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 7 to break down)
+- [ ] 07-01-PLAN.md — FoundWord/FoundWordGroup + GameViewModel.foundWordGroups (tested) and FoundWordsView with frozen copy (Wave 1)
+- [ ] 07-02-PLAN.md — ScoreBarView chevron + button style, GameView score-bar Button and medium/large found-words sheet (Wave 2)
+- [ ] 07-03-PLAN.md — Wi-Fi device install + on-device verification checkpoint (Wave 3)
 **UI hint**: yes
 **Promoted from**: backlog 999.2 (2026-10-04, built into v1.0 before submission)
 
