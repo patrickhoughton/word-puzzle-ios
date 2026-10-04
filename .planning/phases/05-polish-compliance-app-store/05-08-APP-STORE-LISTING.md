@@ -29,6 +29,27 @@ Status `draft` until the values are confirmed live in App Store Connect.
 | Builds uploaded | **0** — a build must be archived and uploaded before submission |
 | IAP `com.patrickhoughton.wordpuzzle.unlimited` (id `6806386464`) | `NON_CONSUMABLE`, state **`MISSING_METADATA`** — localization exists ("Unlimited Puzzles" / "One-time purchase, no subscription, unlimited play."); **App Review screenshot missing** |
 
+## Progress log
+
+**2026-10-04 — pushed via the App Store Connect API (all HTTP 200):**
+- Subtitle → `Endless offline word puzzles`
+- Categories → Games, subcategories Word + Puzzle
+- Description, Keywords (97 chars), Promotional Text → as drafted below
+- Release type → `MANUAL` (was `AFTER_APPROVAL`)
+- Age rating declaration → every answer None/No (4+)
+
+**2026-10-04 — build 1.0 (1) archived and uploaded** (`xcodebuild -exportArchive`, cloud-managed
+distribution signing via the API key; `EXPORT SUCCEEDED`). Processing at Apple.
+
+**On hold (Patrick, 2026-10-04): v1.0 submission waits for backlog items 999.1–999.8 to be built
+into v1.0 and tested on device.** Consequences:
+- Screenshots: NOT uploaded yet — re-capture after the backlog lands (the UI will change), then upload.
+- Description/promo text may need a refresh once the new features exist.
+- Privacy Policy + Support URLs: to be hosted on Patrick's LLC domain (Dynadot) — awaiting domain,
+  LLC legal name (also for the Copyright field) and the public contact email.
+- Still outstanding: App Review contact details, IAP review screenshot, App Privacy questionnaire
+  and Mac/Vision Pro availability (UI-only), final build upload.
+
 ## Listing values
 
 ### App Name — 21/30 chars

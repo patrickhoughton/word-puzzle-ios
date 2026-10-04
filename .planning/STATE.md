@@ -122,6 +122,8 @@ Recent decisions affecting current work:
 - [Phase 05-07]: App Store screenshots are captured by XCUITest (AppStoreScreenshotTests via scripts/capture-app-store-screenshots.sh), not by hand -- Patrick asked Claude to drive capture. Every round is pinned to HARMONY/center R through a DEBUG-only -ScreenshotPuzzle launch argument (verified absent from the Release binary) after a random puzzle surfaced SEXI/sexes/sexing on screen.
 - [Phase 05-07]: Xcode 27.0 replaced Simulator.app with DeviceHub.app (Xcode.app/Contents/Applications/DeviceHub.app); `simctl status_bar --time` now only accepts a plain string like "9:41".
 
+- [Phase 05-08]: Patrick decided (2026-10-04) to BUILD BACKLOG ITEMS 999.1-999.8 INTO v1.0 before submitting -- v1.0 submission is on hold. 05-08 metadata partly pushed via API (subtitle, categories, description, keywords, promo text, MANUAL release, age rating); build 1.0 (1) uploaded. Screenshots get re-captured/uploaded after the backlog lands. Device testing uses direct Wi-Fi installs: `bash scripts/install-on-device.sh`.
+
 ### Pending Todos
 
 None yet.
@@ -139,5 +141,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-10-03T16:30:00.000Z
-Stopped at: Completed 05-07-PLAN.md (Screenshots); next 05-08 App Store Connect
+Stopped at: 05-08 in progress (metadata partly pushed, build uploaded); submission on hold for backlog 999.1-999.8 -> promote via /gsd:review-backlog
 Resume file: None
