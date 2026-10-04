@@ -464,6 +464,37 @@ final class GameViewModelTests {
         #expect(store.bestScore() == 28)
     }
 
+    @Test func testFinishRoundRecordsRankPangramsAndSweep() throws {
+        let container = try PersistenceStore.makeContainer(inMemory: true)
+        let store = PersistenceStore(container: container)
+        let vm = GameViewModel(wordList: wordList, persistenceStore: store)
+        vm.startNewRound(with: pangramFixturePuzzle())
+        for word in ["cane", "clan", "lance", "lanes", "candle", "decals", "scaled", "candles"] {
+            _ = submit(word, on: vm)
+        }
+        vm.finishRound()
+        let records = try container.mainContext.fetch(FetchDescriptor<GameRecord>())
+        #expect(records.count == 1)
+        #expect(records.first?.rankRaw == RankTier.mythicGrandmaster.rawValue)
+        #expect(records.first?.pangramsFound == 1)
+        #expect(records.first?.hadSweep == true)
+    }
+
+    @Test func testFinishRoundRecordsNoSweepWhenPangramsMissed() throws {
+        let container = try PersistenceStore.makeContainer(inMemory: true)
+        let store = PersistenceStore(container: container)
+        let vm = GameViewModel(wordList: wordList, persistenceStore: store)
+        vm.startNewRound(with: fixturePuzzle())
+        _ = submit("cane", on: vm)
+        let expectedRank = vm.rank
+        vm.finishRound()
+        let records = try container.mainContext.fetch(FetchDescriptor<GameRecord>())
+        #expect(records.count == 1)
+        #expect(records.first?.rankRaw == expectedRank.rawValue)
+        #expect(records.first?.pangramsFound == 0)
+        #expect(records.first?.hadSweep == false)
+    }
+
     @Test func testStartNewRoundResetsBonusState() {
         let vm = GameViewModel(wordList: wordList)
         vm.startNewRound(with: pangramFixturePuzzle())

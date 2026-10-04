@@ -240,7 +240,9 @@ final class GameViewModel {
     /// against already-persisted data (CONTEXT discretion: simplest to test).
     func finishRound() {
         guard roundPhase == .playing else { return }
-        persistenceStore?.record(score: score, wordsFoundCount: foundWords.count)
+        // Phase 9 D-11/D-13: the new lifetime stats are written once, at Finish Round only.
+        persistenceStore?.record(score: score, wordsFoundCount: foundWords.count,
+                                 rank: rank, pangramsFound: foundPangramCount, hadSweep: sweepBonus > 0)
         roundPhase = .roundOver
     }
 
