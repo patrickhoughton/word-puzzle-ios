@@ -79,6 +79,18 @@ import AVFoundation
         #expect(SoundManager.soundEffectsEnabledKey == "soundEffectsEnabled")
     }
 
+    // MARK: - forRejection mapping (Phase 6 D-05/D-06)
+
+    @Test func testForRejectionAlreadyFoundIsSilent() {
+        #expect(SoundEffect.forRejection(.alreadyFound) == nil)
+    }
+
+    @Test func testForRejectionOtherReasonsPlayRejectSound() {
+        for reason in [RejectionReason.tooShort, .missingCenterLetter, .notAWord] {
+            #expect(SoundEffect.forRejection(reason) == .wordRejected)
+        }
+    }
+
     // MARK: - Resource bundling (proves Task 1's synchronized-group assumption)
 
     @Test func testAllEffectsAreBundled() {

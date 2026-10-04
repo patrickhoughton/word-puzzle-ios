@@ -18,6 +18,15 @@ enum SoundEffect: String, CaseIterable {
         return isPangram ? .pangramFound : .wordAccepted
     }
 
+    /// Phase 6 D-05 / D-06: a duplicate ("already found") is a friendly reminder, not a
+    /// mistake, so it plays NO sound. Every other rejection reason keeps the reject sound.
+    static func forRejection(_ reason: RejectionReason) -> SoundEffect? {
+        switch reason {
+        case .alreadyFound:                              return nil
+        case .tooShort, .missingCenterLetter, .notAWord: return .wordRejected
+        }
+    }
+
     /// D-01 groups "round end" and "paywall shown" into ONE sound. On a cold
     /// launch a free user already at the daily limit goes .loading -> .paywalled,
     /// so this fires at launch with no preceding round. That is intended, not a bug.
