@@ -44,7 +44,7 @@ final class GameViewModelTests {
         let vm = GameViewModel(wordList: wordList)
         vm.startNewRound(with: fixturePuzzle())
         #expect(submit("zzzz", on: vm) == false)
-        #expect(vm.lastOutcome == .rejected)
+        #expect(vm.lastOutcome == .rejected(.missingCenterLetter))
         #expect(vm.rejectedSubmissionCount == 1)
         #expect(vm.score == 0)
         #expect(vm.foundWords.isEmpty)
@@ -197,5 +197,63 @@ final class GameViewModelTests {
         vm.requestNextRound(isPremium: false)
         #expect(vm.roundPhase == .playing)
         #expect(store.puzzlesPlayedToday() == GameViewModel.freePuzzlesPerDay)
+    }
+
+    // MARK: - Phase 6 rejection reasons
+
+    @Test func testRejectTooShort() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(submit("can", on: vm) == false)
+        #expect(vm.lastOutcome == .rejected(.tooShort))
+    }
+
+    @Test func testRejectPrecedenceTooShortBeforeMissingCenter() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(submit("len", on: vm) == false)
+        #expect(vm.lastOutcome == .rejected(.tooShort))
+    }
+
+    @Test func testRejectMissingCenterLetter() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(submit("lend", on: vm) == false)
+        #expect(vm.lastOutcome == .rejected(.missingCenterLetter))
+    }
+
+    @Test func testRejectOutsideLetterIsNotAWord() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(submit("zany", on: vm) == false)
+        #expect(vm.lastOutcome == .rejected(.notAWord))
+    }
+
+    @Test func testRejectNotInWordList() {
+        #expect(wordList.contains("tcaa") == false)
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(submit("tcaa", on: vm) == false)
+        #expect(vm.lastOutcome == .rejected(.notAWord))
+    }
+
+    @Test func testRejectAlreadyFoundLeavesStateUnchanged() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(submit("cane", on: vm) == true)
+        #expect(submit("cane", on: vm) == false)
+        #expect(vm.lastOutcome == .rejected(.alreadyFound))
+        #expect(vm.score == 1)
+        #expect(vm.foundWords == ["cane"])
+        #expect(vm.acceptedSubmissionCount == 1)
+        #expect(vm.rejectedSubmissionCount == 1)
+    }
+
+    @Test func testRejectionMessagesAreExact() {
+        #expect(RejectionReason.tooShort.message == "Too tiny!")
+        #expect(RejectionReason.missingCenterLetter.message == "Forgot the middle!")
+        #expect(RejectionReason.alreadyFound.message == "Got that one already")
+        #expect(RejectionReason.notAWord.message == "Hmm, not a word")
+        #expect(RejectionReason.allCases.count == 4)
     }
 }

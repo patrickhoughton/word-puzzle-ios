@@ -1,10 +1,33 @@
 import Foundation
 import Observation
 
-/// Result of one word submission. Drives the word-display feedback in WordDisplayView.
+/// Phase 6 D-01: the four player-facing reasons a submission can be rejected.
+/// Outside-letter submissions fold into `.notAWord` (tap/drag input can't produce them).
+/// Phase 999.10 (rejected-word logging) should key off `.notAWord` only.
+enum RejectionReason: Equatable, CaseIterable {
+    case tooShort
+    case missingCenterLetter
+    case alreadyFound
+    case notAWord
+}
+
+extension RejectionReason {
+    /// D-03 / D-04: fixed playful strings. Never interpolate the word or center letter.
+    var message: String {
+        switch self {
+        case .tooShort:            return "Too tiny!"
+        case .missingCenterLetter: return "Forgot the middle!"
+        case .alreadyFound:        return "Got that one already"
+        case .notAWord:            return "Hmm, not a word"
+        }
+    }
+}
+
+/// Result of one word submission (carries the rejection reason when rejected).
+/// Drives the word-display feedback in WordDisplayView.
 enum SubmissionOutcome: Equatable {
     case accepted(word: String, points: Int, isPangram: Bool)
-    case rejected
+    case rejected(RejectionReason)
 }
 
 /// One length bucket on the missed-words screen (D-11).
@@ -177,15 +200,11 @@ final class GameViewModel {
 
         // Mirrors PuzzleGenerator.isValidPuzzleWord exactly, plus dictionary and duplicate checks.
         // These MUST agree or the UI would reject words the generator counts as valid.
-        guard word.count >= 4,
-              word.contains(puzzle.centerLetter),
-              Set(word).isSubset(of: puzzle.letters),
-              !foundWordSet.contains(word),
-              wordList.contains(word) else {
-            lastOutcome = .rejected
-            rejectedSubmissionCount += 1
-            return false
-        }
+        if word.count < 4 { return reject(.tooShort) }
+        if !word.contains(puzzle.centerLetter) { return reject(.missingCenterLetter) }
+        if !Set(word).isSubset(of: puzzle.letters) { return reject(.notAWord) }
+        if foundWordSet.contains(word) { return reject(.alreadyFound) }
+        if !wordList.contains(word) { return reject(.notAWord) }
 
         foundWordSet.insert(word)
         foundWords.insert(word, at: 0)
@@ -195,6 +214,15 @@ final class GameViewModel {
         lastOutcome = .accepted(word: word, points: points, isPangram: isPangram)
         acceptedSubmissionCount += 1
         return true
+    }
+
+    /// Sets the outcome BEFORE bumping the counter: views read `lastOutcome` inside
+    /// `onChange(of: rejectedSubmissionCount)`, so it must already be current.
+    /// The counter increments for ALL reasons, including `.alreadyFound` (single trigger path).
+    private func reject(_ reason: RejectionReason) -> Bool {
+        lastOutcome = .rejected(reason)
+        rejectedSubmissionCount += 1
+        return false
     }
 
     // MARK: - Shuffle (PUZZ-04 / D-03)
