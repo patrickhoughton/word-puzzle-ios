@@ -37,6 +37,26 @@ struct MissedWordGroup: Identifiable, Equatable {
     var id: Int { length }
 }
 
+/// Phase 7 D-13/D-14: one found word as the in-round Found Words sheet shows it.
+/// Points and the pangram flag are computed in the view-model so the view renders plain values.
+struct FoundWord: Identifiable, Equatable {
+    let text: String
+    let points: Int
+    let isPangram: Bool
+    var id: String { text }
+}
+
+/// Phase 7 D-10/D-11/D-12: one length bucket on the Found Words sheet. `total` comes from the
+/// puzzle's validWords, so a length with zero found words still has a group.
+struct FoundWordGroup: Identifiable, Equatable {
+    let length: Int
+    /// Alphabetical (D-07), NOT order found.
+    let found: [FoundWord]
+    let total: Int
+    var isComplete: Bool { found.count == total }
+    var id: Int { length }
+}
+
 /// CONTEXT D-01..D-12. Owns ALL round state. Follows the project's established
 /// `@Observable final class` service convention (WordList / PersistenceStore / EntitlementStore).
 @MainActor
@@ -102,6 +122,25 @@ final class GameViewModel {
         Dictionary(grouping: missedWords, by: \.count)
             .map { MissedWordGroup(length: $0.key, words: $0.value.sorted()) }
             .sorted { $0.length < $1.length }
+    }
+
+    /// Phase 7 D-06/D-07/D-11: every length present in validWords, ascending, each with its
+    /// found words sorted alphabetically and the total for that length.
+    var foundWordGroups: [FoundWordGroup] {
+        guard let puzzle else { return [] }
+        let totals = Dictionary(grouping: puzzle.validWords, by: \.count).mapValues(\.count)
+        let foundByLength = Dictionary(grouping: foundWords, by: \.count)
+        return totals.sorted { $0.key < $1.key }.map { length, total in
+            let found = (foundByLength[length] ?? []).sorted().map { word in
+                let isPangram = pangramSet.contains(word)
+                return FoundWord(
+                    text: word,
+                    points: ScoreCalculator.points(for: word, isPangram: isPangram),
+                    isPangram: isPangram
+                )
+            }
+            return FoundWordGroup(length: length, found: found, total: total)
+        }
     }
 
     // MARK: - Round lifecycle
