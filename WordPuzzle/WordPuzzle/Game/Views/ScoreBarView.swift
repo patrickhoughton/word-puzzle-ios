@@ -30,11 +30,19 @@ struct ScoreBarView: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
                 Spacer()
-                Text("\(foundCount) of \(totalCount) words")
-                    .font(GameTheme.labelFont)
-                    .foregroundStyle(Color.secondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
+                HStack(spacing: GameTheme.xs) {
+                    Text("\(foundCount) of \(totalCount) words")
+                        .font(GameTheme.labelFont)
+                        .foregroundStyle(Color.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                    // Phase 7 D-02: tappability cue. The whole bar is the tap target (wrapped in a
+                    // Button by GameView); the chevron is decorative.
+                    Image(systemName: "chevron.right")
+                        .font(GameTheme.labelFont)
+                        .foregroundStyle(Color.secondary)
+                        .accessibilityHidden(true)
+                }
             }
 
             if let freePuzzlesRemaining {
@@ -62,6 +70,16 @@ struct ScoreBarView: View {
             text += " \(freePuzzlesRemaining) of \(freePuzzlesPerDay) free puzzles remaining today."
         }
         return text
+    }
+}
+
+/// Phase 7 D-01: the Button wrapping ScoreBarView in GameView. Plain (no accent tint on
+/// the bar's text, RESEARCH Pitfall 3) with a slight fade while pressed; no layout change.
+struct ScoreBarButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .opacity(configuration.isPressed ? 0.7 : 1)
+            .contentShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
