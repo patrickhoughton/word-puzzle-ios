@@ -16,6 +16,13 @@ struct MissedWordsView: View {
     let foundCount: Int
     let totalCount: Int
     let onContinue: () -> Void
+    /// Phase 8: pangram-sweep bonus earned this round (0 = hide).
+    var sweepBonus: Int = 0
+    /// Phase 8: total length-completion bonuses earned this round (0 = hide).
+    var lengthBonusTotal: Int = 0
+
+    static func sweepLine(bonus: Int) -> String { CompletionCelebration.sweepHeadline(bonus: bonus) }
+    static func lengthBonusLine(total: Int) -> String { "Length bonuses \(CompletionCelebration.bonusText(total))" }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -61,6 +68,20 @@ struct MissedWordsView: View {
             Text("\(rank.displayName) — \(foundCount) of \(totalCount) words")
                 .font(GameTheme.labelFont)
                 .foregroundStyle(Color.secondary)
+            if sweepBonus > 0 {
+                Label(Self.sweepLine(bonus: sweepBonus), systemImage: "checkmark.seal.fill")
+                    .font(GameTheme.labelFont)
+                    .foregroundStyle(GameTheme.accent)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+            }
+            if lengthBonusTotal > 0 {
+                Text(Self.lengthBonusLine(total: lengthBonusTotal))
+                    .font(GameTheme.labelFont)
+                    .foregroundStyle(Color.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+            }
         }
         .padding(GameTheme.lg)
     }
@@ -122,5 +143,18 @@ struct MissedWordsView: View {
         foundCount: 31,
         totalCount: 31,
         onContinue: {}
+    )
+}
+
+#Preview("With bonuses") {
+    MissedWordsView(
+        groups: [MissedWordGroup(length: 4, words: ["cane", "clan"])],
+        pangrams: [],
+        rank: .legend,
+        foundCount: 29,
+        totalCount: 31,
+        onContinue: {},
+        sweepBonus: 21,
+        lengthBonusTotal: 12
     )
 }
