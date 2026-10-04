@@ -91,6 +91,26 @@ final class GameViewModel {
     private(set) var score: Int = 0
     private var foundWordSet: Set<String> = []
 
+    // MARK: - Completion bonuses (Phase 8)
+    /// D-01: total sweep bonus earned this round; 0 = not earned. Read by MissedWordsView (UI-SPEC 7).
+    private(set) var sweepBonus: Int = 0
+    /// D-14/D-15: sum of length-completion bonuses earned this round.
+    private(set) var lengthBonusTotal: Int = 0
+    /// D-18: lengths already rewarded this round, so a bonus never double-awards.
+    private(set) var completedLengths: Set<Int> = []
+    /// D-11: pangrams found so far (board counter + Found Words line).
+    private(set) var foundPangramCount: Int = 0
+    /// Events produced by the MOST RECENT accepted submission (0, 1 or 2). GameView reads this inside
+    /// onChange(of: acceptedSubmissionCount) to decide whether the per-word sound is replaced.
+    private(set) var lastSubmissionBonusEvents: [CompletionEvent] = []
+    /// D-07/D-17: FIFO queue of celebrations GameView has not shown yet. Length before sweep for one word.
+    private(set) var pendingCelebrations: [CompletionEvent] = []
+    /// validWords count per length, computed once per round (O(1) detection).
+    private var lengthTotals: [Int: Int] = [:]
+    private var foundCountByLength: [Int: Int] = [:]
+    /// Set(puzzle.validWords), set in startNewRound(with:); guards length counting.
+    private var validWordSet: Set<String> = []
+
     // MARK: - Feedback state
     private(set) var lastOutcome: SubmissionOutcome?
     /// RESEARCH Pitfall 3: monotonic counters, never re-set Bools — `.sensoryFeedback(_:trigger:)`
@@ -110,9 +130,11 @@ final class GameViewModel {
     var foundCount: Int { foundWords.count }
     var totalWordCount: Int { puzzle?.validWords.count ?? 0 }
     var rank: RankTier { RankTier.tier(score: score, maxScore: maxPossibleScore) }
+    var totalPangramCount: Int { pangramSet.count }
+    /// D-05: 0...unbounded; > 1 means bonuses pushed past max. ScoreBarView clamps its own ProgressView.
     var progressFraction: Double {
         guard maxPossibleScore > 0 else { return 0 }
-        return min(1, Double(score) / Double(maxPossibleScore))
+        return Double(score) / Double(maxPossibleScore)
     }
     var missedWords: [String] {
         guard let puzzle else { return [] }
@@ -200,6 +222,15 @@ final class GameViewModel {
         self.foundWordSet = []
         self.score = 0
         self.lastOutcome = nil
+        self.lengthTotals = Dictionary(grouping: puzzle.validWords, by: \.count).mapValues(\.count)
+        self.foundCountByLength = [:]
+        self.validWordSet = Set(puzzle.validWords)
+        self.completedLengths = []
+        self.sweepBonus = 0
+        self.lengthBonusTotal = 0
+        self.foundPangramCount = 0
+        self.lastSubmissionBonusEvents = []
+        self.pendingCelebrations = []
         self.isShuffling = false
         self.roundPhase = .playing
     }
@@ -250,9 +281,43 @@ final class GameViewModel {
         let isPangram = pangramSet.contains(word)
         let points = ScoreCalculator.points(for: word, isPangram: isPangram)
         score += points
+        if isPangram { foundPangramCount += 1 }
+
+        var events: [CompletionEvent] = []
+        // D-14/D-18: length completion. Only words in puzzle.validWords count toward a length group
+        // (a dictionary-valid extra would over-count and fire the bonus early).
+        if validWordSet.contains(word) {
+            let length = word.count
+            let foundOfLength = (foundCountByLength[length] ?? 0) + 1
+            foundCountByLength[length] = foundOfLength
+            if let total = lengthTotals[length], foundOfLength == total, !completedLengths.contains(length) {
+                completedLengths.insert(length)
+                let bonus = ScoreCalculator.lengthCompletionBonus(length: length)
+                score += bonus
+                lengthBonusTotal += bonus
+                events.append(.lengthComplete(length: length, bonus: bonus))
+            }
+        }
+        // D-01/D-02: sweep. `isPangram` guard prevents the empty-set case and re-triggers.
+        if isPangram, sweepBonus == 0, pangramSet.isSubset(of: foundWordSet) {
+            let bonus = ScoreCalculator.sweepBonus(pangramCount: pangramSet.count)
+            score += bonus
+            sweepBonus = bonus
+            let foundOrder = foundWords.reversed().filter { pangramSet.contains($0) }
+            events.append(.pangramSweep(bonus: bonus, pangrams: foundOrder))   // D-17: after length
+        }
+        // All bonus state must be current BEFORE the counter bump GameView reacts to.
+        lastSubmissionBonusEvents = events
+        pendingCelebrations.append(contentsOf: events)
+
         lastOutcome = .accepted(word: word, points: points, isPangram: isPangram)
         acceptedSubmissionCount += 1
         return true
+    }
+
+    /// GameView drains celebrations one at a time (UI-SPEC 4/5: sequential, never overlapping).
+    func dequeueCelebration() -> CompletionEvent? {
+        pendingCelebrations.isEmpty ? nil : pendingCelebrations.removeFirst()
     }
 
     /// Sets the outcome BEFORE bumping the counter: views read `lastOutcome` inside
