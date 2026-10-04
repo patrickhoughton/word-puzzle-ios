@@ -343,3 +343,53 @@ final class GameViewModel {
         }
     }
 }
+
+#if DEBUG
+// MARK: - Debug shortcuts (Debug builds only; never compiled into Release / App Store)
+// Reaching > 100% by hand takes nearly every word, so these let on-device testing jump
+// straight to the interesting moment: the live 100% crossing, length pills and the sweep.
+// In this file (not an extension file) because they need the private bonus bookkeeping.
+extension GameViewModel {
+    /// Hidden while the App Store screenshot UI test is staging a puzzle (it runs a Debug build).
+    static var debugShortcutsEnabled: Bool {
+        UserDefaults.standard.string(forKey: "ScreenshotPuzzle") == nil
+    }
+
+    /// Unfound puzzle words, ordered so the pangram that would complete the sweep comes last:
+    /// typing them in order shows length pills first and ends on the sweep.
+    var debugRemainingWords: [String] {
+        guard let puzzle else { return [] }
+        let remaining = puzzle.validWords.filter { !foundWordSet.contains($0) }
+        let (pangrams, others) = (remaining.filter { pangramSet.contains($0) }, remaining.filter { !pangramSet.contains($0) })
+        return others.sorted { ($0.count, $0) < ($1.count, $1) } + pangrams.sorted()
+    }
+
+    /// Finds every word it can while staying at or under 100%, always leaving the
+    /// sweep-completing pangram unfound. Finishing the remaining words is then guaranteed to
+    /// cross 100% live (the full puzzle plus bonuses always exceeds the max). Celebrations
+    /// earned along the way are discarded so the queue doesn't replay a dozen pills.
+    func debugSolveToJustUnderMax() {
+        guard roundPhase == .playing else { return }
+        for word in debugRemainingWords {
+            let isPangram = pangramSet.contains(word)
+            let completesSweep = isPangram && pangramSet.subtracting(foundWordSet) == [word]
+            if completesSweep { continue }
+            var gain = ScoreCalculator.points(for: word, isPangram: isPangram)
+            if let total = lengthTotals[word.count], (foundCountByLength[word.count] ?? 0) + 1 == total {
+                gain += ScoreCalculator.lengthCompletionBonus(length: word.count)
+            }
+            if score + gain > maxPossibleScore { continue }
+            currentWord = word
+            submitCurrentWord()
+        }
+        pendingCelebrations = []
+        lastSubmissionBonusEvents = []
+    }
+
+    /// Types the next remaining word into the input; swipe down to submit it as normal.
+    func debugTypeNextRemainingWord() {
+        guard roundPhase == .playing, let next = debugRemainingWords.first else { return }
+        currentWord = next
+    }
+}
+#endif

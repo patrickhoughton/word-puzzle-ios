@@ -503,4 +503,28 @@ final class GameViewModelTests {
         #expect(RejectionReason.notAWord.message == "Hmm, not a word")
         #expect(RejectionReason.allCases.count == 4)
     }
+
+    // MARK: - Debug shortcuts (Debug builds only)
+
+    #if DEBUG
+    @Test func testDebugSolveStopsAtOrUnderMaxAndLeavesSweepPangram() {
+        for puzzle in [twoPangramFixturePuzzle(), pangramFixturePuzzle()] {
+            let vm = GameViewModel(wordList: wordList)
+            vm.startNewRound(with: puzzle)
+            vm.debugSolveToJustUnderMax()
+            #expect(vm.progressFraction <= 1)
+            #expect(vm.foundPangramCount < vm.totalPangramCount)
+            #expect(vm.pendingCelebrations.isEmpty)
+            #expect(vm.debugRemainingWords.last.map(vm.pangramSet.contains) == true)
+            // Typing the rest in order crosses 100% live and fires the sweep last.
+            while !vm.debugRemainingWords.isEmpty {
+                vm.debugTypeNextRemainingWord()
+                #expect(vm.submitCurrentWord() == true)
+            }
+            #expect(vm.progressFraction > 1)
+            #expect(vm.sweepBonus > 0)
+            #expect(vm.rank == .mythicGrandmaster)
+        }
+    }
+    #endif
 }

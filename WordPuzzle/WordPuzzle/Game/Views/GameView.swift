@@ -257,6 +257,22 @@ struct GameView: View {
     private var playingLayout: some View {
         VStack(spacing: 0) {
             HStack {
+                #if DEBUG
+                if GameViewModel.debugShortcutsEnabled {
+                    Menu {
+                        Button("Solve to just under 100%") { viewModel.debugSolveToJustUnderMax() }
+                        Button("Type next missing word (\(viewModel.debugRemainingWords.count) left)") {
+                            viewModel.debugTypeNextRemainingWord()
+                        }
+                    } label: {
+                        Image(systemName: "ladybug")
+                            .font(GameTheme.headingFont)
+                            .foregroundStyle(Color.secondary)
+                            .frame(minWidth: GameTheme.minTapTarget, minHeight: GameTheme.minTapTarget)
+                    }
+                    .accessibilityLabel(Text("Debug shortcuts"))
+                }
+                #endif
                 Spacer()
                 Button {
                     isShowingSettings = true
