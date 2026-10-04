@@ -17,8 +17,8 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 - [x] **Phase 3: Core Game UI** - Playable game on a real device: letter display, word input, validation feedback, scoring, end-of-round reveal, haptics (completed 2026-08-29)
 - [x] **Phase 4: Paywall & Free Tier Gate** - 3-puzzle daily limit enforced; paywall screen with Restore Purchases; IAP purchase and restore flows sandbox-tested (completed 2026-08-31)
 - [ ] **Phase 5: Polish, Compliance & App Store** - Sound effects, Dynamic Type, offline verification, privacy label, app icon, screenshots, ASO
-- [ ] **Phase 6: Differentiated Invalid-Word Messaging** - Distinct feedback for too-short, not-in-dictionary and already-found submissions
-- [ ] **Phase 7: Found Words View** - In-round list of found words, grouped by length
+- [x] **Phase 6: Differentiated Invalid-Word Messaging** - Distinct feedback for too-short, not-in-dictionary and already-found submissions (completed 2026-10-04)
+- [x] **Phase 7: Found Words View** - In-round list of found words, grouped by length (completed 2026-10-04)
 - [ ] **Phase 8: All-Pangrams Bonus** - Extra bonus and callout for finding every pangram in a puzzle
 - [ ] **Phase 9: Player Stats Screen** - Lifetime stats and streak surfaced in a player-visible screen
 - [ ] **Phase 10: Double-Tap Shuffle** - Double-tap empty space to shuffle the outer letters
@@ -209,8 +209,8 @@ Plans:
 | 3. Core Game UI | 5/5 | Complete | 2026-08-29 |
 | 4. Paywall & Free Tier Gate | 4/4 | Complete | 2026-08-31 |
 | 5. Polish, Compliance & App Store | 7/8 | In Progress | - |
-| 6. Differentiated Invalid-Word Messaging | 1/2 | In Progress|  |
-| 7. Found Words View | 0/0 | Not started | - |
+| 6. Differentiated Invalid-Word Messaging | 2/2 | Complete | 2026-10-04 |
+| 7. Found Words View | 3/3 | Complete | 2026-10-04 |
 | 8. All-Pangrams Bonus | 0/0 | Not started | - |
 | 9. Player Stats Screen | 0/0 | Not started | - |
 | 10. Double-Tap Shuffle | 0/0 | Not started | - |
