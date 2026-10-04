@@ -185,4 +185,85 @@ final class PersistenceStore {
         }
         return streak
     }
+
+    // MARK: - Phase 9 stats (D-07, D-09, D-10, D-14, D-21)
+
+    /// D-07: longest run of consecutive LOCAL calendar days with >= 1 finished round, over FULL
+    /// history (no 400-day window). Adjacency via date(byAdding: .day) so DST days count as one day.
+    func longestStreak() -> Int {
+        let records = (try? context.fetch(FetchDescriptor<GameRecord>())) ?? []
+        let days = Set(records.map { calendar.startOfDay(for: $0.date) }).sorted()
+        var best = 0, run = 0
+        var previous: Date?
+        for day in days {
+            if let previous, calendar.date(byAdding: .day, value: 1, to: previous) == day { run += 1 } else { run = 1 }
+            best = max(best, run)
+            previous = day
+        }
+        return best
+    }
+
+    /// D-09/D-23: whole number, rounded to nearest; nil when no finished games (D-20).
+    func averageScore() -> Int? {
+        let records = (try? context.fetch(FetchDescriptor<GameRecord>())) ?? []
+        guard !records.isEmpty else { return nil }
+        return Int((Double(records.reduce(0) { $0 + $1.score }) / Double(records.count)).rounded())
+    }
+
+    func averageWordsPerGame() -> Int? {
+        let records = (try? context.fetch(FetchDescriptor<GameRecord>())) ?? []
+        guard !records.isEmpty else { return nil }
+        return Int((Double(records.reduce(0) { $0 + $1.wordsFoundCount }) / Double(records.count)).rounded())
+    }
+
+    /// D-14: highest stored tier; pre-Phase-9 rows (nil) are ignored (D-12).
+    func bestRank() -> RankTier? {
+        let records = (try? context.fetch(FetchDescriptor<GameRecord>())) ?? []
+        return records.compactMap(\.rankRaw).max().flatMap(RankTier.init(rawValue:))
+    }
+
+    /// D-10/D-13: finished rounds only; nil (pre-Phase-9) contributes 0.
+    func totalPangramsFound() -> Int {
+        let records = (try? context.fetch(FetchDescriptor<GameRecord>())) ?? []
+        return records.reduce(0) { $0 + ($1.pangramsFound ?? 0) }
+    }
+
+    /// D-10: number of finished rounds whose pangram sweep fired.
+    func totalSweeps() -> Int {
+        let records = (try? context.fetch(FetchDescriptor<GameRecord>())) ?? []
+        return records.filter { $0.hadSweep == true }.count
+    }
+
+    /// D-21: true when a round was FINISHED today (GameRecord, not RoundStartRecord).
+    func hasFinishedRoundToday(now: Date = .now) -> Bool {
+        let (startOfDay, startOfNextDay) = todayBounds(now: now)
+        let descriptor = FetchDescriptor<GameRecord>(
+            predicate: #Predicate { $0.date >= startOfDay && $0.date < startOfNextDay }
+        )
+        return ((try? context.fetchCount(descriptor)) ?? 0) > 0
+    }
+
+    /// Phase 9: the single snapshot builder GameView calls each time a stats surface opens
+    /// (RESEARCH Pitfall 4: never a cached snapshot).
+    func playerStats(now: Date = .now) -> PlayerStats {
+        let current = currentStreak(now: now)
+        return PlayerStats(
+            puzzlesToday: puzzlesPlayedToday(now: now),
+            todayScore: todayTotalScore(now: now),
+            todayWords: todayTotalWordsFound(now: now),
+            currentStreak: current,
+            // Pitfall 5: currentStreak is 400-day-windowed, longestStreak is full history;
+            // max() guarantees longest >= current for any edge case.
+            longestStreak: max(longestStreak(), current),
+            streakAtRisk: current > 0 && !hasFinishedRoundToday(now: now),
+            gamesPlayed: totalGamesPlayed(),
+            bestScore: bestScore(),
+            totalWords: totalWordsFound(),
+            averageScore: averageScore(),
+            averageWords: averageWordsPerGame(),
+            bestRank: bestRank(),
+            pangrams: totalPangramsFound(),
+            sweeps: totalSweeps()
+        )
+    }
 }
