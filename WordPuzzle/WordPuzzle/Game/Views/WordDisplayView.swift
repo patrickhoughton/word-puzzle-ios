@@ -35,15 +35,31 @@ struct WordDisplayView: View {
     @State private var shakeAmount: CGFloat = 0
     @State private var popScale: CGFloat = 1
     @State private var feedbackText: String?
-    @State private var feedbackIsError = false
+    /// accept = "+N" (Display, accent); error = full rejection (Body, red, D-06);
+    /// neutral = already-found reminder (Body, secondary, D-05).
+    private enum FeedbackStyle { case accept, error, neutral }
+    @State private var feedbackStyle: FeedbackStyle = .accept
+    /// Bumped on every new feedback message; a pending clear only fires if no newer
+    /// message replaced it (prevents an earlier timer clearing a newer duplicate message).
+    @State private var feedbackToken = 0
+
+    private var feedbackColor: Color {
+        switch feedbackStyle {
+        case .accept: GameTheme.accent
+        case .error: GameTheme.errorColor
+        case .neutral: Color.secondary
+        }
+    }
 
     var body: some View {
         VStack(spacing: GameTheme.xs) {
-            // Feedback line: "+N" on accept (accent, Display) or the generic
-            // rejection message (systemRed, Body). D-07 / D-08.
+            // Feedback line: "+N" on accept (accent, Display) or a reason-specific
+            // rejection message (Phase 6: red for errors, secondary for duplicates).
             Text(feedbackText ?? " ")
-                .font(feedbackIsError ? GameTheme.bodyFont : GameTheme.displayFont)
-                .foregroundStyle(feedbackIsError ? GameTheme.errorColor : GameTheme.accent)
+                .font(feedbackStyle == .accept ? GameTheme.displayFont : GameTheme.bodyFont)
+                .foregroundStyle(feedbackColor)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
                 .frame(minHeight: 40)
                 .opacity(feedbackText == nil ? 0 : 1)
 
@@ -99,27 +115,45 @@ struct WordDisplayView: View {
     // D-08: brief pop + "+N" points.
     private func showAcceptedFeedback() {
         guard case let .accepted(_, points, isPangram) = outcome else { return }
-        feedbackIsError = false
+        feedbackToken += 1
+        let token = feedbackToken
+        feedbackStyle = .accept
         feedbackText = isPangram ? "+\(points)  Pangram!" : "+\(points)"
         withAnimation(.spring(response: 0.2, dampingFraction: 0.5)) { popScale = 1.12 }
         Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(180))
             withAnimation(.spring(response: 0.25, dampingFraction: 0.7)) { popScale = 1 }
             try? await Task.sleep(for: .milliseconds(700))
-            withAnimation(.easeOut(duration: 0.2)) { feedbackText = nil }
+            if feedbackToken == token { withAnimation(.easeOut(duration: 0.2)) { feedbackText = nil } }
         }
     }
 
-    // D-07: shake + generic message. No reason-specific variants in Phase 3.
+    // Phase 6 D-03..D-06: reason-specific text and intensity.
     private func showRejectedFeedback() {
-        feedbackIsError = true
-        feedbackText = "Not a valid word"
+        guard case let .rejected(reason) = outcome else { return }
+        feedbackToken += 1
+        let token = feedbackToken
+        feedbackText = reason.message   // D-03/D-04: fixed text from RejectionReason.message
+        AccessibilityNotification.Announcement(reason.message).post()
+
+        if reason == .alreadyFound {
+            // D-05: gentle reminder -- no shake, one light haptic, neutral color.
+            // (Sound is suppressed in GameView via SoundEffect.forRejection.)
+            feedbackStyle = .neutral
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(1100))
+                if feedbackToken == token { withAnimation(.easeOut(duration: 0.2)) { feedbackText = nil } }
+            }
+            return
+        }
+
+        // D-06: too short / missing center / not a word keep the full Phase 5 feedback.
+        feedbackStyle = .error
         withAnimation(.linear(duration: 0.06).repeatCount(6, autoreverses: true)) {
             shakeAmount = 16
         }
-        // Manual double-hit: a single .impact(weight: .heavy, intensity: 1.0) is
-        // the ceiling for one SwiftUI .sensoryFeedback shot. Two rapid heavy
-        // UIImpactFeedbackGenerator hits read as noticeably stronger.
+        // Manual double-hit: two rapid heavy hits read stronger than one .sensoryFeedback shot.
         let generator = UIImpactFeedbackGenerator(style: .heavy)
         generator.prepare()
         generator.impactOccurred(intensity: 1.0)
@@ -129,7 +163,7 @@ struct WordDisplayView: View {
             try? await Task.sleep(for: .milliseconds(340))
             withAnimation(.linear(duration: 0.06)) { shakeAmount = 0 }
             try? await Task.sleep(for: .milliseconds(700))
-            withAnimation(.easeOut(duration: 0.2)) { feedbackText = nil }
+            if feedbackToken == token { withAnimation(.easeOut(duration: 0.2)) { feedbackText = nil } }
         }
     }
 }

@@ -100,10 +100,10 @@ struct GameView: View {
             )
         }
         .onChange(of: viewModel.rejectedSubmissionCount) { _, _ in
-            SoundManager.shared.play(
-                SoundEffect.forSubmission(accepted: false, isPangram: false),
-                enabled: soundEffectsEnabled
-            )
+            // Phase 6 D-05: a duplicate ("already found") plays no sound; forRejection returns nil.
+            guard case let .rejected(reason) = viewModel.lastOutcome,
+                  let effect = SoundEffect.forRejection(reason) else { return }
+            SoundManager.shared.play(effect, enabled: soundEffectsEnabled)
         }
         // D-01 groups round end and paywall shown into one sound. forRoundPhase returns
         // nil for .loading/.playing, so entering a round is silent.
