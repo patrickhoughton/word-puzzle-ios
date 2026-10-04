@@ -8,6 +8,8 @@
 
 Add an extra scoring bonus, with an in-round celebration, for finding EVERY pangram in a puzzle. This sits on top of the existing per-word +7 pangram bonus. It also adds a pangram counter so players can chase the bonus. The rank ladder gets an overflow state and a hidden tier, because the bonus can push score past the puzzle's max.
 
+**Scope addition (user request, same session):** Phase 8 also adds a **length-completion bonus**, awarded for finding every word of a given length (D-14..D-18). Phase 8 is effectively "Completion Bonuses". The directory name stays `08-all-pangrams-bonus`.
+
 Not in scope: changing puzzle generation, capping pangram counts, or redesigning `MissedWordsView` beyond showing the sweep.
 
 ### Frequency finding (roadmap item 3, answered during discussion)
@@ -43,12 +45,20 @@ Multi-pangram puzzles are the norm. The generator also favors many-pangram lette
 ### Huge Pangram Counts
 - **D-13:** **No cap and no generator change.** Puzzles with 20–86 pangrams stay as they are. Sweeping them is a rare, huge feat (e.g. 40 pangrams → +280). `PuzzleGenerator` is untouched this phase.
 
+### Length-Completion Bonus (added mid-session by user request)
+- **D-14:** When a player finds **every word of a given length** in the puzzle, award a bonus **equal to that length** (e.g. completing all 5-letter words → +5; all 8-letter words → +8). It's awarded once per length group per round. "All words of length L" is defined over `puzzle.validWords`, the same groups as Phase 7's Found Words sheet (D-11/D-12 there, where a completed group already shows a ✓).
+- **D-15:** Scoring follows the **same rules as the pangram sweep**: added to `score` and persisted, **counts toward rank**, **excluded from `maxPossibleScore`**, and can push progress **past 100%** toward Mythic Grandmaster (D-04..D-06).
+- **D-16:** Celebration is a **lighter version of the sweep**: a short popup like **"5 Letters complete! +5"**, with a success sound and haptic. **No tally animation**; the tally stays special to the pangram sweep. Copy format: "<L> Letters complete! +<L>" (Claude may tune wording within the playful tone).
+- **D-17:** **Stacking:** if one word completes a length group AND the pangram set, award **both bonuses**, celebrated **in sequence**: length popup first, then the pangram sweep tally. If one word could ever complete multiple groups (it can't, since a word has one length), no special case is needed.
+- **D-18:** Unit-testable pure function, e.g. `ScoreCalculator.lengthCompletionBonus(length:) -> Int` (returns `length`). The view-model tracks which lengths are already completed so the bonus never double-awards.
+
 ### Claude's Discretion
 - Exact fanfare clip choice from the Kenney packs, tick sound, haptic type, and the tally's per-step timing and speed-up curve.
 - Overflow glow/shimmer styling on the progress bar, and how Mythic Grandmaster looks visually distinct from Legend (e.g. accent glow).
 - Board pangram counter: exact placement, icon, and format. What it shows after the sweep (e.g. checkmark/complete state). VoiceOver label.
 - How the sweep shows on `MissedWordsView`'s end-of-round header (e.g. a "Pangram sweep! +N" line). Keep it minimal; don't redesign the screen.
 - Whether the sweep is modeled as a new `SubmissionOutcome` field/case (e.g. `accepted(..., sweepBonus: Int?)`) or as separate view-model state. Must keep views value-in/closure-out (only `GameView` touches `GameViewModel`).
+- Sound for the length-completion popup (reuse an existing clip or a lighter Kenney clip, distinct from the sweep fanfare), and whether the Found Words sheet rows/headers show the bonus earned for a completed group (e.g. "+5" beside the ✓).
 - Whether input is blocked during the tally animation (prefer not blocking, or keep the tally short enough that it doesn't matter).
 - `ScoreCalculator` gets a pure function for the sweep bonus (e.g. `sweepBonus(pangramCount:)`) so it's unit-testable.
 
@@ -94,7 +104,7 @@ No external specs. Requirements are fully captured in the decisions above.
 - `GameViewModel.submitCurrentWord()`: sweep detection and score increment.
 - `ScoreBarView`: overflow glow, Mythic Grandmaster display, possibly the board pangram counter.
 - `GameView`: hosts the tally overlay/animation and the sound/haptic `onChange` handlers.
-- `RankTierTests`, `GameViewModelTests`, `ScoreCalculator` tests: extend for the bonus, the 1-pangram case, and the >100% tier.
+- `RankTierTests`, `GameViewModelTests`, `ScoreCalculator` tests: extend for the bonus, the 1-pangram case, the >100% tier, length-completion awards (once per length), and same-word stacking (length + sweep).
 
 </code_context>
 

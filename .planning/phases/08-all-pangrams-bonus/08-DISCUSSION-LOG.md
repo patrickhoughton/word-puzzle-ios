@@ -79,6 +79,17 @@ Pre-discussion: I simulated 20,000 puzzles. 1 pangram = 22.6%, 2 = 17.2%, 3–5 
 
 **Cap amount:** user answered "no cap".
 
+## Length-completion bonus (user-initiated scope addition)
+
+User: "Let's add an additional bonus for completing all words of a given length. The bonus will be points equivalent to the length."
+
+| Question | Options | Selected |
+|---|---|---|
+| Scope | Fold into Phase 8 / Separate new phase | Fold into Phase 8 |
+| Celebration | Lighter version of sweep / Same tally / Quiet points only | Lighter version of sweep |
+| Scoring | Same rules as sweep / Include in max score | Same rules as sweep |
+| Overlap with sweep | Both, in sequence / Both, one combined callout | Both, in sequence |
+
 ## Claude's Discretion
 
 Fanfare clip/tick/haptic choice and tally timing; overflow glow styling; Mythic Grandmaster visual treatment; board counter placement/format/post-sweep state; MissedWordsView sweep mention; outcome modeling; input blocking during tally.
