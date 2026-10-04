@@ -45,10 +45,22 @@ distribution signing via the API key; `EXPORT SUCCEEDED`). Processing at Apple.
 into v1.0 and tested on device.** Consequences:
 - Screenshots: NOT uploaded yet — re-capture after the backlog lands (the UI will change), then upload.
 - Description/promo text may need a refresh once the new features exist.
-- Privacy Policy + Support URLs: to be hosted on Patrick's LLC domain (Dynadot) — awaiting domain,
-  LLC legal name (also for the Copyright field) and the public contact email.
-- Still outstanding: App Review contact details, IAP review screenshot, App Privacy questionnaire
-  and Mac/Vision Pro availability (UI-only), final build upload.
+- Still outstanding: IAP review screenshot, App Privacy questionnaire and Mac/Vision Pro
+  availability (UI-only), screenshot upload, final build upload + submission.
+
+**2026-10-04 — copyright, review contact, URLs (all HTTP 200/201):**
+- Copyright → `2026 Three Mile Bridge LLC`
+- App Review details created: Patrick Houghton, +1 850 723 9249, mrpatrickhoughton@gmail.com,
+  no demo account, notes as drafted below
+- Privacy Policy URL → `https://apps.threemilebridge.com/wordpuzzle/privacy/`
+- Support URL → `https://apps.threemilebridge.com/wordpuzzle/support/`
+- Pages served by GitHub Pages from `docs/` (custom domain `apps.threemilebridge.com`, HTTPS
+  certificate approved, HTTPS enforced; all three pages return 200).
+- DNS: threemilebridge.com moved from Dynadot "Site Builder" preset to "Dynadot DNS" (registry
+  delegation geo.dyna-ns.net -> ns1/ns2.dyna-ns.net at 18:21:56Z). Required setting Dynadot
+  Email Settings to "Not Set" first; mail now flows via explicit records. Zone: A 54.177.117.207 +
+  16.162.17.243, MX 0 webhost.dynadot.com, SPF TXT, www A x2, default._domainkey CNAME
+  clients._domainkey.webhost.dynadot.com, _dmarc TXT, apps CNAME patrickhoughton.github.io.
 
 ## Listing values
 
@@ -185,7 +197,7 @@ Word Puzzle Unlimited does not collect, store, or share any personal information
 
 If this policy changes, the updated version will be posted at this address.
 
-Contact: <support contact>
+Contact: phoughton@threemilebridge.com
 ```
 
 ## Pre-submission checklist
@@ -197,8 +209,8 @@ Contact: <support contact>
 - [ ] Mac and Vision Pro availability unchecked (Task 2)
 - [x] Screenshots for all required sizes generated (05-07: iPhone 6.9" + iPad 13")
 - [ ] Screenshots uploaded (Task 2)
-- [ ] Privacy Policy URL published and set — **blocker**
-- [ ] Support URL published and set — **blocker**
+- [x] Privacy Policy URL published and set (apps.threemilebridge.com, 2026-10-04)
+- [x] Support URL published and set (apps.threemilebridge.com, 2026-10-04)
 - [ ] IAP metadata complete (App Review screenshot) — currently `MISSING_METADATA`
-- [ ] Release option set to Manual Release (currently `AFTER_APPROVAL`)
-- [ ] Build archived and uploaded — **no build exists yet; not covered by any plan**
+- [x] Release option set to Manual Release (API, 2026-10-04)
+- [ ] Final build archived and uploaded — 1.0 (1) uploaded 2026-10-04 as a test; final build after Phases 6-12
