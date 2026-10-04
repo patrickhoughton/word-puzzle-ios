@@ -127,7 +127,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — RejectionReason enum, per-reason guards, message strings, SoundEffect.forRejection + unit tests
+- [x] 06-01-PLAN.md — RejectionReason enum, per-reason guards, message strings, SoundEffect.forRejection + unit tests
 - [ ] 06-02-PLAN.md — WordDisplayView/GameView per-reason feedback, device install, on-device haptic/sound check
 **UI hint**: yes
 **Promoted from**: backlog 999.3 (2026-10-04, built into v1.0 before submission)
@@ -207,7 +207,7 @@ Plans:
 | 3. Core Game UI | 5/5 | Complete | 2026-08-29 |
 | 4. Paywall & Free Tier Gate | 4/4 | Complete | 2026-08-31 |
 | 5. Polish, Compliance & App Store | 7/8 | In Progress | - |
-| 6. Differentiated Invalid-Word Messaging | 0/0 | Not started | - |
+| 6. Differentiated Invalid-Word Messaging | 1/2 | In Progress|  |
 | 7. Found Words View | 0/0 | Not started | - |
 | 8. All-Pangrams Bonus | 0/0 | Not started | - |
 | 9. Player Stats Screen | 0/0 | Not started | - |
@@ -221,7 +221,7 @@ Plans:
 
 **Goal:** [Captured for future planning] — Patrick suspects the bundled word list is missing words players would expect to be valid. Current list is `enable-clean.txt` (~172,678 words, the profanity-filtered ENABLE list, per CLAUDE.md's original tech-stack choice). **Scope constraint:** do NOT source or diff against Words With Friends' official word list — it's proprietary to Zynga/EA, not public domain, same reasoning CLAUDE.md already uses to rule out the official Scrabble/SOWPODS dictionary ("cannot bundle without licensing"). Safe approach instead: cross-reference `enable-clean.txt` against other public-domain or freely-licensed word lists (e.g. SCOWL) to find and fill genuine gaps, and/or gather specific examples of rejected words players expected to work as concrete test cases before changing the list.
 **Requirements:** TBD
-**Plans:** 0 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
