@@ -164,11 +164,16 @@ Plans:
 ### Phase 9: Player Stats Screen
 **Goal**: surface `PersistenceStore`'s existing lifetime stats (`totalGamesPlayed`, `bestScore`, `totalWordsFound`, `currentStreak`, `puzzlesPlayedToday`) in a UI the player can actually see. The data has existed since Phase 2; no view currently reads it. Natural fit alongside Phase 5's settings screen.
 **Depends on**: Phase 5
-**Requirements**: TBD
-**Plans**: 0 plans
+**Requirements**: P9-A, P9-B, P9-C, P9-D, P9-E (derived in 09-RESEARCH.md)
+**Plans**: 6 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 9 to break down)
+- [ ] 09-01-PLAN.md — GameRecord optional rank/pangrams/sweep fields, legacy-store migration test (spiked first), record() defaults, finishRound wiring (Wave 1)
+- [ ] 09-02-PLAN.md — PlayerStats snapshot + StatsView (hero, TODAY/LIFETIME grids, best rank glow, count-up, AX collapse, VoiceOver), OverflowGlow extraction (Wave 1)
+- [ ] 09-03-PLAN.md — PersistenceStore stats queries (longest streak, averages, best rank, pangram/sweep totals, at-risk) + playerStats(now:) aggregator (Wave 2)
+- [ ] 09-04-PLAN.md — Settings "Stats" push row + MissedWordsView "Best B · Streak S" summary line (Wave 2)
+- [ ] 09-05-PLAN.md — GameView wiring: top-bar icon + sheet, round-over sheet inside the cover, fresh snapshots; XCUITest for all three entry points (Wave 3)
+- [ ] 09-06-PLAN.md — On-device: before/after store diff over install-over migration, then Patrick's presentation/Reduce Motion/AX5 approval (Wave 4)
 **UI hint**: yes
 **Promoted from**: backlog 999.1 (2026-10-04, built into v1.0 before submission)
 
