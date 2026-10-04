@@ -49,4 +49,31 @@ enum GameTheme {
     static let shuffleAnimation: Animation = .spring(response: 0.35, dampingFraction: 0.7)
     /// Duration used by GameViewModel to gate input during shuffle (RESEARCH Pitfall 2).
     static let shuffleDurationMilliseconds: Int = 400
+
+    // MARK: - Phase 8 completion celebrations (08-UI-SPEC §2, §4, §5)
+    /// Delay before the first celebration so its haptic doesn't land on WordDisplayView's per-word .success haptic (RESEARCH Pitfall 4).
+    static let celebrationLeadInSeconds: Double = 0.25
+    static let sweepCardInSeconds: Double = 0.15
+    static let sweepTallyMaxSeconds: Double = 1.2
+    static let sweepStepMinSeconds: Double = 0.03
+    static let sweepStepMaxSeconds: Double = 0.3
+    static let sweepWordVisibleMinStepSeconds: Double = 0.08
+    static let sweepHeadlineHoldSeconds: Double = 0.8
+    static let celebrationFadeOutSeconds: Double = 0.3
+    static let lengthPillInSeconds: Double = 0.2
+    static let lengthPillHoldSeconds: Double = 1.0
+    static let lengthPillSlideOffset: CGFloat = 8
+    static let reduceMotionCrossfadeSeconds: Double = 0.2
+    static let reduceMotionHoldSeconds: Double = 1.0
+    static let sweepMaxTicks: Int = 12
+    static let sweepCardInScale: CGFloat = 0.9
+    static let sweepCardAnimation: Animation = .spring(response: 0.3, dampingFraction: 0.7)
+    static let celebrationCornerRadius: CGFloat = 12
+    static let celebrationShadowOpacity: Double = 0.15
+    static let celebrationShadowRadius: CGFloat = 8
+    static let overflowShimmerSeconds: Double = 2.0
+    static let overflowShimmerWidthFraction: CGFloat = 0.4
+    static let overflowShimmerOpacity: Double = 0.6
+    static let overflowGlowOpacity: Double = 0.6
+    static let overflowGlowRadius: CGFloat = 8
 }
