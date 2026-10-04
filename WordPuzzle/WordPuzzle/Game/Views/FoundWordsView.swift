@@ -20,7 +20,16 @@ struct FoundWordsView: View {
     }
 
     static func groupAccessibilityLabel(length: Int, found: Int, total: Int) -> String {
-        "\(length) letters, \(found) of \(total) found" + (found == total ? ", complete" : "")
+        "\(length) letters, \(found) of \(total) found"
+            + (found == total ? ", complete, plus \(ScoreCalculator.lengthCompletionBonus(length: length)) bonus points" : "")
+    }
+
+    /// Phase 8 D-11 (reverses Phase 7 D-15).
+    static func pangramLine(found: Int, total: Int) -> String { "Pangrams \u{00B7} \(found) of \(total)" }
+    static func pangramLineAccessibilityLabel(found: Int, total: Int) -> String { "\(found) of \(total) pangrams found" }
+    /// Phase 8 D-14: the length bonus earned by a completed group.
+    static func groupBonusText(length: Int) -> String {
+        CompletionCelebration.bonusText(ScoreCalculator.lengthCompletionBonus(length: length))
     }
 
     static func pointsText(_ points: Int) -> String { "+\(points)" }
@@ -35,6 +44,10 @@ struct FoundWordsView: View {
     let foundCount: Int
     let totalCount: Int
     let onDone: () -> Void
+    var foundPangrams: Int = 0
+    var totalPangrams: Int = 0
+
+    private var allPangramsFound: Bool { totalPangrams > 0 && foundPangrams >= totalPangrams }
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -78,6 +91,20 @@ struct FoundWordsView: View {
                 .foregroundStyle(Color.secondary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
+            if totalPangrams > 0 {
+                HStack(spacing: GameTheme.xs) {
+                    Image(systemName: allPangramsFound ? "checkmark.seal.fill" : "checkmark.seal")
+                        .foregroundStyle(allPangramsFound ? GameTheme.accent : Color.secondary)
+                    Text(Self.pangramLine(found: foundPangrams, total: totalPangrams))
+                        .foregroundStyle(Color.secondary)
+                }
+                .font(GameTheme.labelFont)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .padding(.top, GameTheme.xs)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text(Self.pangramLineAccessibilityLabel(found: foundPangrams, total: totalPangrams)))
+            }
         }
         .multilineTextAlignment(.center)
         .padding(GameTheme.lg)
@@ -103,6 +130,12 @@ struct FoundWordsView: View {
                 Image(systemName: "checkmark.circle.fill")
                     .font(GameTheme.headingFont)
                     .foregroundStyle(GameTheme.accent)
+                    .accessibilityHidden(true)
+                Text(Self.groupBonusText(length: group.length))
+                    .font(GameTheme.labelFont)
+                    .foregroundStyle(Color.secondary)
+                    .monospacedDigit()
+                    .lineLimit(1)
                     .accessibilityHidden(true)
             }
         }
@@ -186,7 +219,11 @@ private enum FoundWordsPreviewData {
 }
 
 #Preview("Group complete") {
-    FoundWordsView(groups: FoundWordsPreviewData.complete, rank: .adept, foundCount: 2, totalCount: 4, onDone: {})
+    FoundWordsView(groups: FoundWordsPreviewData.complete, rank: .adept, foundCount: 2, totalCount: 4, onDone: {}, foundPangrams: 0, totalPangrams: 1)
+}
+
+#Preview("All pangrams found") {
+    FoundWordsView(groups: FoundWordsPreviewData.midRound, rank: .adept, foundCount: 4, totalCount: 8, onDone: {}, foundPangrams: 1, totalPangrams: 1)
 }
 
 #Preview("Accessibility XXL") {

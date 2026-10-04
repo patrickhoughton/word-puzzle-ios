@@ -7,7 +7,8 @@ struct ScoreBarView: View {
     let rank: RankTier
     let foundCount: Int
     let totalCount: Int
-    /// 0...1 — score divided by the puzzle's max possible score.
+    /// 0...unbounded (Phase 8 D-05): > 1 means completion bonuses pushed past max.
+    /// The ProgressView clamps itself; overflow is drawn separately.
     let progress: Double
     /// D-03/D-04: free puzzles left today, or nil for premium users (nothing renders).
     /// Passed in rather than read from the environment — this view has zero
@@ -16,6 +17,54 @@ struct ScoreBarView: View {
     /// The daily allowance the remaining count is out of. Passed in (as
     /// `GameViewModel.freePuzzlesPerDay`) so the literal 3 lives in exactly one place.
     let freePuzzlesPerDay: Int
+    /// Phase 8 D-11: pangrams found / in puzzle. 0 total hides the chip (fixtures/previews only).
+    var foundPangrams: Int = 0
+    var totalPangrams: Int = 0
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    static func pangramCounterText(found: Int, total: Int) -> String { "\(found)/\(total)" }
+
+    /// D-05: strict > so exactly 100% (Legend) stays a plain full bar.
+    static func isOverflow(progress: Double) -> Bool { progress.isFinite && progress > 1 }
+
+    static func accessibilityText(rank: RankTier, foundCount: Int, totalCount: Int, foundPangrams: Int, totalPangrams: Int, progress: Double, freePuzzlesRemaining: Int?, freePuzzlesPerDay: Int) -> String {
+        var text = "Rank \(rank.displayName). \(foundCount) of \(totalCount) words found."
+        if totalPangrams > 0 {
+            text += " \(foundPangrams) of \(totalPangrams) pangrams found."
+        }
+        if isOverflow(progress: progress) {
+            text += " Progress beyond maximum."
+        }
+        if let freePuzzlesRemaining {
+            text += " \(freePuzzlesRemaining) of \(freePuzzlesPerDay) free puzzles remaining today."
+        }
+        return text
+    }
+
+    private var pangramsComplete: Bool { totalPangrams > 0 && foundPangrams >= totalPangrams }
+
+    @ViewBuilder
+    private var rankTitle: some View {
+        if rank == .mythicGrandmaster {
+            HStack(spacing: GameTheme.xs) {
+                Image(systemName: "sparkles").accessibilityHidden(true)
+                Text(rank.displayName)
+            }
+            .font(GameTheme.headingFont)
+            .foregroundStyle(GameTheme.accent)
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
+            .contentTransition(.opacity)
+        } else {
+            Text(rank.displayName)
+                .font(GameTheme.headingFont)
+                .foregroundStyle(Color.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .contentTransition(.opacity)
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: GameTheme.sm) {
@@ -24,11 +73,7 @@ struct ScoreBarView: View {
             // wrapping, which would grow this row's height and risk pushing the
             // control row off the bottom of the screen (no ScrollView here).
             HStack {
-                Text(rank.displayName)
-                    .font(GameTheme.headingFont)
-                    .foregroundStyle(Color.primary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
+                rankTitle
                 Spacer()
                 HStack(spacing: GameTheme.xs) {
                     Text("\(foundCount) of \(totalCount) words")
@@ -45,18 +90,43 @@ struct ScoreBarView: View {
                 }
             }
 
-            if let freePuzzlesRemaining {
-                Text("\(freePuzzlesRemaining) of \(freePuzzlesPerDay) free puzzles today")
+            HStack(spacing: GameTheme.sm) {
+                if totalPangrams > 0 {
+                    HStack(spacing: GameTheme.xs) {
+                        Image(systemName: pangramsComplete ? "checkmark.seal.fill" : "checkmark.seal")
+                            .foregroundStyle(pangramsComplete ? GameTheme.accent : Color.secondary)
+                        Text(Self.pangramCounterText(found: foundPangrams, total: totalPangrams))
+                            .foregroundStyle(Color.secondary)
+                            .monospacedDigit()
+                            .contentTransition(reduceMotion ? .identity : .numericText())
+                    }
                     .font(GameTheme.labelFont)
-                    .foregroundStyle(Color.secondary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                } else if freePuzzlesRemaining == nil {
+                    // Keep the row one label line tall (premium + no pangrams: previews only).
+                    Text(" ").font(GameTheme.labelFont).accessibilityHidden(true)
+                }
+                Spacer(minLength: 0)
+                if let freePuzzlesRemaining {
+                    Text("\(freePuzzlesRemaining) of \(freePuzzlesPerDay) free puzzles today")
+                        .font(GameTheme.labelFont)
+                        .foregroundStyle(Color.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                }
             }
 
             ProgressView(value: progress.isFinite ? min(max(progress, 0), 1) : 0)
                 .progressViewStyle(.linear)
                 .tint(GameTheme.accent)
+                .overlay {
+                    if Self.isOverflow(progress: progress) && !reduceMotion {
+                        OverflowShimmer().allowsHitTesting(false).accessibilityHidden(true)
+                    }
+                }
+                .shadow(color: Self.isOverflow(progress: progress) ? GameTheme.accent.opacity(GameTheme.overflowGlowOpacity) : .clear,
+                        radius: Self.isOverflow(progress: progress) ? GameTheme.overflowGlowRadius : 0)
         }
         .padding(GameTheme.md)
         .background(GameTheme.secondarySurface, in: RoundedRectangle(cornerRadius: 12))
@@ -65,11 +135,31 @@ struct ScoreBarView: View {
     }
 
     private var accessibilityText: String {
-        var text = "Rank \(rank.displayName). \(foundCount) of \(totalCount) words found."
-        if let freePuzzlesRemaining {
-            text += " \(freePuzzlesRemaining) of \(freePuzzlesPerDay) free puzzles remaining today."
+        Self.accessibilityText(rank: rank, foundCount: foundCount, totalCount: totalCount,
+                               foundPangrams: foundPangrams, totalPangrams: totalPangrams,
+                               progress: progress, freePuzzlesRemaining: freePuzzlesRemaining,
+                               freePuzzlesPerDay: freePuzzlesPerDay)
+    }
+}
+
+/// D-05: left-to-right highlight sweep over the full bar while progress > 1.
+private struct OverflowShimmer: View {
+    @State private var phase: CGFloat = 0
+
+    var body: some View {
+        GeometryReader { geo in
+            let w = geo.size.width * GameTheme.overflowShimmerWidthFraction
+            LinearGradient(colors: [.clear, .white.opacity(GameTheme.overflowShimmerOpacity), .clear],
+                           startPoint: .leading, endPoint: .trailing)
+                .frame(width: w)
+                .offset(x: -w + phase * (geo.size.width + w))
         }
-        return text
+        .clipShape(Capsule())
+        .onAppear {
+            withAnimation(.linear(duration: GameTheme.overflowShimmerSeconds).repeatForever(autoreverses: false)) {
+                phase = 1
+            }
+        }
     }
 }
 
@@ -117,4 +207,26 @@ struct ScoreBarButtonStyle: ButtonStyle {
         freePuzzlesPerDay: 3
     )
     .padding()
+}
+
+#Preview("Pangram counter 1/3") {
+    ScoreBarView(rank: .adept, foundCount: 12, totalCount: 31, progress: 0.4,
+                 freePuzzlesRemaining: 2, freePuzzlesPerDay: 3,
+                 foundPangrams: 1, totalPangrams: 3)
+        .padding()
+}
+
+#Preview("Overflow, Mythic Grandmaster") {
+    ScoreBarView(rank: .mythicGrandmaster, foundCount: 31, totalCount: 31, progress: 1.08,
+                 freePuzzlesRemaining: nil, freePuzzlesPerDay: 3,
+                 foundPangrams: 3, totalPangrams: 3)
+        .padding()
+}
+
+#Preview("Mythic at AX5") {
+    ScoreBarView(rank: .mythicGrandmaster, foundCount: 31, totalCount: 31, progress: 1.08,
+                 freePuzzlesRemaining: nil, freePuzzlesPerDay: 3,
+                 foundPangrams: 3, totalPangrams: 3)
+        .padding()
+        .environment(\.dynamicTypeSize, .accessibility5)
 }
