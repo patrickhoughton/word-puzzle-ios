@@ -1,7 +1,8 @@
 ---
 phase: 09
 slug: player-stats-screen
-status: draft
+status: approved
+reviewed_at: 2026-10-04
 shadcn_initialized: false
 preset: none
 created: 2026-10-04
@@ -70,7 +71,7 @@ Rules: tile numbers get `.minimumScaleFactor(0.5)` and `.lineLimit(1)`. Numbers 
 | Accent (10%) | `GameTheme.accent` (honeycomb gold #F5B800) | See reserved list |
 | Destructive | none needed | No destructive actions this phase |
 
-Accent reserved for: (1) best-rank tier name text, (2) the lit hero flame icon when streak > 0, (3) the top-bar stats icon is NOT accent (stays `.secondary`, like the gear), (4) the "play today to keep it!" at-risk hint is NOT accent (`.secondary`). Tile numbers use `.primary`; captions and section headers use `.secondary`. The tappable MissedWordsView summary line uses `.secondary` text with a trailing `chevron.right` (`.secondary`), no accent.
+Accent reserved for: (1) best-rank tier name text, (2) the lit hero flame icon when streak > 0. Never accent: the top-bar stats icon (`.secondary`, like the gear), the "Play today to keep it!" at-risk hint (`.secondary`), and the MissedWordsView summary line + its trailing `chevron.right` (`.secondary`). Tile numbers use `.primary`; captions and section headers use `.secondary`.
 
 Mythic Grandmaster best rank: gold text plus the same glow as ScoreBarView's overflow capsule, i.e. `.shadow(color: GameTheme.overflowGold.opacity(glowOpacity), radius: glowRadius)` using `overflowGlowOpacityRange`, `overflowGlowRadiusRange`, `overflowGlowPulseSeconds`. Reduce Motion: steady glow at the 0.5 point of the ranges (mirrors ScoreBarView). Other tiers: gold text, no glow.
 
@@ -118,7 +119,7 @@ At `dynamicTypeSize.isAccessibilitySize` the grid collapses to a single column (
 | New player (0 finished games) | Full layout, all numbers 0, averages "—", best rank tile shows "—" (not hidden, keeps layout stable), nudge line shown at top |
 | Streak 0, longest > 0 | Flame dimmed, headline "Start a streak today!" replaces "N day streak", "Longest: M" still shown |
 | Streak 0, longest 0 | Flame dimmed, "Start a streak today!", "Longest" line omitted |
-| Streak alive via grace day (not played today) | Headline "N day streak" plus hint "play today to keep it!" (bodyFont, `.secondary`) |
+| Streak alive via grace day (not played today) | Headline "N day streak" plus hint "Play today to keep it!" (bodyFont, `.secondary`) |
 | Streak alive and played today | Headline only, no hint |
 | Streak = 1 | "1 day streak" (singular "day" is still correct; no plural form needed) |
 | Best rank = Mythic Grandmaster | Gold text plus glow; otherwise tier name in gold, no glow |
@@ -167,11 +168,11 @@ Note: "Words found" appears in both Today and Lifetime; tile VoiceOver labels sh
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-10-04
