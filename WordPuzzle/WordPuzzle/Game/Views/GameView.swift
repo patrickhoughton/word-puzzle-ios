@@ -17,6 +17,8 @@ struct GameView: View {
     // Default true: sound on out of the box, discoverable, and mutable in one tap.
     @AppStorage(SoundManager.soundEffectsEnabledKey) private var soundEffectsEnabled = true
     @State private var isShowingSettings = false
+    // Phase 7 D-01: the found-words sheet, opened by tapping the score bar.
+    @State private var isShowingFoundWords = false
     // UX-03 gap fix: "Finish Round" doesn't fit next to Shuffle/Delete at
     // accessibility Dynamic Type sizes even shrunk to scale factor 0.3 -- an
     // abbreviated label at large sizes is the standard accessible pattern
@@ -89,6 +91,19 @@ struct GameView: View {
                 onDone: { isShowingSettings = false }
             )
         }
+        // Phase 7 D-03/D-04/D-05: a standard modal sheet (board not interactive behind it at
+        // either detent), Done button plus system swipe-to-dismiss.
+        .sheet(isPresented: $isShowingFoundWords) {
+            FoundWordsView(
+                groups: viewModel.foundWordGroups,
+                rank: viewModel.rank,
+                foundCount: viewModel.foundCount,
+                totalCount: viewModel.totalWordCount,
+                onDone: { isShowingFoundWords = false }
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+        }
         // UX-02 / D-01. Counter-based triggers, matching WordDisplayView's haptics:
         // a Bool would silently stop firing on two consecutive identical outcomes
         // (RESEARCH Pitfall 3).
@@ -108,6 +123,8 @@ struct GameView: View {
         // D-01 groups round end and paywall shown into one sound. forRoundPhase returns
         // nil for .loading/.playing, so entering a round is silent.
         .onChange(of: viewModel.roundPhase) { _, newPhase in
+            // Phase 7: never let the found-words sheet survive a round end and reappear next round.
+            if newPhase != .playing { isShowingFoundWords = false }
             guard let effect = SoundEffect.forRoundPhase(newPhase) else { return }
             SoundManager.shared.play(effect, enabled: soundEffectsEnabled)
         }
@@ -131,17 +148,25 @@ struct GameView: View {
             .padding(.horizontal, GameTheme.lg)
             .padding(.top, GameTheme.sm)
 
-            ScoreBarView(
-                rank: viewModel.rank,
-                foundCount: viewModel.foundCount,
-                totalCount: viewModel.totalWordCount,
-                progress: viewModel.progressFraction,
-                // D-03: only free users see the counter; premium gets nil (nothing renders).
-                freePuzzlesRemaining: entitlementStore.isPremium
-                    ? nil
-                    : max(0, GameViewModel.freePuzzlesPerDay - persistenceStore.puzzlesPlayedToday()),
-                freePuzzlesPerDay: GameViewModel.freePuzzlesPerDay
-            )
+            // Phase 7 D-01/D-16: the whole score bar is the tap target, available at all times
+            // during .playing (including before any word is found).
+            Button {
+                isShowingFoundWords = true
+            } label: {
+                ScoreBarView(
+                    rank: viewModel.rank,
+                    foundCount: viewModel.foundCount,
+                    totalCount: viewModel.totalWordCount,
+                    progress: viewModel.progressFraction,
+                    // D-03: only free users see the counter; premium gets nil (nothing renders).
+                    freePuzzlesRemaining: entitlementStore.isPremium
+                        ? nil
+                        : max(0, GameViewModel.freePuzzlesPerDay - persistenceStore.puzzlesPlayedToday()),
+                    freePuzzlesPerDay: GameViewModel.freePuzzlesPerDay
+                )
+            }
+            .buttonStyle(ScoreBarButtonStyle())
+            .accessibilityHint(Text(FoundWordsView.scoreBarAccessibilityHint))
             .padding(.horizontal, GameTheme.lg)
             .padding(.top, GameTheme.sm)
 
