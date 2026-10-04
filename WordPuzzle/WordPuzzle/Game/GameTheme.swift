@@ -89,4 +89,11 @@ enum GameTheme {
     static let overflowBurstParticles: Int = 22
     static let overflowBurstScale: CGFloat = 1.8          // bar's vertical pop on first crossing 100%
     static let overflowBurstAnimation: Animation = .spring(response: 0.25, dampingFraction: 0.45)
+
+    // MARK: - Phase 9 stats screen (09-UI-SPEC)
+
+    /// Zero-streak hero flame: `.secondary` at this opacity (D-22).
+    static let dimmedFlameOpacity: Double = 0.4
+    /// Count-up duration for stat numbers on appear (D-18). Short so it never feels like waiting.
+    static let statsCountUpSeconds: Double = 0.6
 }

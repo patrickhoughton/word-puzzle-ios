@@ -188,9 +188,9 @@ private struct OverflowBar: View {
     var body: some View {
         TimelineView(.animation(paused: reduceMotion)) { timeline in
             let t = reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
-            let pulse = reduceMotion ? 0.5 : 0.5 + 0.5 * sin(2 * .pi * t / GameTheme.overflowGlowPulseSeconds)
-            let glowOpacity = lerp(GameTheme.overflowGlowOpacityRange, pulse)
-            let glowRadius = lerp(GameTheme.overflowGlowRadiusRange, pulse)
+            let pulse = OverflowGlow.pulse(time: t, reduceMotion: reduceMotion)
+            let glowOpacity = OverflowGlow.opacity(pulse: pulse)
+            let glowRadius = OverflowGlow.radius(pulse: pulse)
 
             GeometryReader { geo in
                 let w = geo.size.width
@@ -231,10 +231,6 @@ private struct OverflowBar: View {
                 }
             }
         }
-    }
-
-    private func lerp<T: BinaryFloatingPoint>(_ r: ClosedRange<T>, _ f: Double) -> T {
-        r.lowerBound + (r.upperBound - r.lowerBound) * T(f)
     }
 
     /// Cheap deterministic per-particle randomness (no state, stable across frames).
