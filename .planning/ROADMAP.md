@@ -128,7 +128,7 @@ Plans:
 
 Plans:
 - [x] 06-01-PLAN.md — RejectionReason enum, per-reason guards, message strings, SoundEffect.forRejection + unit tests
-- [ ] 06-02-PLAN.md — WordDisplayView/GameView per-reason feedback, device install, on-device haptic/sound check
+- [x] 06-02-PLAN.md — WordDisplayView/GameView per-reason feedback, device install, on-device haptic/sound check
 **UI hint**: yes
 **Promoted from**: backlog 999.3 (2026-10-04, built into v1.0 before submission)
 
