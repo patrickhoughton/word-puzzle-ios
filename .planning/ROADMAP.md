@@ -152,7 +152,7 @@ Plans:
 **Plans**: 6 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Bonus formulas, hidden Mythic Grandmaster tier, CompletionEvent + celebration copy/timing, GameTheme tokens (Wave 1, TDD)
+- [x] 08-01-PLAN.md — Bonus formulas, hidden Mythic Grandmaster tier, CompletionEvent + celebration copy/timing, GameTheme tokens (Wave 1, TDD)
 - [ ] 08-02-PLAN.md — Kenney CC0 sweep fanfare / tick / length chime + SoundEffect cases and replace-sound rule (Wave 1)
 - [ ] 08-03-PLAN.md — GameViewModel sweep + length-completion detection, celebration queue, unclamped progress (Wave 2, TDD)
 - [ ] 08-04-PLAN.md — ScoreBarView counter/overflow/Mythic, Found Words pangram line + group bonus, MissedWords bonus lines (Wave 2)
@@ -216,7 +216,7 @@ Plans:
 | 5. Polish, Compliance & App Store | 7/8 | In Progress | - |
 | 6. Differentiated Invalid-Word Messaging | 2/2 | Complete | 2026-10-04 |
 | 7. Found Words View | 3/3 | Complete | 2026-10-04 |
-| 8. All-Pangrams Bonus | 0/0 | Not started | - |
+| 8. All-Pangrams Bonus | 1/6 | In Progress|  |
 | 9. Player Stats Screen | 0/0 | Not started | - |
 | 10. Double-Tap Shuffle | 0/0 | Not started | - |
 | 11. Long-Press Center Shuffle | 0/0 | Not started | - |
@@ -228,7 +228,7 @@ Plans:
 
 **Goal:** [Captured for future planning] — Patrick suspects the bundled word list is missing words players would expect to be valid. Current list is `enable-clean.txt` (~172,678 words, the profanity-filtered ENABLE list, per CLAUDE.md's original tech-stack choice). **Scope constraint:** do NOT source or diff against Words With Friends' official word list — it's proprietary to Zynga/EA, not public domain, same reasoning CLAUDE.md already uses to rule out the official Scrabble/SOWPODS dictionary ("cannot bundle without licensing"). Safe approach instead: cross-reference `enable-clean.txt` against other public-domain or freely-licensed word lists (e.g. SCOWL) to find and fill genuine gaps, and/or gather specific examples of rejected words players expected to work as concrete test cases before changing the list.
 **Requirements:** TBD
-**Plans:** 1/2 plans executed
+**Plans:** 1/6 plans executed
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
