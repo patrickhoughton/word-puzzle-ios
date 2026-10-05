@@ -19,6 +19,13 @@ struct GameView: View {
     @State private var isShowingSettings = false
     // Phase 7 D-01: the found-words sheet, opened by tapping the score bar.
     @State private var isShowingFoundWords = false
+    // Phase 9 D-02: top-bar stats sheet. A SEPARATE flag drives the round-over stats sheet,
+    // because a sheet on GameView's root cannot present while the fullScreenCover is up
+    // (RESEARCH Pitfall 2); the two flags never fight.
+    @State private var isShowingStats = false
+    @State private var isShowingRoundOverStats = false
+    // RESEARCH Pitfall 4: rebuilt from fresh store reads every time a stats surface opens.
+    @State private var statsSnapshot: PlayerStats = .empty
     // UX-03 gap fix: "Finish Round" doesn't fit next to Shuffle/Delete at
     // accessibility Dynamic Type sizes even shrunk to scale factor 0.3 -- an
     // abbreviated label at large sizes is the standard accessible pattern
@@ -92,16 +99,39 @@ struct GameView: View {
                     totalCount: viewModel.totalWordCount,
                     onContinue: { viewModel.requestNextRound(isPremium: entitlementStore.isPremium) },
                     sweepBonus: viewModel.sweepBonus,
-                    lengthBonusTotal: viewModel.lengthBonusTotal
+                    lengthBonusTotal: viewModel.lengthBonusTotal,
+                    // D-04: read at render time; finishRound() recorded the round BEFORE flipping
+                    // to .roundOver, so these include the round just played.
+                    bestScore: persistenceStore.bestScore(),
+                    currentStreak: persistenceStore.currentStreak(),
+                    onShowStats: {
+                        refreshStatsSnapshot()
+                        isShowingRoundOverStats = true
+                    }
                 )
+                // RESEARCH Pitfall 2: attached INSIDE the cover so it presents on top of it;
+                // dismissing returns to the round-over screen (UI-SPEC).
+                .sheet(isPresented: $isShowingRoundOverStats) {
+                    NavigationStack {
+                        StatsView(stats: statsSnapshot, showsDoneButton: true,
+                                  onDone: { isShowingRoundOverStats = false })
+                    }
+                }
             }
         }
         // A sheet, not a fullScreenCover: unlike the paywall, Settings is dismissable.
         .sheet(isPresented: $isShowingSettings) {
             SettingsView(
                 soundEffectsEnabled: $soundEffectsEnabled,
-                onDone: { isShowingSettings = false }
+                onDone: { isShowingSettings = false },
+                stats: statsSnapshot
             )
+        }
+        // Phase 9 D-02: full-height sheet (no detents), Done + swipe-to-dismiss, same as Settings.
+        .sheet(isPresented: $isShowingStats) {
+            NavigationStack {
+                StatsView(stats: statsSnapshot, showsDoneButton: true, onDone: { isShowingStats = false })
+            }
         }
         // Phase 7 D-03/D-04/D-05: a standard modal sheet (board not interactive behind it at
         // either detent), Done button plus system swipe-to-dismiss.
@@ -139,6 +169,9 @@ struct GameView: View {
         // D-01 groups round end and paywall shown into one sound. forRoundPhase returns
         // nil for .loading/.playing, so entering a round is silent.
         .onChange(of: viewModel.roundPhase) { _, newPhase in
+            // Phase 9: never let a stats sheet outlive its context.
+            if newPhase != .playing { isShowingStats = false }
+            if newPhase != .roundOver { isShowingRoundOverStats = false }
             // Phase 7: never let the found-words sheet survive a round end and reappear next round.
             if newPhase != .playing {
                 isShowingFoundWords = false
@@ -150,6 +183,8 @@ struct GameView: View {
         .sensoryFeedback(.success, trigger: lengthHapticCount)
         .sensoryFeedback(.success, trigger: sweepHapticCount)
     }
+
+    private func refreshStatsSnapshot() { statsSnapshot = persistenceStore.playerStats() }
 
     @ViewBuilder private var celebrationOverlay: some View {
         switch activeCelebration {
@@ -256,7 +291,19 @@ struct GameView: View {
 
     private var playingLayout: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(spacing: GameTheme.sm) {
+                Button {
+                    refreshStatsSnapshot()
+                    isShowingStats = true
+                } label: {
+                    Image(systemName: "chart.bar.fill")
+                        .font(GameTheme.headingFont)
+                        .foregroundStyle(Color.secondary)
+                        .frame(minWidth: GameTheme.minTapTarget, minHeight: GameTheme.minTapTarget)
+                }
+                .contentShape(Rectangle())
+                .accessibilityLabel(Text(StatsView.entryAccessibilityLabel))
+                .accessibilityIdentifier("topBarStatsButton")
                 #if DEBUG
                 if GameViewModel.debugShortcutsEnabled {
                     Menu {
@@ -275,6 +322,7 @@ struct GameView: View {
                 #endif
                 Spacer()
                 Button {
+                    refreshStatsSnapshot()
                     isShowingSettings = true
                 } label: {
                     Image(systemName: "gearshape")
