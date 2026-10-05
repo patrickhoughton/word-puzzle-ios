@@ -219,7 +219,7 @@ Plans:
 | 8. All-Pangrams Bonus | 6/6 | Complete   | 2026-10-04 |
 | 9. Player Stats Screen | 6/6 | Complete    | 2026-10-05 |
 | 10. Double-Tap Shuffle | 3/3 | Complete    | 2026-10-05 |
-| 11. First-Launch Tutorial | 6/6 | Complete   | 2026-10-05 |
+| 11. First-Launch Tutorial | 6/6 | Complete    | 2026-10-05 |
 
 ## Backlog
 
