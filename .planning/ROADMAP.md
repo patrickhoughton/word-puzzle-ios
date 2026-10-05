@@ -180,11 +180,13 @@ Plans:
 ### Phase 10: Double-Tap Shuffle
 **Goal**: a double-tap gesture as an alternative (or addition) to the Shuffle button. **Trigger decided: double-tap any empty area of the screen** (off the honeycomb tiles) — this avoids the conflict where double-tapping a tile is already legitimate input (appends that letter twice, e.g. a double letter in the word being built). Implementation note: `LetterGridView`'s existing single `DragGesture(minimumDistance: 0)` is scoped to the tiles themselves for hit-testing, so an empty-area double-tap recognizer would live on the surrounding container/background view, not compete with the grid's own gesture — should avoid the contention risk that made 999.5 (rotate gesture, tile-scoped) trickier.
 **Depends on**: Phase 5
-**Requirements**: TBD
-**Plans**: 0 plans
+**Requirements**: PUZZ-04 (extends shuffle)
+**Plans**: 3 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 10 to break down)
+- [ ] 10-01-PLAN.md — Shuffle contract (Bool return, .playing gate, shuffleCount) + EmptyDoubleTapDetector, TDD (Wave 1)
+- [ ] 10-02-PLAN.md — Wire grid empty-tap detection, background double-tap layer, light shuffle haptic (Wave 2)
+- [ ] 10-03-PLAN.md — Full suite + Wi-Fi device install, on-device gesture/haptic/latency checkpoint (Wave 3)
 **UI hint**: yes
 **Promoted from**: backlog 999.6 (2026-10-04, built into v1.0 before submission)
 
