@@ -1,7 +1,8 @@
 ---
 phase: 11
 slug: first-launch-tutorial
-status: draft
+status: approved
+reviewed_at: 2026-10-04
 shadcn_initialized: false
 preset: none
 created: 2026-10-04
