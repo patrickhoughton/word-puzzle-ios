@@ -2,7 +2,7 @@
 phase: 11
 slug: first-launch-tutorial
 status: draft
-nyquist_compliant: false
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-10-04
 ---
@@ -38,16 +38,20 @@ created: 2026-10-04
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| TBD (filled by planner) | — | — | TUT-01 | unit | `-only-testing:WordPuzzleTests/TutorialControllerTests` | ❌ W0 | ⬜ pending |
-| TBD | — | — | TUT-01 | unit | `-only-testing:WordPuzzleTests/PracticePuzzleTests` | ❌ W0 | ⬜ pending |
-| TBD | — | — | TUT-02 | unit | `-only-testing:WordPuzzleTests/TutorialControllerTests` | ❌ W0 | ⬜ pending |
-| TBD | — | — | TUT-03 | unit | `-only-testing:WordPuzzleTests/TutorialLaunchGateTests` | ❌ W0 | ⬜ pending |
-| TBD | — | — | TUT-03 | unit | `-only-testing:WordPuzzleTests/PersistenceStoreTests` | ✅ extend | ⬜ pending |
-| TBD | — | — | TUT-04/05 | unit | `-only-testing:WordPuzzleTests/TutorialControllerTests` | ❌ W0 | ⬜ pending |
-| TBD | — | — | TUT-05 | unit | `-only-testing:WordPuzzleTests/SettingsViewTests` | ✅ extend | ⬜ pending |
-| TBD | — | — | TUT-06 | unit | `TutorialControllerTests` / `DynamicTypeTests` | ✅ extend | ⬜ pending |
-| TBD | — | — | TUT-07 | UI | `-only-testing:WordPuzzleUITests` (existing suites with `-hasSeenTutorial YES`) | ✅ edit | ⬜ pending |
-| TBD | — | — | TUT-01..05 | UI | `-only-testing:WordPuzzleUITests/TutorialUITests` | ❌ W0 | ⬜ pending |
+| 11-01-T1 | 11-01 | 1 | TUT-03 | unit | `-only-testing:WordPuzzleTests/TutorialLaunchGateTests -only-testing:WordPuzzleTests/PersistenceStoreTests` | ❌ W0 (created in task, TDD) / ✅ extend | ⬜ pending |
+| 11-01-T2 | 11-01 | 1 | TUT-07 | build | grep for `"-hasSeenTutorial", "YES"` (>= 5) + `xcodebuild build-for-testing` | ✅ edit | ⬜ pending |
+| 11-02-T1 | 11-02 | 1 | TUT-01 | unit | `-only-testing:WordPuzzleTests/PracticePuzzleTests` | ❌ W0 (created in task, TDD) | ⬜ pending |
+| 11-02-T2 | 11-02 | 1 | TUT-01, TUT-06 | unit | `-only-testing:WordPuzzleTests/TutorialCopyTests` | ❌ W0 (created in task, TDD) | ⬜ pending |
+| 11-03-T1 | 11-03 | 1 | TUT-06 | build + guard | `xcodebuild build` + `bash scripts/compliance-guards.sh` | n/a | ⬜ pending |
+| 11-03-T2 | 11-03 | 1 | TUT-06 | unit | `-only-testing:WordPuzzleTests/TutorialBannerViewTests` | ❌ W0 (created in task, TDD) | ⬜ pending |
+| 11-03-T3 | 11-03 | 1 | TUT-05 | unit | `-only-testing:WordPuzzleTests/SettingsViewTests` | ✅ extend | ⬜ pending |
+| 11-04-T1 | 11-04 | 2 | TUT-01 | unit | `-only-testing:WordPuzzleTests/TutorialControllerTests` | ❌ W0 (created in task, TDD) | ⬜ pending |
+| 11-04-T2 | 11-04 | 2 | TUT-02, TUT-04, TUT-05 | unit | `-only-testing:WordPuzzleTests/TutorialControllerTests` | ✅ (from T1) | ⬜ pending |
+| 11-05-T1 | 11-05 | 3 | TUT-03, TUT-04 | grep | grep `shouldShowOnLaunch(hasHistory:` / `.environment(tutorial.practice)` (build in T2) | n/a | ⬜ pending |
+| 11-05-T2 | 11-05 | 3 | TUT-01..06 | unit + guard | `-only-testing:WordPuzzleTests` + `bash scripts/compliance-guards.sh` | ✅ | ⬜ pending |
+| 11-06-T1 | 11-06 | 4 | TUT-01..05, TUT-07 | UI | `-only-testing:WordPuzzleUITests/TutorialUITests` (after `simctl uninstall`) + existing UI suites + screenshot test | ❌ W0 (created in task) | ⬜ pending |
+| 11-06-T2 | 11-06 | 4 | TUT-06 | screenshot | `simctl` AX5 screenshots on iPhone 17e (light + dark), reviewed | n/a | ⬜ pending |
+| 11-06-T3 | 11-06 | 4 | TUT-01..06 | manual | on-device checkpoint (Wi-Fi install) | n/a | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -55,11 +59,14 @@ created: 2026-10-04
 
 ## Wave 0 Requirements
 
-- [ ] `WordPuzzleTests/TutorialControllerTests.swift` — state machine, gating, free/unrecorded guarantees
-- [ ] `WordPuzzleTests/PracticePuzzleTests.swift` — curated puzzle validity against bundled list
-- [ ] `WordPuzzleTests/TutorialLaunchGateTests.swift` — tri-state flag + history probe, isolated `UserDefaults(suiteName:)`
-- [ ] `WordPuzzleUITests/TutorialUITests.swift` — end-to-end tutorial, skip, replay (launch `-hasSeenTutorial NO`)
-- [ ] Add `-hasSeenTutorial YES` to `WordPuzzleUITests.swift` (2 launches), `StatsPresentationUITests.swift`, `AppStoreScreenshotTests.swift`; check `WordPuzzleUITestsLaunchTests.swift`
+Test files are created test-first inside the task that needs them (TDD tasks), so no separate Wave 0 plan:
+- [ ] `WordPuzzleTests/TutorialLaunchGateTests.swift` — 11-01 Task 1
+- [ ] `WordPuzzleTests/PracticePuzzleTests.swift` — 11-02 Task 1
+- [ ] `WordPuzzleTests/TutorialCopyTests.swift` — 11-02 Task 2
+- [ ] `WordPuzzleTests/TutorialBannerViewTests.swift` — 11-03 Task 2
+- [ ] `WordPuzzleTests/TutorialControllerTests.swift` — 11-04 Task 1/2
+- [ ] `WordPuzzleUITests/TutorialUITests.swift` — 11-06 Task 1
+- [ ] `-hasSeenTutorial YES` on all 5 existing UI-test launches (incl. `WordPuzzleUITestsLaunchTests.swift`) — 11-01 Task 2
 
 *Framework install: none needed.*
 
@@ -69,10 +76,10 @@ created: 2026-10-04
 
 | Behavior | Requirement | Why Manual | Test Instructions |
 |----------|-------------|------------|-------------------|
-| AX5 banner layout on smallest screen | TUT-06 | Visual fit judgment; no iPhone SE simulator | Run on iPhone 17e simulator at AX5; banner + Skip readable, board not obscured |
+| AX5 banner layout on smallest screen | TUT-06 | Visual fit judgment; no iPhone SE simulator | Automated capture in 11-06 Task 2 (`simctl ui content_size accessibility-extra-extra-extra-large` on iPhone 17e, light + dark), screenshots reviewed by the executor |
 | Reduce Motion pulse | TUT-06 | Visual | Enable Reduce Motion; highlight uses static/0.5 pulse |
 | VoiceOver step announcements + Skip reachability | TUT-06 | Assistive tech behavior | Enable VoiceOver; each step announced; Skip reachable |
-| Full tutorial on device (Wi-Fi install) + dark mode | TUT-01..05 | Feel / gesture fidelity | `bash scripts/install-on-device.sh`; delete app first for fresh install |
+| Full tutorial on device (Wi-Fi install) | TUT-01..05 | Feel / gesture fidelity | `bash scripts/install-on-device.sh`, then Settings > How to Play (do NOT delete the app; it holds real history). 11-06 Task 3 checkpoint |
 
 ---
 

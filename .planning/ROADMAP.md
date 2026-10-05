@@ -192,11 +192,16 @@ Plans:
 ### Phase 11: First-Launch Tutorial
 **Goal**: a first-time-user tutorial/onboarding flow that teaches the core mechanics (tap/drag letters to build a word, center letter is required, swipe down to submit, shuffle, pangrams) before or during their first round. Currently there is no onboarding at all — `ContentView` loads straight into `GameView` for every launch, first-time or not. Needs a "has the user seen this before" flag (likely `@AppStorage`, consistent with the project's existing flags/seeds persistence split) and a decision on format (overlay walkthrough vs. a scripted first puzzle vs. a standalone intro screen).
 **Depends on**: Phases 6-10 (teaches the mechanics and screens they add)
-**Requirements**: TBD
-**Plans**: 0 plans
+**Requirements**: TUT-01, TUT-02, TUT-03, TUT-04, TUT-05, TUT-06, TUT-07
+**Plans**: 6 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 11 to break down)
+- [ ] 11-01-PLAN.md — Tri-state hasSeenTutorial launch gate + PersistenceStore.hasAnyHistory, pin existing UI tests with -hasSeenTutorial YES (Wave 1)
+- [ ] 11-02-PLAN.md — DOLPHIN/P practice puzzle literal + step/copy table, validity and copy tests (Wave 1)
+- [ ] 11-03-PLAN.md — Tutorial banner, pulsing highlight, grid highlight/dim params, Settings "How to Play" row (Wave 1)
+- [ ] 11-04-PLAN.md — TutorialController state machine on a nil-store practice view-model, TDD (Wave 2)
+- [ ] 11-05-PLAN.md — Wire launch branch, root switch and GameView tutorial mode (gating, banner, Finish/Skip, replay) (Wave 3)
+- [ ] 11-06-PLAN.md — Tutorial UI tests + full regression, AX5 screenshot check, Wi-Fi device feel checkpoint (Wave 4)
 **UI hint**: yes
 **Promoted from**: backlog 999.4 (2026-10-04, built into v1.0 before submission)
 
@@ -214,7 +219,7 @@ Plans:
 | 8. All-Pangrams Bonus | 6/6 | Complete   | 2026-10-04 |
 | 9. Player Stats Screen | 6/6 | Complete    | 2026-10-05 |
 | 10. Double-Tap Shuffle | 3/3 | Complete    | 2026-10-05 |
-| 11. First-Launch Tutorial | 0/0 | Not started | - |
+| 11. First-Launch Tutorial | 0/6 | Planned | - |
 
 ## Backlog
 
