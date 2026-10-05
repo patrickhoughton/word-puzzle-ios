@@ -29,6 +29,22 @@ import SwiftUI
         #expect(SettingsView.statsRowLabel == "Stats")
     }
 
+    @Test func testHowToPlayRowLabelIsFrozen() {
+        #expect(SettingsView.howToPlayRowLabel == "How to Play")
+    }
+
+    @Test func testHowToPlayDefaultsToNoOp() {
+        let view = SettingsView(soundEffectsEnabled: .constant(true), onDone: {})
+        view.onHowToPlay()
+    }
+
+    @Test func testHowToPlayClosureIsPassedThrough() {
+        var called = false
+        let view = SettingsView(soundEffectsEnabled: .constant(true), onDone: {}, onHowToPlay: { called = true })
+        view.onHowToPlay()
+        #expect(called)
+    }
+
     @Test func testStatsDefaultsToEmptySnapshot() {
         #expect(SettingsView(soundEffectsEnabled: .constant(true), onDone: {}).stats == .empty)
     }

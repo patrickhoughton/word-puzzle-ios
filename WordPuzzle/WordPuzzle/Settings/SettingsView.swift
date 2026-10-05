@@ -2,7 +2,7 @@ import SwiftUI
 
 /// UX-02 / Phase 5 D-03, partly reversed by Phase 9 D-03: Settings holds the
 /// sound-effects toggle plus a "Stats" row that pushes the player stats screen
-/// (backlog 999.1, built in Phase 9). A haptics toggle remains deferred.
+/// (backlog 999.1, built in Phase 9), and a "How to Play" row (Phase 11 D-12) that replays the tutorial. A haptics toggle remains deferred.
 ///
 /// Presentation-only: takes a Binding and a closure, holds no stored preference and
 /// no environment/store reads. The preference itself is owned by GameView, matching
@@ -16,10 +16,13 @@ struct SettingsView: View {
     static let doneButtonLabel = "Done"
     static let settingsEntryAccessibilityLabel = "Settings"
     static let statsRowLabel = "Stats"
+    static let howToPlayRowLabel = "How to Play"
 
     @Binding var soundEffectsEnabled: Bool
     let onDone: () -> Void
     var stats: PlayerStats = .empty
+    /// Phase 11 D-12: replays the tutorial. GameView dismisses this sheet first, then starts the tutorial in onDismiss.
+    var onHowToPlay: () -> Void = {}
 
     var body: some View {
         NavigationStack {
@@ -27,6 +30,26 @@ struct SettingsView: View {
                 Toggle(Self.soundToggleLabel, isOn: $soundEffectsEnabled)
                     .font(GameTheme.bodyFont)
                     .padding(GameTheme.md)
+
+                Button {
+                    onHowToPlay()
+                } label: {
+                    HStack {
+                        Text(Self.howToPlayRowLabel)
+                            .font(GameTheme.bodyFont)
+                            .foregroundStyle(Color.primary)
+                        Spacer()
+                        Image(systemName: "questionmark.circle")
+                            .font(GameTheme.labelFont)
+                            .foregroundStyle(Color.secondary)
+                            .accessibilityHidden(true)
+                    }
+                    .frame(minHeight: GameTheme.minTapTarget)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .padding(GameTheme.md)
+                .accessibilityIdentifier("settingsHowToPlayRow")
 
                 NavigationLink {
                     // Pushed inside THIS NavigationStack: system back button; Settings' own Done stays (UI-SPEC).
