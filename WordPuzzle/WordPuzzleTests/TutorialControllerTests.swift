@@ -40,6 +40,7 @@ final class TutorialControllerTests {
             case .drag: play("plod", on: c); c.send(.submit)
             case .shuffle:
                 c.send(.shuffle)
+            case .spin: c.send(.spin(slots: 1))
             case .pangram:
                 play("dolphin", on: c); c.send(.submit)
             case .scoreBar: c.foundWordsDismissed()
@@ -133,7 +134,51 @@ final class TutorialControllerTests {
         #expect(c.highlightTarget == .shuffle)
         #expect(!c.allows(.letter("p")))
         #expect(c.send(.shuffle))
+        #expect(c.step == .spin)
+        #expect(c.highlightTarget == .spinRing)
+        #expect(c.send(.spin(slots: 0)))
         #expect(c.step == .pangram)
+    }
+
+    @Test func testSpinStepIsStrict() {
+        let c = make()
+        drive(c, to: .spin)
+        #expect(c.allows(.spin(slots: 2)))
+        for a in [TutorialAction.shuffle, .letter("p"), .delete, .clearWord, .submit, .scoreBar, .topBar] {
+            #expect(!c.allows(a))
+        }
+    }
+
+    @Test func testSpinZeroAdvancesWithoutChangingLetters() {
+        let c = make()
+        drive(c, to: .spin)
+        let before = c.practice.outerLetters
+        #expect(c.send(.spin(slots: 0)))
+        #expect(c.step == .pangram)
+        #expect(c.practice.outerLetters == before)
+    }
+
+    @Test func testSpinRotatesPracticeBoardByTwo() {
+        let c = make()
+        drive(c, to: .spin)
+        let before = c.practice.outerLetters
+        #expect(c.send(.spin(slots: 2)))
+        #expect(c.practice.outerLetters == HexFlowerLayout.rotated(before, bySlots: 2))
+        #expect(c.step == .pangram)
+    }
+
+    @Test func testSpinAllowedOnPangramAndRejectedOnOtherGuidedSteps() {
+        let c = make()
+        for s in [TutorialStep.build, .centerMiss, .swipe, .fixMistake, .drag, .shuffle] {
+            drive(c, to: s)
+            #expect(!c.allows(.spin(slots: 1)), "step \(s)")
+        }
+        drive(c, to: .pangram)
+        #expect(c.allows(.spin(slots: 1)))
+        drive(c, to: .scoreBar)
+        #expect(!c.allows(.spin(slots: 1)))
+        drive(c, to: .ready)
+        #expect(c.allows(.spin(slots: 1)))
     }
 
     @Test func testPangramGatingAndAdvance() {

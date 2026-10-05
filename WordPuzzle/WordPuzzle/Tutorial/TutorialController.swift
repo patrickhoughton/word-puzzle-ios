@@ -2,10 +2,10 @@ import Foundation
 import Observation
 
 enum TutorialAction: Equatable {
-    case letter(Character), delete, clearWord, submit, shuffle, scoreBar, finish, topBar
+    case letter(Character), delete, clearWord, submit, shuffle, spin(slots: Int), scoreBar, finish, topBar
 }
 enum TutorialTarget: Equatable {
-    case letter(Character), wordDisplay, delete, shuffle, scoreBar, finish
+    case letter(Character), wordDisplay, delete, shuffle, spinRing, scoreBar, finish
 }
 enum TutorialMode: Equatable { case firstLaunch, replay }
 
@@ -38,7 +38,7 @@ final class TutorialController {
     private(set) var hasMissed = false
     /// Step 4 sub-state: Delete done, now tap the word to clear.
     private(set) var hasDeleted = false
-    /// Step 7 hints: 0 none, 1 text hint, 2 follow-the-glow.
+    /// Step 8 hints: 0 none, 1 text hint, 2 follow-the-glow.
     private(set) var pangramHintLevel = 0
     /// True while a delayed transition is pending; all guided input is ignored meanwhile.
     private(set) var isWaiting = false
@@ -104,6 +104,7 @@ final class TutorialController {
             return nextExpected.map { .letter($0) }
         case .fixMistake: return hasDeleted ? .wordDisplay : .delete
         case .shuffle: return .shuffle
+        case .spin: return .spinRing
         case .pangram:
             guard pangramHintLevel >= 2 else { return nil }
             if let n = nextExpected { return .letter(n) }
@@ -172,9 +173,12 @@ final class TutorialController {
             }
         case .shuffle:
             return action == .shuffle
+        case .spin:
+            if case .spin = action { return true }
+            return false
         case .pangram:
             switch action {
-            case .letter, .delete, .clearWord, .submit, .shuffle: return true
+            case .letter, .delete, .clearWord, .submit, .shuffle, .spin: return true
             default: return false
             }
         case .scoreBar:
@@ -231,7 +235,11 @@ final class TutorialController {
             if step == .fixMistake, hasDeleted { step = .drag }
         case .shuffle:
             let did = practice.shuffleOuterLetters()
-            if did, step == .shuffle {
+            if did, step == .shuffle { step = .spin }
+            return did
+        case .spin(let slots):
+            let did = practice.rotateOuterLetters(by: slots)
+            if did, step == .spin {
                 step = .pangram
                 startHintTimer()
             }

@@ -22,10 +22,19 @@ import Foundation
     }
 
     @Test func testStepOrderAndCount() {
-        #expect(TutorialStep.allCases.count == 9)
-        #expect(TutorialStep.allCases == [.build, .centerMiss, .swipe, .fixMistake, .drag, .shuffle, .pangram, .scoreBar, .ready])
-        #expect(TutorialStep.allCases.map(\.rawValue) == Array(1...9))
-        #expect(TutorialText.stepLabel(3) == "Step 3 of 9")
+        #expect(TutorialStep.allCases.count == 10)
+        #expect(TutorialStep.allCases == [.build, .centerMiss, .swipe, .fixMistake, .drag, .shuffle, .spin, .pangram, .scoreBar, .ready])
+        #expect(TutorialStep.allCases.map(\.rawValue) == Array(1...10))
+        #expect(TutorialText.stepLabel(3) == "Step 3 of 10")
+    }
+
+    @Test func testSpinCopyAndActionName() {
+        let c = TutorialText.copy(for: .spin)
+        #expect(c.title == "Give it a spin")
+        #expect(c.instruction == "Stuck? Flick the ring of outer letters and watch it whirl.")
+        #expect(c.compactInstruction == "Flick the outer letters to spin them.")
+        #expect(c.stepNumber == 7)
+        #expect(TutorialText.spinAccessibilityActionName == "Spin the letters")
     }
 
     @Test func testBannerCopyLimits() {

@@ -5,7 +5,7 @@ import SwiftUI
 struct TutorialBannerView: View {
     static let skipLabel = "Skip tutorial"
 
-    /// "Step N of 9"; nil on the Ready card.
+    /// "Step N of 10"; nil on the Ready card.
     let stepLabel: String?
     let title: String
     let instruction: String
@@ -14,6 +14,11 @@ struct TutorialBannerView: View {
     /// Cap for the accessibility-size scroll container (screen height * GameTheme.tutorialBannerMaxHeightFraction). 0 = no cap.
     let maxHeight: CGFloat
     let onSkip: () -> Void
+    /// Phase 12 D-20: the spin step is a gesture-only step; VoiceOver users get a named action on the banner
+    /// so the strict step can never dead-end them. Gameplay itself adds no spin VoiceOver action (D-19:
+    /// Shuffle stays the accessible rearrange path).
+    var accessibilityActionName: String? = nil
+    var onAccessibilityAction: () -> Void = {}
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     /// Natural content height at accessibility sizes. A ScrollView has no intrinsic height, so without this it collapses.
@@ -43,6 +48,11 @@ struct TutorialBannerView: View {
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("tutorialBanner")
         .accessibilityAddTraits(.isHeader)
+        .accessibilityActions {
+            if let accessibilityActionName {
+                Button(accessibilityActionName, action: onAccessibilityAction)
+            }
+        }
     }
 
     private var skipLink: some View {

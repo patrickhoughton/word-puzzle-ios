@@ -1,9 +1,9 @@
 import Foundation
 
-/// Phase 11 D-05: the 9 displayed steps, in teaching order. Sub-steps (the post-miss
+/// Phase 11 D-05: the 10 displayed steps, in teaching order (Phase 12 D-20 inserted .spin after .shuffle). Sub-steps (the post-miss
 /// explanation, Delete-then-clear, pangram hints) are controller state, not extra steps.
 enum TutorialStep: Int, CaseIterable, Equatable {
-    case build = 1, centerMiss, swipe, fixMistake, drag, shuffle, pangram, scoreBar, ready
+    case build = 1, centerMiss, swipe, fixMistake, drag, shuffle, spin, pangram, scoreBar, ready
 }
 
 /// What the banner shows for the current state. Equatable so GameView can crossfade and
@@ -19,9 +19,10 @@ struct TutorialCopy: Equatable {
 }
 
 enum TutorialText {
-    /// UI-SPEC `tutorialStepCount` = 9, derived from the steps list.
+    /// UI-SPEC `tutorialStepCount` = 10, derived from the steps list.
     static var stepCount: Int { TutorialStep.allCases.count }
     static func stepLabel(_ number: Int) -> String { "Step \(number) of \(stepCount)" }
+    static let spinAccessibilityActionName = "Spin the letters"
     static let readyTitle = "You're ready!"
 
     static func copy(for step: TutorialStep, hasMissed: Bool = false, pangramHintLevel: Int = 0) -> TutorialCopy {
@@ -63,6 +64,10 @@ enum TutorialText {
             return make("Shuffle the letters",
                         "Tap Shuffle, or double-tap empty space, to mix up the outer letters.",
                         "Tap Shuffle or double-tap empty space.")
+        case .spin:
+            return make("Give it a spin",
+                        "Stuck? Flick the ring of outer letters and watch it whirl.",
+                        "Flick the outer letters to spin them.")
         case .pangram:
             switch pangramHintLevel {
             case ..<1:
