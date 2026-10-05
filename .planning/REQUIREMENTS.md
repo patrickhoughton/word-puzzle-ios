@@ -44,10 +44,10 @@
 
 - [x] **TUT-01**: A new player is taught every core mechanic on a scripted practice puzzle (DOLPHIN, center P) with strict guided steps, one guided center-letter miss, and free play after the last step
 - [x] **TUT-02**: The practice puzzle is free and unrecorded: it never records a round start or a GameRecord, never counts toward the 3 free puzzles a day, and never shows the paywall or the missed-words screen
-- [ ] **TUT-03**: The tutorial shows automatically only on a new install with no game history; an interrupted tutorial restarts from step 1 on next launch; existing players never see it automatically
+- [x] **TUT-03**: The tutorial shows automatically only on a new install with no game history; an interrupted tutorial restarts from step 1 on next launch; existing players never see it automatically
 - [x] **TUT-04**: "Skip tutorial" is always visible and Finish Round in the tutorial both mark the tutorial seen and start the first real puzzle through the normal round path
 - [x] **TUT-05**: Settings has a "How to Play" row that replays the tutorial from step 1 without costing a free puzzle or touching the in-progress real round
-- [ ] **TUT-06**: The tutorial banner and highlight work at Dynamic Type AX5, respect Reduce Motion, and announce each step to VoiceOver with Skip reachable
+- [x] **TUT-06**: The tutorial banner and highlight work at Dynamic Type AX5, respect Reduce Motion, and announce each step to VoiceOver with Skip reachable
 - [ ] **TUT-07**: Existing UI tests and the App Store screenshot automation keep passing (they launch with -hasSeenTutorial YES)
 
 ## v2 Requirements
@@ -104,10 +104,10 @@
 | UX-05 | Phase 5 | Complete |
 | TUT-01 | Phase 11 | Complete |
 | TUT-02 | Phase 11 | Complete |
-| TUT-03 | Phase 11 | Pending |
+| TUT-03 | Phase 11 | Complete |
 | TUT-04 | Phase 11 | Complete |
 | TUT-05 | Phase 11 | Complete |
-| TUT-06 | Phase 11 | Pending |
+| TUT-06 | Phase 11 | Complete |
 | TUT-07 | Phase 11 | Pending |
 
 **Coverage:**

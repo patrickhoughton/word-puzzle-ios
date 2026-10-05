@@ -200,7 +200,7 @@ Plans:
 - [x] 11-02-PLAN.md — DOLPHIN/P practice puzzle literal + step/copy table, validity and copy tests (Wave 1)
 - [x] 11-03-PLAN.md — Tutorial banner, pulsing highlight, grid highlight/dim params, Settings "How to Play" row (Wave 1)
 - [x] 11-04-PLAN.md — TutorialController state machine on a nil-store practice view-model, TDD (Wave 2)
-- [ ] 11-05-PLAN.md — Wire launch branch, root switch and GameView tutorial mode (gating, banner, Finish/Skip, replay) (Wave 3)
+- [x] 11-05-PLAN.md — Wire launch branch, root switch and GameView tutorial mode (gating, banner, Finish/Skip, replay) (Wave 3)
 - [ ] 11-06-PLAN.md — Tutorial UI tests + full regression, AX5 screenshot check, Wi-Fi device feel checkpoint (Wave 4)
 **UI hint**: yes
 **Promoted from**: backlog 999.4 (2026-10-04, built into v1.0 before submission)
@@ -219,7 +219,7 @@ Plans:
 | 8. All-Pangrams Bonus | 6/6 | Complete   | 2026-10-04 |
 | 9. Player Stats Screen | 6/6 | Complete    | 2026-10-05 |
 | 10. Double-Tap Shuffle | 3/3 | Complete    | 2026-10-05 |
-| 11. First-Launch Tutorial | 4/6 | In Progress|  |
+| 11. First-Launch Tutorial | 5/6 | In Progress|  |
 
 ## Backlog
 
@@ -227,7 +227,7 @@ Plans:
 
 **Goal:** [Captured for future planning] — Patrick suspects the bundled word list is missing words players would expect to be valid. Current list is `enable-clean.txt` (~172,678 words, the profanity-filtered ENABLE list, per CLAUDE.md's original tech-stack choice). **Scope constraint:** do NOT source or diff against Words With Friends' official word list — it's proprietary to Zynga/EA, not public domain, same reasoning CLAUDE.md already uses to rule out the official Scrabble/SOWPODS dictionary ("cannot bundle without licensing"). Safe approach instead: cross-reference `enable-clean.txt` against other public-domain or freely-licensed word lists (e.g. SCOWL) to find and fill genuine gaps, and/or gather specific examples of rejected words players expected to work as concrete test cases before changing the list.
 **Requirements:** TBD
-**Plans:** 4/6 plans executed
+**Plans:** 5/6 plans executed
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
