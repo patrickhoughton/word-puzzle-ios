@@ -20,7 +20,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 - [x] **Phase 6: Differentiated Invalid-Word Messaging** - Distinct feedback for too-short, not-in-dictionary and already-found submissions (completed 2026-10-04)
 - [x] **Phase 7: Found Words View** - In-round list of found words, grouped by length (completed 2026-10-04)
 - [x] **Phase 8: All-Pangrams Bonus** - Extra bonus and callout for finding every pangram in a puzzle (completed 2026-10-04)
-- [ ] **Phase 9: Player Stats Screen** - Lifetime stats and streak surfaced in a player-visible screen
+- [x] **Phase 9: Player Stats Screen** - Lifetime stats and streak surfaced in a player-visible screen (completed 2026-10-05)
 - [ ] **Phase 10: Double-Tap Shuffle** - Double-tap empty space to shuffle the outer letters
 - [ ] **Phase 11: Long-Press Center Shuffle** - Long-press the center tile to shuffle, coexisting with tap-to-append
 - [ ] **Phase 12: First-Launch Tutorial** - First-launch onboarding that teaches the core mechanics
@@ -173,7 +173,7 @@ Plans:
 - [x] 09-03-PLAN.md — PersistenceStore stats queries (longest streak, averages, best rank, pangram/sweep totals, at-risk) + playerStats(now:) aggregator (Wave 2)
 - [x] 09-04-PLAN.md — Settings "Stats" push row + MissedWordsView "Best B · Streak S" summary line (Wave 2)
 - [x] 09-05-PLAN.md — GameView wiring: top-bar icon + sheet, round-over sheet inside the cover, fresh snapshots; XCUITest for all three entry points (Wave 3)
-- [ ] 09-06-PLAN.md — On-device: before/after store diff over install-over migration, then Patrick's presentation/Reduce Motion/AX5 approval (Wave 4)
+- [x] 09-06-PLAN.md — On-device: before/after store diff over install-over migration, then Patrick's presentation/Reduce Motion/AX5 approval (Wave 4)
 **UI hint**: yes
 **Promoted from**: backlog 999.1 (2026-10-04, built into v1.0 before submission)
 
@@ -222,7 +222,7 @@ Plans:
 | 6. Differentiated Invalid-Word Messaging | 2/2 | Complete | 2026-10-04 |
 | 7. Found Words View | 3/3 | Complete | 2026-10-04 |
 | 8. All-Pangrams Bonus | 6/6 | Complete   | 2026-10-04 |
-| 9. Player Stats Screen | 5/6 | In Progress|  |
+| 9. Player Stats Screen | 6/6 | Complete   | 2026-10-05 |
 | 10. Double-Tap Shuffle | 0/0 | Not started | - |
 | 11. Long-Press Center Shuffle | 0/0 | Not started | - |
 | 12. First-Launch Tutorial | 0/0 | Not started | - |
