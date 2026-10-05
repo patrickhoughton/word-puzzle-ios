@@ -94,8 +94,18 @@ enum GameTheme {
 
     /// Zero-streak hero flame: `.secondary` at this opacity (D-22).
     static let dimmedFlameOpacity: Double = 0.4
-    /// Stat numbers count up 0, 1, 2 ... N on appear (D-18). Every step of 1 takes this long, so
-    /// bigger numbers take proportionally longer (Patrick, 2026-10-04: a fixed-length roll read as
-    /// near-instant on device).
+    /// Stat numbers count up 0, 1, 2 ... N on appear (D-18) at a steady rate within each count.
+    /// Up to `statsCountUpLinearLimit` every step takes `statsCountUpSecondsPerUnit`; past it the
+    /// total grows with sqrt(N) so big totals don't drag (45 -> 0.45s, 760 -> ~2.8s, 1169 -> ~3.4s).
+    /// Patrick, 2026-10-04: a fixed-length roll read as near-instant; pure linear was too slow for big numbers.
     static let statsCountUpSecondsPerUnit: Double = 0.01
+    static let statsCountUpLinearLimit: Double = 100
+
+    static func statsCountUpSeconds(for value: Int) -> Double {
+        let n = Double(max(value, 0))
+        let linearCap = statsCountUpLinearLimit * statsCountUpSecondsPerUnit
+        return n <= statsCountUpLinearLimit
+            ? n * statsCountUpSecondsPerUnit
+            : linearCap * (n / statsCountUpLinearLimit).squareRoot()
+    }
 }

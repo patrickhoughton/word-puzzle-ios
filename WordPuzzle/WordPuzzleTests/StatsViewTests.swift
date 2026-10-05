@@ -104,3 +104,18 @@ import Foundation
         #expect(e.averageScore == nil && e.averageWords == nil && e.bestRank == nil)
     }
 }
+
+struct StatsCountUpTimingTests {
+    @Test func smallNumbersAreLinear() {
+        #expect(abs(GameTheme.statsCountUpSeconds(for: 45) - 0.45) < 0.0001)
+        #expect(abs(GameTheme.statsCountUpSeconds(for: 100) - 1.0) < 0.0001)
+        #expect(GameTheme.statsCountUpSeconds(for: 0) == 0)
+    }
+
+    @Test func bigNumbersGrowSublinearlyButStillLonger() {
+        let t760 = GameTheme.statsCountUpSeconds(for: 760)
+        let t1169 = GameTheme.statsCountUpSeconds(for: 1169)
+        #expect(t760 > 1.0 && t760 < 7.6)
+        #expect(t1169 > t760 && t1169 < 4.0)
+    }
+}

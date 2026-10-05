@@ -281,7 +281,8 @@ private struct CountUpNumber: View {
             .task(id: value) {
                 guard !reduceMotion else { return }
                 // Time-based, not sleep-per-step, so the rate holds even when frames are late.
-                let perUnit = Duration.seconds(GameTheme.statsCountUpSecondsPerUnit)
+                guard value > 0 else { shown = 0; return }
+                let perUnit = Duration.seconds(GameTheme.statsCountUpSeconds(for: value) / Double(value))
                 let start = ContinuousClock.now
                 shown = 0
                 while shown < value, !Task.isCancelled {
