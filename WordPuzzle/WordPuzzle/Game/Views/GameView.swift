@@ -24,8 +24,6 @@ struct GameView: View {
     // (RESEARCH Pitfall 2); the two flags never fight.
     @State private var isShowingStats = false
     @State private var isShowingRoundOverStats = false
-    // RESEARCH Pitfall 4: rebuilt from fresh store reads every time a stats surface opens.
-    @State private var statsSnapshot: PlayerStats = .empty
     // UX-03 gap fix: "Finish Round" doesn't fit next to Shuffle/Delete at
     // accessibility Dynamic Type sizes even shrunk to scale factor 0.3 -- an
     // abbreviated label at large sizes is the standard accessible pattern
@@ -105,7 +103,6 @@ struct GameView: View {
                     bestScore: persistenceStore.bestScore(),
                     currentStreak: persistenceStore.currentStreak(),
                     onShowStats: {
-                        refreshStatsSnapshot()
                         isShowingRoundOverStats = true
                     }
                 )
@@ -113,7 +110,7 @@ struct GameView: View {
                 // dismissing returns to the round-over screen (UI-SPEC).
                 .sheet(isPresented: $isShowingRoundOverStats) {
                     NavigationStack {
-                        StatsView(stats: statsSnapshot, showsDoneButton: true,
+                        StatsView(stats: freshStats, showsDoneButton: true,
                                   onDone: { isShowingRoundOverStats = false })
                     }
                 }
@@ -124,13 +121,13 @@ struct GameView: View {
             SettingsView(
                 soundEffectsEnabled: $soundEffectsEnabled,
                 onDone: { isShowingSettings = false },
-                stats: statsSnapshot
+                stats: freshStats
             )
         }
         // Phase 9 D-02: full-height sheet (no detents), Done + swipe-to-dismiss, same as Settings.
         .sheet(isPresented: $isShowingStats) {
             NavigationStack {
-                StatsView(stats: statsSnapshot, showsDoneButton: true, onDone: { isShowingStats = false })
+                StatsView(stats: freshStats, showsDoneButton: true, onDone: { isShowingStats = false })
             }
         }
         // Phase 7 D-03/D-04/D-05: a standard modal sheet (board not interactive behind it at
@@ -184,7 +181,10 @@ struct GameView: View {
         .sensoryFeedback(.success, trigger: sweepHapticCount)
     }
 
-    private func refreshStatsSnapshot() { statsSnapshot = persistenceStore.playerStats() }
+    // RESEARCH Pitfall 4: every stats surface reads the store inside its sheet content, so it is
+    // fresh each time it opens. A @State snapshot set in the same tap that flips the sheet flag
+    // reached the sheet stale (.empty) on device -- 09-06 found all-zero stats that way.
+    private var freshStats: PlayerStats { persistenceStore.playerStats() }
 
     @ViewBuilder private var celebrationOverlay: some View {
         switch activeCelebration {
@@ -293,7 +293,6 @@ struct GameView: View {
         VStack(spacing: 0) {
             HStack(spacing: GameTheme.sm) {
                 Button {
-                    refreshStatsSnapshot()
                     isShowingStats = true
                 } label: {
                     Image(systemName: "chart.bar.fill")
@@ -322,7 +321,6 @@ struct GameView: View {
                 #endif
                 Spacer()
                 Button {
-                    refreshStatsSnapshot()
                     isShowingSettings = true
                 } label: {
                     Image(systemName: "gearshape")
