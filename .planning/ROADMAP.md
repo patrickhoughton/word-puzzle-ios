@@ -222,7 +222,7 @@ Plans:
 | 6. Differentiated Invalid-Word Messaging | 2/2 | Complete | 2026-10-04 |
 | 7. Found Words View | 3/3 | Complete | 2026-10-04 |
 | 8. All-Pangrams Bonus | 6/6 | Complete   | 2026-10-04 |
-| 9. Player Stats Screen | 6/6 | Complete   | 2026-10-05 |
+| 9. Player Stats Screen | 6/6 | Complete    | 2026-10-05 |
 | 10. Double-Tap Shuffle | 0/0 | Not started | - |
 | 11. Long-Press Center Shuffle | 0/0 | Not started | - |
 | 12. First-Launch Tutorial | 0/0 | Not started | - |
