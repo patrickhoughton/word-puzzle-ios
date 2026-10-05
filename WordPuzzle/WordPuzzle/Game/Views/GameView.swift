@@ -43,6 +43,8 @@ struct GameView: View {
     // GameView must NEVER read the ring angle (only LetterGridView does) so per-frame updates stay local to the grid.
     @State private var ringSpin = RingSpinController()
     @State private var spinFeedback = SpinFeedback()
+    @State private var fullCircleShownAt: Date?
+    @State private var fullCircleTask: Task<Void, Never>?
     @Environment(\.scenePhase) private var scenePhase
 
     /// Phase 11: non-nil while the tutorial runs. nil = normal game (existing behavior).
@@ -265,7 +267,8 @@ struct GameView: View {
                 viewModel.rotateOuterLetters(by: slots)
             }
         case .jackpot:
-            spinFeedback.jackpot(soundEnabled: soundEffectsEnabled)   // D-12 cosmetic: no score call. Popup added in 12-08.
+            spinFeedback.jackpot(soundEnabled: soundEffectsEnabled)   // D-12 cosmetic: no score call.
+            showFullCircle()
         }
     }
 
@@ -314,7 +317,22 @@ struct GameView: View {
         }
     }
 
+    /// Phase 12 D-12: cosmetic only. Must never call into scoring (no viewModel access here).
+    private func showFullCircle() {
+        fullCircleTask?.cancel()
+        withAnimation(.easeOut(duration: reduceMotion ? GameTheme.reduceMotionCrossfadeSeconds : GameTheme.lengthPillInSeconds)) {
+            fullCircleShownAt = .now
+        }
+        announce(FullCircleView.announcement)
+        fullCircleTask = Task { @MainActor in
+            await pause(GameTheme.fullCircleHoldSeconds)
+            guard !Task.isCancelled else { return }
+            withAnimation(.easeIn(duration: GameTheme.celebrationFadeOutSeconds)) { fullCircleShownAt = nil }
+        }
+    }
+
     private func cancelCelebrations() {
+        fullCircleTask?.cancel(); fullCircleTask = nil; fullCircleShownAt = nil
         celebrationTask?.cancel()
         celebrationTask = nil
         activeCelebration = nil
@@ -404,6 +422,7 @@ struct GameView: View {
                 if GameViewModel.debugShortcutsEnabled, tutorial == nil {
                     Menu {
                         Button("Solve to just under 100%") { viewModel.debugSolveToJustUnderMax() }
+                        Button("Preview Full circle!") { spinFeedback.jackpot(soundEnabled: soundEffectsEnabled); showFullCircle() }
                         Button("Type next missing word (\(viewModel.debugRemainingWords.count) left)") {
                             viewModel.debugTypeNextRemainingWord()
                         }
@@ -514,6 +533,13 @@ struct GameView: View {
                 isSpinEnabled: isSpinEnabled,
                 highlightsRing: tutorial?.highlightTarget == .spinRing
             )
+            .overlay {
+                if let start = fullCircleShownAt {
+                    FullCircleView(startDate: start, reduceMotion: reduceMotion)
+                        .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: GameTheme.sweepCardInScale)))
+                        .allowsHitTesting(false)
+                }
+            }
             .overlay(alignment: .top) {
                 celebrationOverlay
                     .padding(.top, GameTheme.lg)

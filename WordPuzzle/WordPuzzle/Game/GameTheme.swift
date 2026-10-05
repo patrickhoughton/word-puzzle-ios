@@ -67,6 +67,12 @@ enum GameTheme {
     static let reduceMotionHoldSeconds: Double = 1.0
     static let sweepMaxTicks: Int = 12
     static let sweepCardInScale: CGFloat = 0.9
+
+    // Phase 12 D-12: "Full circle!" ring-spin jackpot (cosmetic only, no points)
+    static let fullCircleHoldSeconds: Double = 1.6
+    static let fullCircleSparkleCount: Int = 12
+    static let fullCircleBurstSeconds: Double = 0.9
+    static let fullCircleBurstRadius: CGFloat = 90
     static let sweepCardAnimation: Animation = .spring(response: 0.3, dampingFraction: 0.7)
     static let celebrationCornerRadius: CGFloat = 12
     static let celebrationShadowOpacity: Double = 0.15
