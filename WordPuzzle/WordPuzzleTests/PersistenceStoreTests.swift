@@ -217,4 +217,21 @@ import SwiftData
         store.record(score: 10, wordsFoundCount: 4, date: daysAgo(2, from: now))
         #expect(store.currentStreak(now: now) == 2)
     }
+
+    @Test func testHasAnyHistoryFalseWhenEmpty() throws {
+        let store = try makeInMemoryStore()
+        #expect(store.hasAnyHistory() == false)
+    }
+
+    @Test func testHasAnyHistoryTrueWithRoundStartOnly() throws {
+        let store = try makeInMemoryStore()
+        store.recordRoundStarted()
+        #expect(store.hasAnyHistory() == true)
+    }
+
+    @Test func testHasAnyHistoryTrueWithGameRecordOnly() throws {
+        let store = try makeInMemoryStore()
+        store.record(score: 5, wordsFoundCount: 2)
+        #expect(store.hasAnyHistory() == true)
+    }
 }
