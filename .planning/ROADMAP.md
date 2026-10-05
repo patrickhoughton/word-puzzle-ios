@@ -185,7 +185,7 @@ Plans:
 
 Plans:
 - [x] 10-01-PLAN.md — Shuffle contract (Bool return, .playing gate, shuffleCount) + EmptyDoubleTapDetector, TDD (Wave 1)
-- [ ] 10-02-PLAN.md — Wire grid empty-tap detection, background double-tap layer, light shuffle haptic (Wave 2)
+- [x] 10-02-PLAN.md — Wire grid empty-tap detection, background double-tap layer, light shuffle haptic (Wave 2)
 - [ ] 10-03-PLAN.md — Full suite + Wi-Fi device install, on-device gesture/haptic/latency checkpoint (Wave 3)
 **UI hint**: yes
 **Promoted from**: backlog 999.6 (2026-10-04, built into v1.0 before submission)
@@ -225,7 +225,7 @@ Plans:
 | 7. Found Words View | 3/3 | Complete | 2026-10-04 |
 | 8. All-Pangrams Bonus | 6/6 | Complete   | 2026-10-04 |
 | 9. Player Stats Screen | 6/6 | Complete    | 2026-10-05 |
-| 10. Double-Tap Shuffle | 1/3 | In Progress|  |
+| 10. Double-Tap Shuffle | 2/3 | In Progress|  |
 | 11. Long-Press Center Shuffle | 0/0 | Not started | - |
 | 12. First-Launch Tutorial | 0/0 | Not started | - |
 
@@ -235,7 +235,7 @@ Plans:
 
 **Goal:** [Captured for future planning] — Patrick suspects the bundled word list is missing words players would expect to be valid. Current list is `enable-clean.txt` (~172,678 words, the profanity-filtered ENABLE list, per CLAUDE.md's original tech-stack choice). **Scope constraint:** do NOT source or diff against Words With Friends' official word list — it's proprietary to Zynga/EA, not public domain, same reasoning CLAUDE.md already uses to rule out the official Scrabble/SOWPODS dictionary ("cannot bundle without licensing"). Safe approach instead: cross-reference `enable-clean.txt` against other public-domain or freely-licensed word lists (e.g. SCOWL) to find and fill genuine gaps, and/or gather specific examples of rejected words players expected to work as concrete test cases before changing the list.
 **Requirements:** TBD
-**Plans:** 1/3 plans executed
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
