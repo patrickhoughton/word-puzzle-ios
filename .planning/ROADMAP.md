@@ -209,8 +209,8 @@ Plans:
 ### Phase 12: Inertial Flick-to-Spin
 **Goal**: push/flick the outer ring of 6 letters in either direction to spin them around the center with physics-based inertia (momentum + deceleration, not an instant snap), landing the letters in new positions once the spin settles. This is a distinct interaction from the plain Shuffle button (and from the dropped 999.5 two-finger rotate idea) — it's a continuous drag-driven wheel/dial feel with velocity carried into a decaying spin, not a discrete gesture that just triggers the existing shuffle animation.
 **Depends on**: Phase 10 (shares the grid gesture and shuffle/haptic plumbing); Phase 11 (tutorial teaches shuffle — decide at planning whether flick-to-spin gets a mention)
-**Requirements**: TBD
-**Plans**: 0 plans
+**Requirements**: none mapped; plans trace to CONTEXT decisions D-01..D-20
+**Plans**: 9 plans
 
 **Design/technical complexity to resolve at planning time:**
 - **Gesture disambiguation:** `LetterGridView`'s existing single `DragGesture(minimumDistance: 0)` already interprets drags across the tile ring as drag-to-connect (spelling a word by crossing tiles in sequence). A tangential flick around the ring needs to be distinguished from a word-building drag — likely by drag path shape (curved/tangential vs. tile-to-tile) or by requiring the flick start outside the tiles themselves (e.g. in the gap between tiles, or via a dedicated invisible ring-shaped drag zone around the honeycomb).
@@ -219,7 +219,15 @@ Plans:
 - **Overlap with 999.5's removal:** Patrick dropped the two-finger rotate gesture (999.5) — this flick-based version was raised as what he actually wants instead, so treat this as the sole "rotate the ring" backlog item going forward.
 
 Plans:
-- [ ] TBD (run /gsd:discuss-phase 12)
+- [ ] 12-01-PLAN.md — Pure physics core: RingSpinTuning, SlotMath, closed-form RingSpinTrajectory (TDD) (Wave 1)
+- [ ] 12-02-PLAN.md — AngularVelocityTracker, TickThrottle, SpinSession jackpot predicate (TDD) (Wave 1)
+- [ ] 12-03-PLAN.md — HexFlowerLayout: rotated offsets, pure tile hit test, spin zone, cyclic rotation (Wave 1)
+- [ ] 12-04-PLAN.md — Spin tick/clunk/Full circle sounds + SoundManager tick pool (Wave 1)
+- [ ] 12-05-PLAN.md — GameViewModel.rotateOuterLetters + tutorial step 7 "Give it a spin" (Wave 2)
+- [ ] 12-06-PLAN.md — RingSpinController (display-link state machine) + SpinFeedback haptics/sounds (Wave 2)
+- [ ] 12-07-PLAN.md — Wire spin into LetterGridView gesture + GameView (gating, Shuffle cancels spin, lifecycle) (Wave 3)
+- [ ] 12-08-PLAN.md — "Full circle!" cosmetic jackpot popup + spin/tutorial UI tests (Wave 4)
+- [ ] 12-09-PLAN.md — Full suite, validation sign-off, on-device feel checkpoint (Wave 5, non-autonomous)
 **UI hint**: yes
 **Promoted from**: backlog 999.11 (2026-10-04, built into v1.0 before submission)
 
@@ -238,7 +246,7 @@ Plans:
 | 9. Player Stats Screen | 6/6 | Complete    | 2026-10-05 |
 | 10. Double-Tap Shuffle | 3/3 | Complete    | 2026-10-05 |
 | 11. First-Launch Tutorial | 6/6 | Complete    | 2026-10-05 |
-| 12. Inertial Flick-to-Spin | 0/0 | Not started | - |
+| 12. Inertial Flick-to-Spin | 0/9 | Planned | - |
 
 ## Backlog
 
