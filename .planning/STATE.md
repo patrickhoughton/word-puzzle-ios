@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 11-05-PLAN.md
-last_updated: "2026-10-05T03:05:53.386Z"
+status: verifying
+stopped_at: Completed 11-06-PLAN.md
+last_updated: "2026-10-05T04:00:36.800Z"
 last_activity: 2026-10-05
 progress:
   total_phases: 14
-  completed_phases: 9
+  completed_phases: 10
   total_plans: 51
-  completed_plans: 49
+  completed_plans: 50
   percent: 97
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 
 Phase: 11 (first-launch-tutorial) — EXECUTING
 Plan: 6 of 6
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-10-05
 
 Progress: [███████████████████░] 97% (29/30 plans; 05-08 App Store listing still pending; Phases 8-12 unplanned)
@@ -81,6 +81,7 @@ Progress: [███████████████████░] 97% (29
 | Phase 10 P03 | 15min | 2 tasks | 1 files |
 | Phase 11 P04 | 15min | 2 tasks | 2 files |
 | Phase 11 P05 | 15min | 2 tasks | 3 files |
+| Phase 11 P06 | n/a | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,7 @@ Recent decisions affecting current work:
 
 - [Backlog review 2026-10-04]: Promoted 999.3->Phase 6, 999.2->7, 999.8->8, 999.1->9, 999.6->10, 999.7->11, 999.4->12 (tutorial last so it teaches everything). 999.9/999.10/999.11 stay in backlog. gsd-tools `phase add` would have numbered new phases 1000+ (its regex treats "Phase 999.x" headers as the max phase), so promotion was done by hand -- use `phase insert` or manual edits for future promotions.
 - [Phase 07]: FoundWordsView omits pangrams Set param; FoundWord carries isPangram
+- [Phase 11]: AX5 tutorial banner capped at 20% screen height, Skip pinned below scrolling text
 
 ### Pending Todos
 
@@ -152,6 +154,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-10-05T03:05:53.382Z
-Stopped at: Completed 11-05-PLAN.md
+Last session: 2026-10-05T04:00:36.797Z
+Stopped at: Completed 11-06-PLAN.md
 Resume file: None
