@@ -38,7 +38,7 @@ final class SpinFeedback {
         let decision = throttle.register(crossings: count, at: now, rate: rate)
         let f = min(1, speed / 12)
         if decision.haptic { tickGenerator.impactOccurred(intensity: 0.4 + 0.4 * f) }
-        if decision.sound { sound.playSpinTick(enabled: soundEnabled, volume: Float(0.45 + 0.25 * f)) }
+        if decision.sound { sound.playSpinTick(enabled: soundEnabled, volume: Float(0.3 + 0.2 * f)) }
     }
 
     func clunk(soundEnabled: Bool) {
