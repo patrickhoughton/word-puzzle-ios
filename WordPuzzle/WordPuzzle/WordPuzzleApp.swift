@@ -17,6 +17,7 @@ struct WordPuzzleApp: App {
     @State private var entitlementStore = EntitlementStore()
     @State private var wordList: WordList
     @State private var gameViewModel: GameViewModel
+    @State private var tutorial: TutorialController
 
     private let modelContainer: ModelContainer
 
@@ -38,6 +39,7 @@ struct WordPuzzleApp: App {
         let list = WordList()
         _persistenceStore = State(initialValue: store)
         _wordList = State(initialValue: list)
+        _tutorial = State(initialValue: TutorialController(wordList: list))
         _gameViewModel = State(initialValue: GameViewModel(wordList: list, persistenceStore: store))
     }
 
@@ -48,6 +50,7 @@ struct WordPuzzleApp: App {
                 .environment(entitlementStore)
                 .environment(wordList)
                 .environment(gameViewModel)
+                .environment(tutorial)
                 .task {
                     // CONTEXT D-08 / MON-04: the entitlement check runs on EVERY app
                     // launch, from Transaction.currentEntitlements — never from a
@@ -64,10 +67,23 @@ struct WordPuzzleApp: App {
                     await entitlementStore.loadProduct()
                     await wordList.load()
 
-                    // D-01 trigger 2: on relaunch, a free user already at the daily
-                    // limit goes straight to .paywalled — never sees a puzzle screen
-                    // they are not allowed to play.
-                    gameViewModel.requestNextRound(isPremium: entitlementStore.isPremium)
+                    // Phase 11 D-10/D-11: Finish or Skip on a FIRST-LAUNCH tutorial starts the first real round
+                    // through the normal gate. A replay (D-12) ends with nothing: the real round resumes untouched.
+                    // The .loading guard means a real round is never started twice.
+                    tutorial.onExit = { [gameViewModel, entitlementStore] mode in
+                        guard mode == .firstLaunch, gameViewModel.roundPhase == .loading else { return }
+                        gameViewModel.requestNextRound(isPremium: entitlementStore.isPremium)
+                    }
+                    // Phase 11 D-08/D-09/D-13: new installs with no history see the practice tutorial (premium
+                    // included). The real VM stays .loading until Finish/Skip, so no RoundStartRecord is written
+                    // before the player chooses (D-07). Same sequential task: the word list is loaded (Pitfall 2).
+                    if TutorialFlag.shouldShowOnLaunch(hasHistory: { persistenceStore.hasAnyHistory() }) {
+                        tutorial.begin(mode: .firstLaunch)
+                    } else {
+                        // D-01 trigger 2: on relaunch, a free user already at the daily
+                        // limit goes straight to .paywalled.
+                        gameViewModel.requestNextRound(isPremium: entitlementStore.isPremium)
+                    }
                 }
         }
         .modelContainer(modelContainer)
