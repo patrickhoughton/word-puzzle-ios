@@ -23,7 +23,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 - [x] **Phase 9: Player Stats Screen** - Lifetime stats and streak surfaced in a player-visible screen (completed 2026-10-05)
 - [x] **Phase 10: Double-Tap Shuffle** - Double-tap empty space to shuffle the outer letters (completed 2026-10-05)
 - [x] **Phase 11: First-Launch Tutorial** - First-launch onboarding that teaches the core mechanics (completed 2026-10-05)
-- [ ] **Phase 12: Inertial Flick-to-Spin** - Flick the outer ring of letters to spin it with momentum, settling into new slots
+- [x] **Phase 12: Inertial Flick-to-Spin** - Flick the outer ring of letters to spin it with momentum, settling into new slots (completed 2026-10-05)
 
 ## Phase Details
 
@@ -227,7 +227,7 @@ Plans:
 - [x] 12-06-PLAN.md — RingSpinController (display-link state machine) + SpinFeedback haptics/sounds (Wave 2)
 - [x] 12-07-PLAN.md — Wire spin into LetterGridView gesture + GameView (gating, Shuffle cancels spin, lifecycle) (Wave 3)
 - [x] 12-08-PLAN.md — "Full circle!" cosmetic jackpot popup + spin/tutorial UI tests (Wave 4)
-- [ ] 12-09-PLAN.md — Full suite, validation sign-off, on-device feel checkpoint (Wave 5, non-autonomous)
+- [x] 12-09-PLAN.md — Full suite, validation sign-off, on-device feel checkpoint (Wave 5, non-autonomous)
 **UI hint**: yes
 **Promoted from**: backlog 999.11 (2026-10-04, built into v1.0 before submission)
 
@@ -246,7 +246,7 @@ Plans:
 | 9. Player Stats Screen | 6/6 | Complete    | 2026-10-05 |
 | 10. Double-Tap Shuffle | 3/3 | Complete    | 2026-10-05 |
 | 11. First-Launch Tutorial | 6/6 | Complete    | 2026-10-05 |
-| 12. Inertial Flick-to-Spin | 8/9 | In Progress|  |
+| 12. Inertial Flick-to-Spin | 9/9 | Complete   | 2026-10-05 |
 
 ## Backlog
 
@@ -254,7 +254,7 @@ Plans:
 
 **Goal:** [Captured for future planning] — Patrick suspects the bundled word list is missing words players would expect to be valid. Current list is `enable-clean.txt` (~172,678 words, the profanity-filtered ENABLE list, per CLAUDE.md's original tech-stack choice). **Scope constraint:** do NOT source or diff against Words With Friends' official word list — it's proprietary to Zynga/EA, not public domain, same reasoning CLAUDE.md already uses to rule out the official Scrabble/SOWPODS dictionary ("cannot bundle without licensing"). Safe approach instead: cross-reference `enable-clean.txt` against other public-domain or freely-licensed word lists (e.g. SCOWL) to find and fill genuine gaps, and/or gather specific examples of rejected words players expected to work as concrete test cases before changing the list.
 **Requirements:** TBD
-**Plans:** 8/9 plans executed
+**Plans:** 9/9 plans complete
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
