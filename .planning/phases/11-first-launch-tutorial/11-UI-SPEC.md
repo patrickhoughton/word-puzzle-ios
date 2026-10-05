@@ -141,7 +141,7 @@ Tone: playful, consistent with Phase 6 ("Forgot the middle!"). Short. Second per
 
 | Element | Copy |
 |---------|------|
-| Primary CTA (final step) | "Finish" button (existing Finish Round control) highlighted; Ready card says: "When you're done, tap Finish to see the words you missed. Tap it now to start your first real puzzle!" |
+| Primary CTA (final step) | "Finish Round" button (existing control) highlighted; Ready card says: "When you're done, tap Finish Round to see the words you missed. Tap it now to start your first real puzzle!" |
 | Skip link | "Skip tutorial" |
 | Settings row | "How to Play" |
 | Ready card headline | "You're ready!" |
