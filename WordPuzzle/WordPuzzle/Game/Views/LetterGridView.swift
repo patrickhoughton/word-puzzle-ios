@@ -39,6 +39,12 @@ struct LetterGridView: View {
     /// square (gaps, square corners, hexagon corners outside the hit circle). Never fired
     /// for tile touches: a tile double-tap still appends the letter twice (D-01).
     let onEmptyDoubleTap: () -> Void
+    /// Phase 11: the single tile the tutorial wants touched next (letters are unique per puzzle).
+    var highlightedLetter: Character? = nil
+    /// Phase 11 D-02 visual: dim every tile except the highlighted one to GameTheme.tutorialDimmedOpacity.
+    var dimsNonHighlighted: Bool = false
+    /// Phase 11 UI-SPEC Accessibility: the step instruction, read as the highlighted tile's hint.
+    var highlightHint: String? = nil
 
     @State private var emptyTapDetector = EmptyDoubleTapDetector()
     @State private var tileFrames: [Int: CGRect] = [:]
@@ -90,7 +96,11 @@ struct LetterGridView: View {
     }
 
     private func tile(letter: Character, index: Int, isCenter: Bool) -> some View {
-        HexTileView(letter: letter, isCenter: isCenter)
+        let isTarget = highlightedLetter.map { $0 == letter } ?? false
+        return HexTileView(letter: letter, isCenter: isCenter)
+            .tutorialHighlight(isTarget, in: HexagonShape())
+            .opacity(dimsNonHighlighted && !isTarget ? GameTheme.tutorialDimmedOpacity : 1)
+            .accessibilityHint(isTarget ? Text(highlightHint ?? "") : Text(""))
             .background(
                 GeometryReader { geo in
                     Color.clear.preference(

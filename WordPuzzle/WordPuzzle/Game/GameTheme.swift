@@ -90,6 +90,13 @@ enum GameTheme {
     static let overflowBurstScale: CGFloat = 1.8          // bar's vertical pop on first crossing 100%
     static let overflowBurstAnimation: Animation = .spring(response: 0.25, dampingFraction: 0.45)
 
+    // MARK: - Tutorial (Phase 11, 11-UI-SPEC)
+
+    static let tutorialDimmedOpacity: Double = 0.35
+    static let tutorialHighlightStroke: CGFloat = 4
+    /// At accessibility sizes the banner scrolls inside at most this fraction of the screen height.
+    static let tutorialBannerMaxHeightFraction: CGFloat = 0.4
+
     // MARK: - Phase 9 stats screen (09-UI-SPEC)
 
     /// Zero-streak hero flame: `.secondary` at this opacity (D-22).
