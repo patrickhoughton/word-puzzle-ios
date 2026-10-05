@@ -419,7 +419,7 @@ struct GameView: View {
                     instruction: copy.instruction,
                     compactInstruction: copy.compactInstruction,
                     isReady: copy.isReady,
-                    maxHeight: layoutHeight * GameTheme.tutorialBannerMaxHeightFraction,
+                    maxHeight: UIScreen.main.bounds.height * GameTheme.tutorialBannerMaxHeightFraction,
                     onSkip: { tutorial.skip() }
                 )
                 .padding(.horizontal, GameTheme.lg)

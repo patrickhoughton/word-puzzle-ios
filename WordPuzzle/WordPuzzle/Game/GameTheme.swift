@@ -95,7 +95,7 @@ enum GameTheme {
     static let tutorialDimmedOpacity: Double = 0.35
     static let tutorialHighlightStroke: CGFloat = 4
     /// At accessibility sizes the banner scrolls inside at most this fraction of the screen height.
-    static let tutorialBannerMaxHeightFraction: CGFloat = 0.4
+    static let tutorialBannerMaxHeightFraction: CGFloat = 0.2
 
     // MARK: - Phase 9 stats screen (09-UI-SPEC)
 

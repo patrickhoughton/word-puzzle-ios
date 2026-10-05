@@ -16,6 +16,8 @@ struct TutorialBannerView: View {
     let onSkip: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    /// Natural content height at accessibility sizes. A ScrollView has no intrinsic height, so without this it collapses.
+    @State private var contentHeight: CGFloat = 0
 
     static func showsStepLabel(for size: DynamicTypeSize) -> Bool { !size.isAccessibilitySize }
     static func displayedInstruction(full: String, compact: String, size: DynamicTypeSize) -> String {
@@ -55,14 +57,16 @@ struct TutorialBannerView: View {
     var body: some View {
         Group {
             if dynamicTypeSize.isAccessibilitySize {
-                ScrollView(.vertical) {
-                    VStack(alignment: .leading, spacing: GameTheme.sm) {
+                // Skip stays pinned below the scrolling text so it is always visible and reachable.
+                VStack(alignment: .leading, spacing: GameTheme.sm) {
+                    ScrollView(.vertical) {
                         textBlock
-                        skipLink.frame(maxWidth: .infinity, alignment: .leading)
+                            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
                     }
+                    .scrollBounceBehavior(.basedOnSize)
+                    .frame(height: maxHeight > 0 ? min(contentHeight, maxHeight) : contentHeight)
+                    skipLink.frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .scrollBounceBehavior(.basedOnSize)
-                .frame(maxHeight: maxHeight > 0 ? maxHeight : nil)
             } else {
                 VStack(alignment: .leading, spacing: GameTheme.sm) {
                     textBlock.allowsHitTesting(false)
