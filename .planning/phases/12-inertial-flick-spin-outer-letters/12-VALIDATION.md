@@ -51,7 +51,6 @@ created: 2026-10-05
 | D-11 | `SoundEffect` count + bundled files | unit | `SoundManagerTests` | updated | ✅ green | 12-04 |
 | D-20 | tutorial step count 10, order, `allows(.spin)` | unit | `TutorialCopyTests`, `TutorialControllerTests` | updated | ✅ green | 12-07 |
 | D-01/D-13/D-14 | off-tile flick rotates ring; Shuffle mid-spin | UI | `WordPuzzleUITests`/`TutorialUITests` | updated | ✅ green | 12-08 |
-
 | D-14/D-15/D-16 | controller state machine, guards, Shuffle cancel | unit | `RingSpinControllerTests` | created | ✅ green | 12-06 |
 | D-10/D-11/D-12 | feedback ticks, clunk, jackpot cues | unit | `SpinFeedbackTests` | created | ✅ green | 12-04 |
 | D-12 | Full circle! popup view | unit | `FullCircleViewTests` | created | ✅ green | 12-08 |
