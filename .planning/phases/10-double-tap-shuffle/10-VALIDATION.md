@@ -45,7 +45,7 @@ created: 2026-10-04
 | 10-02-01 | 02 | 2 | PUZZ-04 | static | grep gesture invariants | ✅ | ✅ green |
 | 10-02-02 | 02 | 2 | PUZZ-04 | unit/static | full unit suite + compliance-guards | ✅ | ✅ green |
 | 10-03-01 | 03 | 3 | PUZZ-04 | unit/static | full suite + compliance-guards + device install | ✅ | ✅ green |
-| 10-03-02 | 03 | 3 | PUZZ-04 | manual | on-device checklist | n/a | ⬜ pending |
+| 10-03-02 | 03 | 3 | PUZZ-04 | manual | on-device checklist | n/a | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -79,4 +79,4 @@ created: 2026-10-04
 - [x] Feedback latency < 120s
 - [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** automated approved; on-device checklist (10-03-02) pending
+**Approval:** approved — automated suite green; on-device checklist (10-03-02) approved by Patrick 2026-10-04
