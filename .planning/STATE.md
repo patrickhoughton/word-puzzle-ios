@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 
 ## Current Position
 
-Phase: 999.9
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 5 (polish-compliance-app-store) — 05-08 on hold until Phase 12 lands
+Plan: 8 of 8
+Status: Phase 11 complete; Phase 12 (inertial flick-to-spin) promoted from backlog 999.11, needs discuss/plan
 Last activity: 2026-10-05
 
 Progress: [███████████████████░] 97% (29/30 plans; 05-08 App Store listing still pending; Phases 8-12 unplanned)
@@ -134,7 +134,7 @@ Recent decisions affecting current work:
 
 - [Phase 05-08]: Patrick decided (2026-10-04) to BUILD BACKLOG ITEMS 999.1-999.8 INTO v1.0 before submitting -- v1.0 submission is on hold. 05-08 metadata partly pushed via API (subtitle, categories, description, keywords, promo text, MANUAL release, age rating); build 1.0 (1) uploaded. Screenshots get re-captured/uploaded after the backlog lands. Device testing uses direct Wi-Fi installs: `bash scripts/install-on-device.sh`.
 
-- [Backlog review 2026-10-04]: Promoted 999.3->Phase 6, 999.2->7, 999.8->8, 999.1->9, 999.6->10, 999.7->11, 999.4->12 (tutorial last so it teaches everything). 999.9/999.10/999.11 stay in backlog. gsd-tools `phase add` would have numbered new phases 1000+ (its regex treats "Phase 999.x" headers as the max phase), so promotion was done by hand -- use `phase insert` or manual edits for future promotions.
+- [Backlog review 2026-10-04]: Promoted 999.3->Phase 6, 999.2->7, 999.8->8, 999.1->9, 999.6->10, 999.7->11, 999.4->12 (tutorial last so it teaches everything). 999.9/999.10/999.11 stay in backlog. [2026-10-04 later: 999.11 promoted by hand to Phase 12 — Inertial Flick-to-Spin.] gsd-tools `phase add` would have numbered new phases 1000+ (its regex treats "Phase 999.x" headers as the max phase), so promotion was done by hand -- use `phase insert` or manual edits for future promotions.
 - [Phase 07]: FoundWordsView omits pangrams Set param; FoundWord carries isPangram
 - [Phase 11]: AX5 tutorial banner capped at 20% screen height, Skip pinned below scrolling text
 

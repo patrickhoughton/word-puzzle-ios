@@ -23,6 +23,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 - [x] **Phase 9: Player Stats Screen** - Lifetime stats and streak surfaced in a player-visible screen (completed 2026-10-05)
 - [x] **Phase 10: Double-Tap Shuffle** - Double-tap empty space to shuffle the outer letters (completed 2026-10-05)
 - [x] **Phase 11: First-Launch Tutorial** - First-launch onboarding that teaches the core mechanics (completed 2026-10-05)
+- [ ] **Phase 12: Inertial Flick-to-Spin** - Flick the outer ring of letters to spin it with momentum, settling into new slots
 
 ## Phase Details
 
@@ -205,6 +206,23 @@ Plans:
 **UI hint**: yes
 **Promoted from**: backlog 999.4 (2026-10-04, built into v1.0 before submission)
 
+### Phase 12: Inertial Flick-to-Spin
+**Goal**: push/flick the outer ring of 6 letters in either direction to spin them around the center with physics-based inertia (momentum + deceleration, not an instant snap), landing the letters in new positions once the spin settles. This is a distinct interaction from the plain Shuffle button (and from the dropped 999.5 two-finger rotate idea) — it's a continuous drag-driven wheel/dial feel with velocity carried into a decaying spin, not a discrete gesture that just triggers the existing shuffle animation.
+**Depends on**: Phase 10 (shares the grid gesture and shuffle/haptic plumbing); Phase 11 (tutorial teaches shuffle — decide at planning whether flick-to-spin gets a mention)
+**Requirements**: TBD
+**Plans**: 0 plans
+
+**Design/technical complexity to resolve at planning time:**
+- **Gesture disambiguation:** `LetterGridView`'s existing single `DragGesture(minimumDistance: 0)` already interprets drags across the tile ring as drag-to-connect (spelling a word by crossing tiles in sequence). A tangential flick around the ring needs to be distinguished from a word-building drag — likely by drag path shape (curved/tangential vs. tile-to-tile) or by requiring the flick start outside the tiles themselves (e.g. in the gap between tiles, or via a dedicated invisible ring-shaped drag zone around the honeycomb).
+- **Physics model:** needs a decay/friction curve so a hard flick spins longer/further than a soft push (not just two speeds) — likely a `TimelineView`-driven animation or a custom `AnimatableModifier` with velocity-based duration, rather than the existing fixed-duration `GameTheme.shuffleAnimation`.
+- **Discreteness:** the 6 outer letters occupy fixed hex-flower slot positions (per `HexFlowerLayout`) — the spin likely needs to settle into a whole-slot rotation (i.e., letters swap slot-to-slot in sequence) rather than stopping at an arbitrary angle, so tile hit-testing stays aligned to real letters mid- and post-spin.
+- **Overlap with 999.5's removal:** Patrick dropped the two-finger rotate gesture (999.5) — this flick-based version was raised as what he actually wants instead, so treat this as the sole "rotate the ring" backlog item going forward.
+
+Plans:
+- [ ] TBD (run /gsd:discuss-phase 12)
+**UI hint**: yes
+**Promoted from**: backlog 999.11 (2026-10-04, built into v1.0 before submission)
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
@@ -220,6 +238,7 @@ Plans:
 | 9. Player Stats Screen | 6/6 | Complete    | 2026-10-05 |
 | 10. Double-Tap Shuffle | 3/3 | Complete    | 2026-10-05 |
 | 11. First-Launch Tutorial | 6/6 | Complete    | 2026-10-05 |
+| 12. Inertial Flick-to-Spin | 0/0 | Not started | - |
 
 ## Backlog
 
@@ -227,7 +246,7 @@ Plans:
 
 **Goal:** [Captured for future planning] — Patrick suspects the bundled word list is missing words players would expect to be valid. Current list is `enable-clean.txt` (~172,678 words, the profanity-filtered ENABLE list, per CLAUDE.md's original tech-stack choice). **Scope constraint:** do NOT source or diff against Words With Friends' official word list — it's proprietary to Zynga/EA, not public domain, same reasoning CLAUDE.md already uses to rule out the official Scrabble/SOWPODS dictionary ("cannot bundle without licensing"). Safe approach instead: cross-reference `enable-clean.txt` against other public-domain or freely-licensed word lists (e.g. SCOWL) to find and fill genuine gaps, and/or gather specific examples of rejected words players expected to work as concrete test cases before changing the list.
 **Requirements:** TBD
-**Plans:** 6/6 plans complete
+**Plans:** 0 plans
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
@@ -238,22 +257,6 @@ Plans:
 1. **TelemetryDeck analytics event** — CLAUDE.md already selects TelemetryDeck as the project's analytics SDK (privacy-first, no consent popup), but it is NOT YET integrated into the app (no SDK reference anywhere in the codebase as of 2026-08-29). This path captures real rejected words from real players in the field, which is far more valuable than dev-only testing data, but requires standing up the TelemetryDeck integration first (not currently scheduled in any phase).
 2. **Local debug-only log** — simpler (no new dependency), but only captures words Patrick personally triggers during his own testing, not real player misses.
 Depends conceptually on Phase 6 (differentiated invalid-word messaging, promoted from 999.3) since both need to distinguish "not in dictionary" from other rejection reasons at the `GameViewModel` level.
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd:review-backlog when ready)
-
-### Phase 999.11: Inertial flick-to-spin outer letters (BACKLOG)
-
-**Goal:** [Captured for future planning] — push/flick the outer ring of 6 letters in either direction to spin them around the center with physics-based inertia (momentum + deceleration, not an instant snap), landing the letters in new positions once the spin settles. This is a distinct interaction from the plain Shuffle button (and from the dropped 999.5 two-finger rotate idea) — it's a continuous drag-driven wheel/dial feel with velocity carried into a decaying spin, not a discrete gesture that just triggers the existing shuffle animation.
-
-**Design/technical complexity to resolve at planning time:**
-- **Gesture disambiguation:** `LetterGridView`'s existing single `DragGesture(minimumDistance: 0)` already interprets drags across the tile ring as drag-to-connect (spelling a word by crossing tiles in sequence). A tangential flick around the ring needs to be distinguished from a word-building drag — likely by drag path shape (curved/tangential vs. tile-to-tile) or by requiring the flick start outside the tiles themselves (e.g. in the gap between tiles, or via a dedicated invisible ring-shaped drag zone around the honeycomb).
-- **Physics model:** needs a decay/friction curve so a hard flick spins longer/further than a soft push (not just two speeds) — likely a `TimelineView`-driven animation or a custom `AnimatableModifier` with velocity-based duration, rather than the existing fixed-duration `GameTheme.shuffleAnimation`.
-- **Discreteness:** the 6 outer letters occupy fixed hex-flower slot positions (per `HexFlowerLayout`) — the spin likely needs to settle into a whole-slot rotation (i.e., letters swap slot-to-slot in sequence) rather than stopping at an arbitrary angle, so tile hit-testing stays aligned to real letters mid- and post-spin.
-- **Overlap with 999.5's removal:** Patrick dropped the two-finger rotate gesture (999.5) — this flick-based version was raised as what he actually wants instead, so treat this as the sole "rotate the ring" backlog item going forward.
-
 **Requirements:** TBD
 **Plans:** 0 plans
 
