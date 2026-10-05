@@ -272,17 +272,22 @@ private struct StatTile: View {
 private struct CountUpNumber: View {
     let value: Int
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var hasAnimatedIn = false
-    private var shown: Int { (reduceMotion || hasAnimatedIn) ? value : 0 }
+    @State private var shown = 0
     var body: some View {
-        Text(shown, format: .number)
+        Text(reduceMotion ? value : shown, format: .number)
             .monospacedDigit()
             .lineLimit(1)
             .minimumScaleFactor(0.5)
-            .contentTransition(reduceMotion ? .identity : .numericText(value: Double(shown)))
-            .onAppear {
-                guard !reduceMotion, !hasAnimatedIn else { return }
-                withAnimation(.easeOut(duration: GameTheme.statsCountUpSeconds)) { hasAnimatedIn = true }
+            .task(id: value) {
+                guard !reduceMotion else { return }
+                // Time-based, not sleep-per-step, so the rate holds even when frames are late.
+                let perUnit = Duration.seconds(GameTheme.statsCountUpSecondsPerUnit)
+                let start = ContinuousClock.now
+                shown = 0
+                while shown < value, !Task.isCancelled {
+                    try? await Task.sleep(for: .milliseconds(8))
+                    shown = min(value, Int((ContinuousClock.now - start) / perUnit))
+                }
             }
     }
 }
