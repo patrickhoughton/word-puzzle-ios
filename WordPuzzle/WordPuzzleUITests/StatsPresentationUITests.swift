@@ -9,6 +9,7 @@ final class StatsPresentationUITests: XCTestCase {
     func testStatsSheetPresentsFromTopBarRoundOverAndSettings() throws {
         continueAfterFailure = false
         let app = XCUIApplication()
+        app.launchArguments += ["-hasSeenTutorial", "YES"]
         app.launch()
 
         let finish = app.buttons["Finish Round"]
