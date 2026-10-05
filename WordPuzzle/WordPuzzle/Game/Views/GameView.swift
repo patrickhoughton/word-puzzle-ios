@@ -40,6 +40,33 @@ struct GameView: View {
     @State private var sweepHapticCount = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    /// Phase 11: non-nil while the tutorial runs. nil = normal game (existing behavior).
+    private let tutorial: TutorialController?
+    /// Phase 11 D-12: Settings > How to Play. ContentView decides what it starts.
+    private let onHowToPlay: () -> Void
+    @State private var pendingHowToPlay = false
+    @State private var layoutHeight: CGFloat = 0
+
+    init(tutorial: TutorialController? = nil, onHowToPlay: @escaping () -> Void = {}) {
+        self.tutorial = tutorial
+        self.onHowToPlay = onHowToPlay
+    }
+
+    private func isLive(_ action: TutorialAction) -> Bool { tutorial?.allows(action) ?? true }
+    private var isGuided: Bool { tutorial?.isGuided ?? false }
+    private func dimmed(_ action: TutorialAction) -> Double {
+        isGuided && !isLive(action) ? GameTheme.tutorialDimmedOpacity : 1
+    }
+    private var highlightedLetter: Character? {
+        if case let .letter(c) = tutorial?.highlightTarget { return c }
+        return nil
+    }
+    /// The instruction as an accessibility hint only while `target` is the highlighted one.
+    private func hint(_ target: TutorialTarget, default fallback: String = "") -> Text {
+        if let tutorial, tutorial.highlightTarget == target { return Text(tutorial.copy.instruction) }
+        return Text(fallback)
+    }
+
     var body: some View {
         ZStack {
             GameTheme.dominant.ignoresSafeArea()
@@ -117,11 +144,15 @@ struct GameView: View {
             }
         }
         // A sheet, not a fullScreenCover: unlike the paywall, Settings is dismissable.
-        .sheet(isPresented: $isShowingSettings) {
+        // Phase 11 Pitfall 4: How to Play dismisses Settings first, then starts after onDismiss.
+        .sheet(isPresented: $isShowingSettings, onDismiss: {
+            if pendingHowToPlay { pendingHowToPlay = false; onHowToPlay() }
+        }) {
             SettingsView(
                 soundEffectsEnabled: $soundEffectsEnabled,
                 onDone: { isShowingSettings = false },
-                stats: freshStats
+                stats: freshStats,
+                onHowToPlay: { pendingHowToPlay = true; isShowingSettings = false }
             )
         }
         // Phase 9 D-02: full-height sheet (no detents), Done + swipe-to-dismiss, same as Settings.
@@ -132,7 +163,7 @@ struct GameView: View {
         }
         // Phase 7 D-03/D-04/D-05: a standard modal sheet (board not interactive behind it at
         // either detent), Done button plus system swipe-to-dismiss.
-        .sheet(isPresented: $isShowingFoundWords) {
+        .sheet(isPresented: $isShowingFoundWords, onDismiss: { tutorial?.foundWordsDismissed() }) {
             FoundWordsView(
                 groups: viewModel.foundWordGroups,
                 rank: viewModel.rank,
@@ -182,6 +213,14 @@ struct GameView: View {
         // Phase 10 D-08: one light tick per REAL shuffle (button or double-tap). The counter only
         // increments when shuffleOuterLetters() succeeds, so rejected taps (isShuffling, not .playing) are silent.
         .sensoryFeedback(.impact(weight: .light), trigger: viewModel.shuffleCount)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { layoutHeight = $0 }
+        // Phase 11 VoiceOver: announce each tutorial step change.
+        .onChange(of: tutorial?.copy) { _, newCopy in
+            if let newCopy { announce(newCopy.title + ". " + newCopy.instruction) }
+        }
+        .onAppear {
+            if let copy = tutorial?.copy { announce(copy.title + ". " + copy.instruction) }
+        }
     }
 
     // RESEARCH Pitfall 4: every stats surface reads the store inside its sheet content, so it is
@@ -306,8 +345,10 @@ struct GameView: View {
                 .contentShape(Rectangle())
                 .accessibilityLabel(Text(StatsView.entryAccessibilityLabel))
                 .accessibilityIdentifier("topBarStatsButton")
+                .disabled(!isLive(.topBar))
+                .opacity(dimmed(.topBar))
                 #if DEBUG
-                if GameViewModel.debugShortcutsEnabled {
+                if GameViewModel.debugShortcutsEnabled, tutorial == nil {
                     Menu {
                         Button("Solve to just under 100%") { viewModel.debugSolveToJustUnderMax() }
                         Button("Type next missing word (\(viewModel.debugRemainingWords.count) left)") {
@@ -333,6 +374,8 @@ struct GameView: View {
                 }
                 .contentShape(Rectangle())
                 .accessibilityLabel(Text(SettingsView.settingsEntryAccessibilityLabel))
+                .disabled(!isLive(.topBar))
+                .opacity(dimmed(.topBar))
             }
             .padding(.horizontal, GameTheme.lg)
             .padding(.top, GameTheme.sm)
@@ -340,6 +383,7 @@ struct GameView: View {
             // Phase 7 D-01/D-16: the whole score bar is the tap target, available at all times
             // during .playing (including before any word is found).
             Button {
+                if let tutorial, !tutorial.send(.scoreBar) { return }
                 isShowingFoundWords = true
             } label: {
                 ScoreBarView(
@@ -348,7 +392,8 @@ struct GameView: View {
                     totalCount: viewModel.totalWordCount,
                     progress: viewModel.progressFraction,
                     // D-03: only free users see the counter; premium gets nil (nothing renders).
-                    freePuzzlesRemaining: entitlementStore.isPremium
+                    // Phase 11 Pitfall 3: no "x of 3 left" on the practice board.
+                    freePuzzlesRemaining: tutorial != nil || entitlementStore.isPremium
                         ? nil
                         : max(0, GameViewModel.freePuzzlesPerDay - persistenceStore.puzzlesPlayedToday()),
                     freePuzzlesPerDay: GameViewModel.freePuzzlesPerDay,
@@ -357,9 +402,30 @@ struct GameView: View {
                 )
             }
             .buttonStyle(ScoreBarButtonStyle())
-            .accessibilityHint(Text(FoundWordsView.scoreBarAccessibilityHint))
+            .accessibilityHint(hint(.scoreBar, default: FoundWordsView.scoreBarAccessibilityHint))
+            .accessibilityIdentifier("scoreBarButton")
+            .disabled(!isLive(.scoreBar))
+            .opacity(dimmed(.scoreBar))
+            .tutorialHighlight(tutorial?.highlightTarget == .scoreBar,
+                               in: RoundedRectangle(cornerRadius: GameTheme.celebrationCornerRadius))
             .padding(.horizontal, GameTheme.lg)
             .padding(.top, GameTheme.sm)
+
+            if let tutorial {
+                let copy = tutorial.copy
+                TutorialBannerView(
+                    stepLabel: copy.isReady ? nil : TutorialText.stepLabel(copy.stepNumber),
+                    title: copy.title,
+                    instruction: copy.instruction,
+                    compactInstruction: copy.compactInstruction,
+                    isReady: copy.isReady,
+                    maxHeight: layoutHeight * GameTheme.tutorialBannerMaxHeightFraction,
+                    onSkip: { tutorial.skip() }
+                )
+                .padding(.horizontal, GameTheme.lg)
+                .padding(.top, GameTheme.sm)
+                .animation(.easeInOut(duration: GameTheme.reduceMotionCrossfadeSeconds), value: copy)
+            }
 
             Spacer(minLength: GameTheme.md)
 
@@ -368,9 +434,11 @@ struct GameView: View {
                 outcome: viewModel.lastOutcome,
                 acceptedCount: viewModel.acceptedSubmissionCount,
                 rejectedCount: viewModel.rejectedSubmissionCount,
-                onClear: { viewModel.clearCurrentWord() },
-                onSubmit: { viewModel.submitCurrentWord() }
+                onClear: { if let tutorial { tutorial.send(.clearWord) } else { viewModel.clearCurrentWord() } },
+                onSubmit: { if let tutorial { tutorial.send(.submit) } else { viewModel.submitCurrentWord() } }
             )
+            .tutorialHighlight(tutorial?.highlightTarget == .wordDisplay,
+                               in: RoundedRectangle(cornerRadius: GameTheme.celebrationCornerRadius))
             .padding(.horizontal, GameTheme.lg)
 
             Spacer(minLength: GameTheme.xxl)
@@ -379,8 +447,13 @@ struct GameView: View {
                 centerLetter: viewModel.centerLetter,
                 outerLetters: viewModel.outerLetters,
                 isInputDisabled: viewModel.isShuffling,
-                onLetterTouched: { viewModel.append($0) },
-                onEmptyDoubleTap: { viewModel.shuffleOuterLetters() }
+                onLetterTouched: { letter in
+                    if let tutorial { tutorial.send(.letter(letter)) } else { viewModel.append(letter) }
+                },
+                onEmptyDoubleTap: { if let tutorial { tutorial.send(.shuffle) } else { viewModel.shuffleOuterLetters() } },
+                highlightedLetter: highlightedLetter,
+                dimsNonHighlighted: tutorial?.dimsBoard ?? false,
+                highlightHint: tutorial?.copy.instruction
             )
             .overlay(alignment: .top) {
                 celebrationOverlay
@@ -403,7 +476,9 @@ struct GameView: View {
         .background {
             Color.clear
                 .contentShape(Rectangle())
-                .onTapGesture(count: 2) { viewModel.shuffleOuterLetters() }
+                .onTapGesture(count: 2) {
+                    if let tutorial { tutorial.send(.shuffle) } else { viewModel.shuffleOuterLetters() }
+                }
                 .accessibilityHidden(true)
                 .ignoresSafeArea()
         }
@@ -435,29 +510,37 @@ struct GameView: View {
     private var iconButtonsRow: some View {
         HStack(spacing: GameTheme.md) {
             Button {
-                viewModel.shuffleOuterLetters()
+                if let tutorial { tutorial.send(.shuffle) } else { viewModel.shuffleOuterLetters() }
             } label: {
                 Image(systemName: "shuffle")
                     .font(GameTheme.headingFont)
                     .frame(minWidth: GameTheme.minTapTarget, minHeight: GameTheme.minTapTarget)
             }
             .accessibilityLabel(Text("Shuffle Letters"))
+            .accessibilityHint(hint(.shuffle))
+            .disabled(!isLive(.shuffle))
+            .opacity(dimmed(.shuffle))
+            .tutorialHighlight(tutorial?.highlightTarget == .shuffle, in: Circle())
 
             Button {
-                viewModel.deleteLast()
+                if let tutorial { tutorial.send(.delete) } else { viewModel.deleteLast() }
             } label: {
                 Image(systemName: "delete.left")
                     .font(GameTheme.headingFont)
                     .frame(minWidth: GameTheme.minTapTarget, minHeight: GameTheme.minTapTarget)
             }
             .accessibilityLabel(Text("Delete Last Letter"))
+            .accessibilityHint(hint(.delete))
+            .disabled(!isLive(.delete))
+            .opacity(dimmed(.delete))
+            .tutorialHighlight(tutorial?.highlightTarget == .delete, in: Circle())
         }
     }
 
     // D-10: the round ends ONLY here. No timer, no auto-end when all words are found.
     private var finishRoundButton: some View {
         Button {
-            viewModel.finishRound()
+            if let tutorial { tutorial.send(.finish) } else { viewModel.finishRound() }
         } label: {
             Text("Finish Round")
                 .font(GameTheme.bodyFont)
@@ -467,5 +550,9 @@ struct GameView: View {
                 .padding(.horizontal, GameTheme.md)
         }
         .buttonStyle(.borderedProminent)
+        .accessibilityHint(hint(.finish))
+        .disabled(!isLive(.finish))
+        .opacity(dimmed(.finish))
+        .tutorialHighlight(tutorial?.highlightTarget == .finish, in: Capsule())
     }
 }
