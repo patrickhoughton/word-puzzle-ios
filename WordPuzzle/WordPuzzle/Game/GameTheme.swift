@@ -94,6 +94,7 @@ enum GameTheme {
 
     /// Zero-streak hero flame: `.secondary` at this opacity (D-22).
     static let dimmedFlameOpacity: Double = 0.4
-    /// Count-up duration for stat numbers on appear (D-18). Short so it never feels like waiting.
-    static let statsCountUpSeconds: Double = 0.6
+    /// Count-up duration for stat numbers on appear (D-18). Long enough to see the roll (0.6s read as
+    /// near-instant on device), short enough that it never feels like waiting.
+    static let statsCountUpSeconds: Double = 1.2
 }
