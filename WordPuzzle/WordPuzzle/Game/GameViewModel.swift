@@ -352,6 +352,19 @@ final class GameViewModel {
         }
         return true
     }
+
+    // MARK: - Ring spin commit (Phase 12 D-09)
+    /// Commits a settled ring spin of `k` whole slots (positive = clockwise) as a cyclic rotation of
+    /// the 6 outer letters, so board state, tutorial highlight and later shuffles all see the real order.
+    /// Returns true whenever the round is playing, INCLUDING k % 6 == 0 (landing home is fine, D-08; the
+    /// tutorial counts any settled spin, D-20). Never touches the in-progress word (D-16), never sets the
+    /// shuffling flag or bumps the shuffle counter (no shuffle haptic). Rejected outside .playing (D-17).
+    @discardableResult
+    func rotateOuterLetters(by k: Int) -> Bool {
+        guard roundPhase == .playing, outerLetters.count == 6 else { return false }
+        outerLetters = HexFlowerLayout.rotated(outerLetters, bySlots: k)
+        return true
+    }
 }
 
 #if DEBUG

@@ -166,6 +166,66 @@ final class GameViewModelTests {
         #expect(Set(vm.outerLetters) == Set(before))
     }
 
+    // MARK: - Phase 12 rotate contract (D-09 / D-16 / D-17)
+
+    @Test func testRotateByOneCommitsClockwiseRotation() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        let before = vm.outerLetters
+        let center = vm.centerLetter
+        #expect(vm.rotateOuterLetters(by: 1) == true)
+        #expect(vm.outerLetters == HexFlowerLayout.rotated(before, bySlots: 1))
+        #expect(vm.centerLetter == center)
+    }
+
+    @Test func testRotateNegativeAndWrapping() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        let before = vm.outerLetters
+        #expect(vm.rotateOuterLetters(by: -2) == true)
+        #expect(vm.outerLetters == HexFlowerLayout.rotated(before, bySlots: -2))
+        #expect(vm.rotateOuterLetters(by: 9) == true)   // net -2 + 9 = 7 == 1 slot
+        #expect(vm.outerLetters == HexFlowerLayout.rotated(before, bySlots: 7))
+        #expect(HexFlowerLayout.rotated(before, bySlots: 7) == HexFlowerLayout.rotated(before, bySlots: 1))
+    }
+
+    @Test func testRotateByZeroAndSixSucceedWithoutChange() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        let before = vm.outerLetters
+        #expect(vm.rotateOuterLetters(by: 0) == true)
+        #expect(vm.outerLetters == before)
+        #expect(vm.rotateOuterLetters(by: 6) == true)
+        #expect(vm.outerLetters == before)
+    }
+
+    @Test func testRotateKeepsCurrentWord() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        vm.append(vm.outerLetters[0])
+        vm.append(vm.outerLetters[1])
+        let word = vm.currentWord
+        #expect(vm.rotateOuterLetters(by: 3) == true)
+        #expect(vm.currentWord == word)
+    }
+
+    @Test func testRotateDoesNotTriggerShuffleHaptic() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        vm.rotateOuterLetters(by: 2)
+        #expect(vm.shuffleCount == 0)
+        #expect(vm.isShuffling == false)
+    }
+
+    @Test func testRotateRejectedWhenRoundOver() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        vm.finishRound()
+        let before = vm.outerLetters
+        #expect(vm.rotateOuterLetters(by: 1) == false)
+        #expect(vm.outerLetters == before)
+    }
+
     // MARK: - Phase 10 shuffle contract (D-08 / D-10 / D-11 / D-13)
 
     @Test func testShuffleReturnsTrueAndBumpsCountWhenPlaying() {
