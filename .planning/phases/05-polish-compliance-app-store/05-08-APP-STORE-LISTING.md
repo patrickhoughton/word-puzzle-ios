@@ -84,6 +84,20 @@ into v1.0 and tested on device.** Consequences:
 | `GET /v2/inAppPurchases/6806386464/appStoreReviewScreenshot` | **`data: null`** — the one missing piece of IAP metadata |
 | IAP price schedule / availability / localization | 1 manual price (USA base territory, price point 10036) set; availability set (`availableInNewTerritories true`); en-US localization "Unlimited Puzzles" / "One-time purchase, no subscription, unlimited play." (`PREPARE_FOR_SUBMISSION`) |
 
+**2026-10-05 — App Store Connect writes, approved by Patrick (helper `scripts/asc_upload_assets.py`, payloads checked against Apple OpenAPI spec v4.5):**
+- iPhone 6.9" set `b8aa6d18-afda-4338-bd75-688329b65f88` (`APP_IPHONE_67`) created; 4 screenshots
+  uploaded in order 01-gameplay, 02-found-words, 03-round-end, 04-paywall, all `COMPLETE`, no errors.
+  Accepted 1320x2868 in the `APP_IPHONE_67` slot.
+- iPad 13" set `497360dc-2311-4f3d-b008-139784c158c9` (`APP_IPAD_PRO_3GEN_129`) created; same 4
+  screenshots, same order, all `COMPLETE`. Accepted 2064x2752 in the `APP_IPAD_PRO_3GEN_129` slot.
+- Read-back (`GET .../appScreenshotSets?include=appScreenshots`): 2 sets, 4 screenshots each, order 01→04.
+- IAP App Review screenshot (`raw/04-paywall.png`) uploaded: id `331458d7-6c20-4158-82bd-02ae38a1ca42`,
+  `COMPLETE`. IAP state read back: **`MISSING_METADATA` → `READY_TO_SUBMIT`**.
+- **NOT done — permission denied by the Claude Code permission classifier** on the description/promo
+  `PATCH /v1/appStoreVersionLocalizations/0dbffaa6-…` (stopped there per instructions; no retry).
+  Therefore also not done: review-notes PATCH, build 1.0 (2) archive/upload, build attach.
+  Live description/promo/review notes are still the 2026-10-04 values.
+
 ## Listing values
 
 ### App Name — 21/30 chars
@@ -249,10 +263,10 @@ Contact: phoughton@threemilebridge.com
 - [ ] Privacy label "Data Not Collected" published (Task 2 — UI only, no API exists)
 - [ ] Mac and Vision Pro availability unchecked (Task 2)
 - [x] Screenshots for all required sizes generated (re-captured 2026-10-05 after Phases 6-12: 4 x iPhone 6.9" + 4 x iPad 13")
-- [ ] Screenshots uploaded (API read-back 2026-10-05: 0 screenshot sets)
+- [x] Screenshots uploaded 2026-10-05 (4 x iPhone 6.9" + 4 x iPad 13", all COMPLETE, read back)
 - [x] Privacy Policy URL published and set (apps.threemilebridge.com, 2026-10-04)
 - [x] Support URL published and set (apps.threemilebridge.com, 2026-10-04)
-- [ ] IAP metadata complete — still `MISSING_METADATA` 2026-10-05; only the App Review screenshot is missing (price, availability, localization all set)
+- [x] IAP metadata complete — review screenshot uploaded 2026-10-05; state `READY_TO_SUBMIT`
 - [x] Release option set to Manual Release (API, 2026-10-04)
 - [ ] Final build archived and uploaded — 1.0 (1) uploaded 2026-10-04 (VALID, pre-Phase 6); build number bumped to 2 on 2026-10-05, archive/upload of 1.0 (2) pending go-ahead
 - [x] Export compliance — build 1 reports `usesNonExemptEncryption false` via API (no prompt expected); re-confirm on build 2
