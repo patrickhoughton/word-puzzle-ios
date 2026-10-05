@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
-# Capture the three raw App Store screenshots by driving real gameplay with a UI test.
+# Capture the four raw App Store screenshots by driving real gameplay with a UI test.
 #
 # Usage: bash scripts/capture-app-store-screenshots.sh [iphone|ipad]
 #
 # Boots the matching Simulator, resets the app (uninstall — the paywall shot needs a
 # fresh day with 0 puzzles played), sets default Dynamic Type and a clean 9:41 status
-# bar, then runs AppStoreScreenshotTests, which plays a round, finishes it, uses up
-# the free daily limit and writes:
+# bar, then runs AppStoreScreenshotTests, which plays a round, opens the found-words
+# sheet, finishes the round, uses up the free daily limit and writes:
 #   Marketing/screenshots/raw/[ipad/]01-gameplay.png
-#   Marketing/screenshots/raw/[ipad/]02-round-end.png
-#   Marketing/screenshots/raw/[ipad/]03-paywall.png
+#   Marketing/screenshots/raw/[ipad/]02-found-words.png
+#   Marketing/screenshots/raw/[ipad/]03-round-end.png
+#   Marketing/screenshots/raw/[ipad/]04-paywall.png
 # Every output is checked against the App Store slot size before the script succeeds.
 # The UI test runs under the scheme's Test action, which loads WordPuzzle.storekit,
 # so the paywall shows a real price. Finals: see Marketing/screenshots/README.md.
@@ -38,6 +39,10 @@ xcrun simctl ui "$UDID" appearance light
 xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 \
     --cellularBars 4 --wifiBars 3 --dataNetwork wifi
 
+# Clear old raws (including the pre-05-08 three-shot names) so a stale file can never
+# pass the size check below.
+rm -f "$OUT_DIR"0[1-4]-*.png
+
 TEST_RUNNER_SCREENSHOT_DIR="$OUT_DIR" xcodebuild test \
     -project "$ROOT/WordPuzzle/WordPuzzle.xcodeproj" \
     -scheme WordPuzzle \
@@ -45,7 +50,7 @@ TEST_RUNNER_SCREENSHOT_DIR="$OUT_DIR" xcodebuild test \
     -only-testing:WordPuzzleUITests/AppStoreScreenshotTests \
     -quiet
 
-for name in 01-gameplay 02-round-end 03-paywall; do
+for name in 01-gameplay 02-found-words 03-round-end 04-paywall; do
     f="$OUT_DIR$name.png"
     [ -f "$f" ] || { echo "ERROR: $f was not written" >&2; exit 1; }
     W=$(sips -g pixelWidth "$f" | awk '/pixelWidth/{print $2}')

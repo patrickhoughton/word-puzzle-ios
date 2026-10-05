@@ -1,6 +1,7 @@
 import XCTest
 
-/// Drives real gameplay to the three App Store screenshot states (05-07 / UX-04)
+/// Drives real gameplay to the four App Store screenshot states (05-07 / UX-04;
+/// the found-words shot was added in 05-08 after Phase 7 shipped the sheet)
 /// and writes each full-screen capture as a PNG into SCREENSHOT_DIR.
 ///
 /// Skipped unless SCREENSHOT_DIR is set, so ordinary test runs never touch it.
@@ -28,10 +29,14 @@ final class AppStoreScreenshotTests: XCTestCase {
     /// The staged puzzle (DEBUG-only `-ScreenshotPuzzle` launch argument): HARMONY with
     /// center R — 56 everyday words and a single, readable pangram.
     private let stagedPuzzle = "harmony:r"
-    /// Submitted before shot 1. Hand-picked so the round-end missed list (shot 2) shows
+    /// Submitted before shot 1. Hand-picked so the round-end missed list (shot 3) shows
     /// only friendly words; the pangram is deliberately left unfound for its badge.
+    /// The four-letter words fill the top of the found-words sheet (shot 2), and
+    /// "marrano" (a historical slur) is submitted only so it never shows in the
+    /// missed list — it sits at the bottom of the sheet, below the medium detent.
     private let stagedWords = ["honorary", "armory", "hooray", "horror", "maroon", "mayor",
-                               "manor", "honor", "mammary", "moron", "roomy", "marry"]
+                               "manor", "honor", "mammary", "moron", "roomy", "marry",
+                               "army", "horn", "norm", "roam", "marrano"]
     /// Left assembled but unsubmitted in shot 1, hinting at the pangram.
     private let inProgressWord = "harmo"
 
@@ -54,7 +59,26 @@ final class AppStoreScreenshotTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Assembled word \(inProgressWord)"].exists)
         save("01-gameplay")
 
-        // 2 — Round-end reveal scrolled to a missed pangram badge. Pangrams are
+        // 2 — Found Words sheet (Phase 7) at its medium detent, so the board stays
+        // visible above the grouped list of the words found so far.
+        app.buttons["scoreBarButton"].tap()
+        let done = app.buttons["Done"]
+        XCTAssertTrue(done.waitForExistence(timeout: 5), "found-words sheet never appeared")
+        sleep(2)  // let the sheet's presentation animation settle
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            // On iPad the medium detent is a small centered form sheet that hides the
+            // honeycomb without showing much list — drag it up to the large detent.
+            let title = app.staticTexts["Found Words"].firstMatch
+            let start = title.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: 0, dy: -1200)))
+            sleep(2)
+        }
+        save("02-found-words")
+        done.tap()
+        XCTAssertTrue(app.buttons["Finish Round"].waitForExistence(timeout: 5))
+        sleep(1)
+
+        // 3 — Round-end reveal scrolled to a missed pangram badge. Pangrams are
         // deliberately never submitted above, so at least one is always missed.
         app.buttons["Finish Round"].tap()
         XCTAssertTrue(app.buttons["Next Puzzle"].waitForExistence(timeout: 5))
@@ -72,9 +96,9 @@ final class AppStoreScreenshotTests: XCTestCase {
         // bottom; a merely hittable row can still be clipped by the list's edge.
         for _ in 0..<3 { app.scrollViews.firstMatch.swipeUp(velocity: .fast) }
         sleep(3)  // let the scroll indicator fade out
-        save("02-round-end")
+        save("03-round-end")
 
-        // 3 — Paywall: rounds 2 and 3 use up the free daily limit (3 started rounds).
+        // 4 — Paywall: rounds 2 and 3 use up the free daily limit (3 started rounds).
         for _ in 0..<2 {
             app.buttons["Next Puzzle"].tap()
             XCTAssertTrue(app.buttons["Finish Round"].waitForExistence(timeout: 30))
@@ -87,7 +111,7 @@ final class AppStoreScreenshotTests: XCTestCase {
         let price = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "$")).firstMatch
         XCTAssertTrue(price.waitForExistence(timeout: 20), "paywall price did not load (still showing a dash)")
         sleep(1)
-        save("03-paywall")
+        save("04-paywall")
     }
 
     // MARK: - Input
