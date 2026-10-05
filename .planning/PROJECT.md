@@ -24,6 +24,7 @@ Endless, fresh word puzzles that generate algorithmically from a local dictionar
 - [x] Player can view lifetime and today stats (games played, best score, words found, averages, current/longest streak with at-risk nudge, best rank, pangrams, sweeps) from a top-bar icon, Settings > Stats, and the round-over summary line — Phase 9 (player-stats-screen), SwiftData migration of real history and UI verified on a physical iPhone 15 Pro 2026-10-04
 - [x] Player can double-tap any empty area of the game screen to shuffle the outer letters, alongside the Shuffle button, with a light haptic on every real shuffle; double-tapping a tile still enters that letter twice — Phase 10 (double-tap-shuffle), verified on a physical iPhone 15 Pro 2026-10-04
 - [x] First-time players get a guided ~2-minute tutorial on a scripted practice board (DOLPHIN, center P) teaching tap/drag, the required center letter, swipe-down submit, delete/clear, shuffle, pangrams and the found-words view; it never records stats or touches the real round, can be skipped, and replays from Settings > How to Play — Phase 11 (first-launch-tutorial), approved on a physical iPhone 15 Pro 2026-10-04
+- [x] Player can flick or wind the outer ring of letters like a prize wheel: 1:1 dial tracking from any off-tile touch, inertial coast that settles onto whole slots, per-slot haptic + synthesized peg-wheel tick, grab-to-stop, Shuffle cancels a spin, Reduce Motion snap, cosmetic "Full circle!" jackpot, and a tutorial "Give it a spin" step — Phase 12 (inertial-flick-spin-outer-letters), approved on a physical iPhone 15 Pro 2026-10-05
 
 ### Active
 
@@ -84,4 +85,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-04 after Phase 11 (first-launch-tutorial) completion — first launch (no flag, no history) opens a 9-step tutorial on a nil-persistence practice GameViewModel; existing players skip it; Settings > How to Play replays it.*
+*Last updated: 2026-10-05 after Phase 12 (inertial-flick-spin-outer-letters) completion — outer ring spins with physics-based inertia and settles on slots; tutorial gains a spin step (10 steps).*
