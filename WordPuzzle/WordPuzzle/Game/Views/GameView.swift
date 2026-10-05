@@ -39,6 +39,11 @@ struct GameView: View {
     @State private var lengthHapticCount = 0
     @State private var sweepHapticCount = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    // Phase 12: ring spin is VIEW state, not game state; GameViewModel stays the only model GameView touches.
+    // GameView must NEVER read the ring angle (only LetterGridView does) so per-frame updates stay local to the grid.
+    @State private var ringSpin = RingSpinController()
+    @State private var spinFeedback = SpinFeedback()
+    @Environment(\.scenePhase) private var scenePhase
 
     /// Phase 11: non-nil while the tutorial runs. nil = normal game (existing behavior).
     private let tutorial: TutorialController?
@@ -204,6 +209,7 @@ struct GameView: View {
             if newPhase != .playing {
                 isShowingFoundWords = false
                 cancelCelebrations()
+                ringSpin.reset()   // round over / paywall: inert, no commit
             }
             guard let effect = SoundEffect.forRoundPhase(newPhase) else { return }
             SoundManager.shared.play(effect, enabled: soundEffectsEnabled)
@@ -220,7 +226,54 @@ struct GameView: View {
         }
         .onAppear {
             if let copy = tutorial?.copy { announce(copy.title + ". " + copy.instruction) }
+            ringSpin.onEvent = { handleSpinEvent($0) }
+            ringSpin.reduceMotion = reduceMotion
         }
+        .onChange(of: reduceMotion) { _, newValue in ringSpin.reduceMotion = newValue }   // D-18
+        .onChange(of: viewModel.centerLetter) { _, _ in ringSpin.reset() }   // a new puzzle never inherits a spin
+        .onChange(of: isShowingSettings || isShowingStats || isShowingFoundWords) { _, anyOpen in
+            if anyOpen { ringSpin.cancelAndCommit() }   // a coast must not keep ticking behind a sheet
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { ringSpin.cancelAndCommit() }
+        }
+        .onDisappear { ringSpin.reset() }   // stops the display link, e.g. on tutorial hand-off
+    }
+
+    /// Phase 12 D-17 / D-20 / Pitfall 9: spins only while playing, not mid-shuffle, never behind a sheet,
+    /// and on strict tutorial steps only where the script allows a spin. Celebration overlays do not block it.
+    private var isSpinEnabled: Bool {
+        viewModel.roundPhase == .playing && !viewModel.isShuffling
+            && !isShowingSettings && !isShowingStats && !isShowingFoundWords
+            && isLive(.spin(slots: 0))
+    }
+
+    private func handleSpinEvent(_ event: RingSpinEvent) {
+        switch event {
+        case .began:
+            spinFeedback.prepare()
+        case let .ticks(count, speed):
+            spinFeedback.ticks(count: count, speed: speed, soundEnabled: soundEffectsEnabled)   // D-10/D-11
+        case .clunk:
+            spinFeedback.clunk(soundEnabled: soundEffectsEnabled)                               // D-06/D-10
+        case let .settled(slots):
+            // D-09: commit the cyclic rotation. If the tutorial rejects it, still commit on the board
+            // so the tiles never jump back. (In tutorial mode viewModel IS the practice view-model.)
+            if let tutorial {
+                if !tutorial.send(.spin(slots: slots)) { viewModel.rotateOuterLetters(by: slots) }
+            } else {
+                viewModel.rotateOuterLetters(by: slots)
+            }
+        case .jackpot:
+            spinFeedback.jackpot(soundEnabled: soundEffectsEnabled)   // D-12 cosmetic: no score call. Popup added in 12-08.
+        }
+    }
+
+    /// Phase 12 D-15: every shuffle path first stops a moving ring (snap to nearest slot + commit), then shuffles.
+    private func performShuffle() {
+        guard isLive(.shuffle) else { return }
+        ringSpin.cancelAndCommit()
+        if let tutorial { tutorial.send(.shuffle) } else { viewModel.shuffleOuterLetters() }
     }
 
     // RESEARCH Pitfall 4: every stats surface reads the store inside its sheet content, so it is
@@ -420,7 +473,9 @@ struct GameView: View {
                     compactInstruction: copy.compactInstruction,
                     isReady: copy.isReady,
                     maxHeight: UIScreen.main.bounds.height * GameTheme.tutorialBannerMaxHeightFraction,
-                    onSkip: { tutorial.skip() }
+                    onSkip: { tutorial.skip() },
+                    accessibilityActionName: tutorial.step == .spin ? TutorialText.spinAccessibilityActionName : nil,
+                    onAccessibilityAction: { tutorial.send(.spin(slots: 1)) }
                 )
                 .padding(.horizontal, GameTheme.lg)
                 .padding(.top, GameTheme.sm)
@@ -446,14 +501,18 @@ struct GameView: View {
             LetterGridView(
                 centerLetter: viewModel.centerLetter,
                 outerLetters: viewModel.outerLetters,
-                isInputDisabled: viewModel.isShuffling,
+                isInputDisabled: viewModel.isShuffling || ringSpin.isActive,   // D-14: tiles locked while the ring moves
                 onLetterTouched: { letter in
                     if let tutorial { tutorial.send(.letter(letter)) } else { viewModel.append(letter) }
                 },
-                onEmptyDoubleTap: { if let tutorial { tutorial.send(.shuffle) } else { viewModel.shuffleOuterLetters() } },
+                onEmptyDoubleTap: { performShuffle() },
                 highlightedLetter: highlightedLetter,
-                dimsNonHighlighted: tutorial?.dimsBoard ?? false,
-                highlightHint: tutorial?.copy.instruction
+                // D-20: on the spin step the tiles are the thing being spun, so they are not dimmed.
+                dimsNonHighlighted: (tutorial?.dimsBoard ?? false) && tutorial?.highlightTarget != .spinRing,
+                highlightHint: tutorial?.copy.instruction,
+                ringSpin: ringSpin,
+                isSpinEnabled: isSpinEnabled,
+                highlightsRing: tutorial?.highlightTarget == .spinRing
             )
             .overlay(alignment: .top) {
                 celebrationOverlay
@@ -476,9 +535,7 @@ struct GameView: View {
         .background {
             Color.clear
                 .contentShape(Rectangle())
-                .onTapGesture(count: 2) {
-                    if let tutorial { tutorial.send(.shuffle) } else { viewModel.shuffleOuterLetters() }
-                }
+                .onTapGesture(count: 2) { performShuffle() }
                 .accessibilityHidden(true)
                 .ignoresSafeArea()
         }
@@ -509,9 +566,7 @@ struct GameView: View {
 
     private var iconButtonsRow: some View {
         HStack(spacing: GameTheme.md) {
-            Button {
-                if let tutorial { tutorial.send(.shuffle) } else { viewModel.shuffleOuterLetters() }
-            } label: {
+            Button { performShuffle() } label: {
                 Image(systemName: "shuffle")
                     .font(GameTheme.headingFont)
                     .frame(minWidth: GameTheme.minTapTarget, minHeight: GameTheme.minTapTarget)
