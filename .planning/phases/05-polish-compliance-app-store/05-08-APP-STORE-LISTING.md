@@ -34,7 +34,7 @@ Status `draft` until the values are confirmed live in App Store Connect.
 **2026-10-04 — pushed via the App Store Connect API (all HTTP 200):**
 - Subtitle → `Endless offline word puzzles`
 - Categories → Games, subcategories Word + Puzzle
-- Description, Keywords (97 chars), Promotional Text → as drafted below
+- Description, Keywords (97 chars), Promotional Text → the 2026-10-04 drafts (keywords unchanged below; description/promo since refreshed 2026-10-05, not yet pushed)
 - Release type → `MANUAL` (was `AFTER_APPROVAL`)
 - Age rating declaration → every answer None/No (4+)
 
@@ -61,6 +61,28 @@ into v1.0 and tested on device.** Consequences:
   Email Settings to "Not Set" first; mail now flows via explicit records. Zone: A 54.177.117.207 +
   16.162.17.243, MX 0 webhost.dynadot.com, SPF TXT, www A x2, default._domainkey CNAME
   clients._domainkey.webhost.dynadot.com, _dmarc TXT, apps CNAME patrickhoughton.github.io.
+
+**2026-10-05 — resumed after Phases 6-12 (local work only, no App Store Connect writes):**
+- Screenshots re-captured against the current UI: now **4 per device** (added `02-found-words`
+  for the Phase 7 sheet). Tutorial bypassed in the capture test via `-hasSeenTutorial YES`
+  (pre-existing from 11-01). Commit `dd670b5`.
+- Description and Promotional Text refreshed for the new features (below) — **not yet pushed**;
+  the live App Store Connect values are still the 2026-10-04 text.
+- Build number bumped to **1.0 (2)** (commit `7bee163`) — build 1 is already uploaded and VALID,
+  so the final upload must be build 2 or higher.
+- `bash scripts/compliance-guards.sh` → exit 0 (all 4 guards pass, after the bump).
+
+**2026-10-05 — API read-back (GET only):**
+
+| Check | Result |
+|---|---|
+| `GET /v1/builds?filter[app]=6806385553` | 1 build: version `1` (id `82e832c9-4e15-43f8-ae8c-281cdcf303c9`), uploaded 2026-10-04T07:13:21-07:00, `processingState VALID`, `expired false`, `minOsVersion 17.6`, **`usesNonExemptEncryption false`** (export compliance answered by the Info.plist key — no prompt) |
+| `GET /v1/appStoreVersions/03ce47c4-…?include=build` | `1.0`, `PREPARE_FOR_SUBMISSION`, `releaseType MANUAL`, copyright `2026 Three Mile Bridge LLC`, **no build attached** |
+| `GET /v1/appStoreVersionLocalizations/0dbffaa6-…` | description/keywords/promo = 2026-10-04 text; keywords 97 chars as below; support URL set |
+| `GET /v1/appStoreVersionLocalizations/0dbffaa6-…/appScreenshotSets` | **0 sets** — no screenshots uploaded |
+| `GET /v1/apps/6806385553/inAppPurchasesV2` | `6806386464` Unlimited Puzzles, `NON_CONSUMABLE`, state **`MISSING_METADATA`**, familySharable false |
+| `GET /v2/inAppPurchases/6806386464/appStoreReviewScreenshot` | **`data: null`** — the one missing piece of IAP metadata |
+| IAP price schedule / availability / localization | 1 manual price (USA base territory, price point 10036) set; availability set (`availableInNewTerritories true`); en-US localization "Unlimited Puzzles" / "One-time purchase, no subscription, unlimited play." (`PREPARE_FOR_SUBMISSION`) |
 
 ## Listing values
 
@@ -91,10 +113,11 @@ name + subtitle + keywords:
 `spelling,bee` are kept as separate generic keyword tokens (hidden field, not
 displayed) — lower risk than visible use, but drop them if Review objects.
 
-### Promotional Text — 156/170 chars (editable any time without review)
+### Promotional Text — 168/170 chars (editable any time without review)
 ```
-A fresh honeycomb puzzle every round, generated on your device. Play 3 free puzzles a day, or unlock unlimited play once for $2.99. No subscription, no ads.
+A fresh honeycomb puzzle every round, generated on your device. Spin the letters, track your words, build a streak. 3 free puzzles a day, or unlock unlimited for $2.99.
 ```
+Refreshed 2026-10-05 (was 156 chars, pushed 2026-10-04; refreshed text NOT yet pushed).
 
 ### Description
 ```
@@ -108,6 +131,14 @@ HOW TO PLAY
 • Letters can be reused as often as you like.
 • Find a pangram — a word that uses all seven letters — for a big bonus.
 • Climb the ranks as your score grows, then finish the round to see every word you missed.
+• New to the game? A short hands-on tutorial on a practice board walks you through it on first launch.
+
+MORE WAYS TO PLAY
+• Stuck? Flick the outer ring of letters and watch it spin, or double-tap any empty space to shuffle.
+• Tap the score bar to see every word you've found, grouped by length.
+• Find every pangram in a puzzle, or every word of one length, for extra bonus points.
+• Clear feedback tells you why a word didn't count: too short, missing the center letter, already found, or not a word.
+• Your stats screen tracks your daily streak, best score, best rank and lifetime totals.
 
 BUILT TO PLAY ANYWHERE
 • Works fully offline. No account, no sign-in, no internet connection needed.
@@ -118,14 +149,17 @@ BUILT TO PLAY ANYWHERE
 FREE TO TRY, ONE PRICE TO OWN
 Play 3 free puzzles every day. When you want more, unlock unlimited puzzles with a single one-time purchase of $2.99 — no subscription, ever. Already unlocked on another device? Tap Restore Purchases on the unlock screen.
 ```
-1233/4000 chars.
+1824/4000 chars. Refreshed 2026-10-05 for Phases 6-12 (tutorial, flick-to-spin,
+double-tap shuffle, found-words view, completion bonuses, differentiated rejection
+feedback, stats/streak screen) — NOT yet pushed (live value is the 2026-10-04 1233-char text).
+No "Spelling Bee"; hidden Mythic tier deliberately not mentioned.
 
 ### URLs
 | Field | Value | Status |
 |---|---|---|
-| Privacy Policy URL (required — app has an IAP) | `https://patrickhoughton.github.io/word-puzzle-ios/privacy/` (proposed) | **BLOCKER — not published yet.** Repo is public; GitHub Pages is not enabled. Policy text drafted below. |
-| Support URL (required) | `https://patrickhoughton.github.io/word-puzzle-ios/support/` (proposed) | **BLOCKER — not published yet.** Needs a contact method. |
-| Marketing URL | — | optional, leave blank |
+| Privacy Policy URL (required — app has an IAP) | `https://apps.threemilebridge.com/wordpuzzle/privacy/` | Published (GitHub Pages from `docs/`) and set via API 2026-10-04 |
+| Support URL (required) | `https://apps.threemilebridge.com/wordpuzzle/support/` | Published and set via API 2026-10-04 (read back 2026-10-05) |
+| Marketing URL | — | optional, left blank |
 
 ### Category
 - Primary: **Games**, subcategories **Word** and **Puzzle**
@@ -141,15 +175,19 @@ word list is profanity-filtered — `enable-clean.txt`.)
 
 ### Copyright
 ```
-2026 Patrick Houghton
+2026 Three Mile Bridge LLC
 ```
+Set via API 2026-10-04; read back 2026-10-05.
 
 ### App Review Information
 - Sign-in required: **No** (no demo account needed)
 - Contact: Patrick Houghton — phone/email entered privately in App Store Connect
-- **Notes:**
+- **Notes:** (updated 2026-10-05 for the Phase 11 first-launch tutorial — the live App Review
+  details still carry the 2026-10-04 notes without the tutorial paragraph; push needed)
 ```
 The app works fully offline and requires no login, demo account or network connection.
+
+First launch: a short interactive tutorial runs on a practice board. Tap "Skip tutorial" in the instruction banner to go straight to the first real puzzle (or complete the steps and tap Finish Round). The practice board does not count toward the daily limit.
 
 How to reach the in-app purchase (paywall):
 The paywall appears after a free user has started their third puzzle of the day. To reach it quickly: play and finish three rounds — tap letters to build a word, swipe down on the assembled word to submit it, then tap Finish Round, then tap Next Puzzle on the results screen. After the third round, tapping Next Puzzle shows the unlock screen with the price ($2.99), an "Unlock Unlimited Puzzles" button and a "Restore Purchases" button.
@@ -173,13 +211,16 @@ processed by Apple, not collected by the developer.
 - "Make this app available on Apple Vision Pro": **unchecked** — not tested.
 - Territories: all; price: Free (IAP carries the $2.99).
 
-### Screenshots
-- 6.9" iPhone: `Marketing/screenshots/final/01-gameplay.png`, `02-round-end.png`, `03-paywall.png` (1320x2868)
-- 13" iPad: `Marketing/screenshots/final/ipad/01..03` (2064x2752)
-- IAP App Review screenshot: `Marketing/screenshots/raw/03-paywall.png` (uncaptioned paywall, 1320x2868)
+### Screenshots (re-captured 2026-10-05, commit `dd670b5`)
+Upload in this order — 01 gameplay, 02 found words, 03 round end, 04 paywall:
+- 6.9" iPhone (1320x2868): `Marketing/screenshots/final/01-gameplay.png`, `02-found-words.png`, `03-round-end.png`, `04-paywall.png`
+- 13" iPad (2064x2752): `Marketing/screenshots/final/ipad/01-gameplay.png` … `04-paywall.png`
+- Captions: "Endless word puzzles, fresh every round" / "Track every word you find, sorted by length" /
+  "See every word you missed, pangrams too" / "Unlock unlimited puzzles — no subscription, just $2.99"
+- IAP App Review screenshot: `Marketing/screenshots/raw/04-paywall.png` (uncaptioned paywall, 1320x2868)
 
 ### Release Option
-**Manual Release** — currently `AFTER_APPROVAL`, must be changed.
+**Manual Release** — set via API 2026-10-04 (`releaseType MANUAL`, read back 2026-10-05).
 
 ## Privacy Policy (draft text to publish)
 
@@ -207,10 +248,13 @@ Contact: phoughton@threemilebridge.com
 - [x] Encryption export compliance: `ITSAppUsesNonExemptEncryption = NO` (05-04)
 - [ ] Privacy label "Data Not Collected" published (Task 2 — UI only, no API exists)
 - [ ] Mac and Vision Pro availability unchecked (Task 2)
-- [x] Screenshots for all required sizes generated (05-07: iPhone 6.9" + iPad 13")
-- [ ] Screenshots uploaded (Task 2)
+- [x] Screenshots for all required sizes generated (re-captured 2026-10-05 after Phases 6-12: 4 x iPhone 6.9" + 4 x iPad 13")
+- [ ] Screenshots uploaded (API read-back 2026-10-05: 0 screenshot sets)
 - [x] Privacy Policy URL published and set (apps.threemilebridge.com, 2026-10-04)
 - [x] Support URL published and set (apps.threemilebridge.com, 2026-10-04)
-- [ ] IAP metadata complete (App Review screenshot) — currently `MISSING_METADATA`
+- [ ] IAP metadata complete — still `MISSING_METADATA` 2026-10-05; only the App Review screenshot is missing (price, availability, localization all set)
 - [x] Release option set to Manual Release (API, 2026-10-04)
-- [ ] Final build archived and uploaded — 1.0 (1) uploaded 2026-10-04 as a test; final build after Phases 6-12
+- [ ] Final build archived and uploaded — 1.0 (1) uploaded 2026-10-04 (VALID, pre-Phase 6); build number bumped to 2 on 2026-10-05, archive/upload of 1.0 (2) pending go-ahead
+- [x] Export compliance — build 1 reports `usesNonExemptEncryption false` via API (no prompt expected); re-confirm on build 2
+- [ ] Refreshed Description / Promotional Text / Review Notes pushed (drafted 2026-10-05)
+- [ ] Build 1.0 (2) attached to version 1.0 and IAP added to the submission
