@@ -119,6 +119,9 @@ final class GameViewModel {
     private(set) var rejectedSubmissionCount: Int = 0
     /// RESEARCH Pitfall 2: gates drag input while the shuffle animation interpolates.
     private(set) var isShuffling: Bool = false
+    /// Phase 10 D-08: monotonic haptic trigger. Bumped ONLY when a shuffle actually happens
+    /// (button or double-tap). Never reset per round; `.sensoryFeedback` only needs it to change.
+    private(set) var shuffleCount: Int = 0
 
     init(wordList: WordList, persistenceStore: PersistenceStore? = nil) {
         self.wordList = wordList
@@ -333,16 +336,21 @@ final class GameViewModel {
 
     // MARK: - Shuffle (PUZZ-04 / D-03)
     /// Reorders ONLY the 6 outer letters; the center letter never moves.
-    func shuffleOuterLetters() {
-        guard outerLetters.count > 1, !isShuffling else { return }
+    /// Returns true when a shuffle happened. Rejected (false) outside .playing (Phase 10 D-10)
+    /// and during the animation (D-13). currentWord is untouched (D-11).
+    @discardableResult
+    func shuffleOuterLetters() -> Bool {
+        guard roundPhase == .playing, outerLetters.count > 1, !isShuffling else { return false }
         var shuffled = outerLetters
         repeat { shuffled.shuffle() } while shuffled == outerLetters
         outerLetters = shuffled
         isShuffling = true
+        shuffleCount += 1
         Task { @MainActor [weak self] in
             try? await Task.sleep(for: .milliseconds(GameTheme.shuffleDurationMilliseconds))
             self?.isShuffling = false
         }
+        return true
     }
 }
 

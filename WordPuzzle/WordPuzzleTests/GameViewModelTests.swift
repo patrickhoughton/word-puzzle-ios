@@ -166,6 +166,65 @@ final class GameViewModelTests {
         #expect(Set(vm.outerLetters) == Set(before))
     }
 
+    // MARK: - Phase 10 shuffle contract (D-08 / D-10 / D-11 / D-13)
+
+    @Test func testShuffleReturnsTrueAndBumpsCountWhenPlaying() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(vm.shuffleCount == 0)
+        let before = vm.outerLetters
+        #expect(vm.shuffleOuterLetters() == true)
+        #expect(vm.shuffleCount == 1)
+        #expect(vm.outerLetters != before)
+        #expect(Set(vm.outerLetters) == Set(before))
+    }
+
+    @Test func testShuffleRejectedWhileShuffling() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        #expect(vm.shuffleOuterLetters() == true)
+        #expect(vm.shuffleOuterLetters() == false)
+        #expect(vm.shuffleCount == 1)
+    }
+
+    @Test func testShuffleRejectedWhenRoundOver() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        vm.finishRound()
+        let before = vm.outerLetters
+        #expect(vm.shuffleOuterLetters() == false)
+        #expect(vm.shuffleCount == 0)
+        #expect(vm.outerLetters == before)
+    }
+
+    @Test func testShuffleRejectedWhenLoading() {
+        let vm = GameViewModel(wordList: wordList)
+        #expect(vm.shuffleOuterLetters() == false)
+        #expect(vm.shuffleCount == 0)
+    }
+
+    @Test func testShuffleRejectedWhenPaywalled() throws {
+        let container = try PersistenceStore.makeContainer(inMemory: true)
+        let store = PersistenceStore(container: container)
+        let vm = GameViewModel(wordList: wordList, persistenceStore: store)
+        for _ in 0..<GameViewModel.freePuzzlesPerDay { store.recordRoundStarted() }
+        vm.requestNextRound(isPremium: false)
+        #expect(vm.roundPhase == .paywalled)
+        #expect(vm.shuffleOuterLetters() == false)
+        #expect(vm.shuffleCount == 0)
+    }
+
+    @Test func testShufflePreservesInProgressWordAndCenter() {
+        let vm = GameViewModel(wordList: wordList)
+        vm.startNewRound(with: fixturePuzzle())
+        vm.append("c")
+        vm.append("a")
+        #expect(vm.shuffleOuterLetters() == true)
+        #expect(vm.currentWord == "ca")
+        #expect(vm.centerLetter == "a")
+        #expect(!vm.outerLetters.contains("a"))
+    }
+
     @Test func testCorrectSubmissionTogglesHapticTrigger() {
         let vm = GameViewModel(wordList: wordList)
         vm.startNewRound(with: fixturePuzzle())
