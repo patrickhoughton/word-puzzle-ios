@@ -253,8 +253,9 @@ Plans:
 ### Phase 999.9: Word list coverage review (BACKLOG)
 
 **Goal:** [Captured for future planning] — Patrick suspects the bundled word list is missing words players would expect to be valid. Current list is `enable-clean.txt` (~172,678 words, the profanity-filtered ENABLE list, per CLAUDE.md's original tech-stack choice). **Scope constraint:** do NOT source or diff against Words With Friends' official word list — it's proprietary to Zynga/EA, not public domain, same reasoning CLAUDE.md already uses to rule out the official Scrabble/SOWPODS dictionary ("cannot bundle without licensing"). Safe approach instead: cross-reference `enable-clean.txt` against other public-domain or freely-licensed word lists (e.g. SCOWL) to find and fill genuine gaps, and/or gather specific examples of rejected words players expected to work as concrete test cases before changing the list.
+**Probe finding (2026-10-05, during a shelved discuss-phase):** the gaps are mostly modern vocabulary — ENABLE is ~25 years old. Missing: `email, blog, online, website, internet, podcast, emoji, selfie, hashtag, wiki, texted, texting, app/apps, cyber, smartphone, vlog, unfriend, gonna, google, ok`. Present: `okay, yeah, nope, zombie, hacker, download`. Open questions for when this is picked up: source of additions (SCOWL and/or hand-curated list), inclusion bar (slang, brand-derived, abbreviations), whether new words are only accepted vs. also counted toward totals/rank/missed words/pangram pool, and review/verification approach.
 **Requirements:** TBD
-**Plans:** 9/9 plans complete
+**Plans:** 0 plans
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
