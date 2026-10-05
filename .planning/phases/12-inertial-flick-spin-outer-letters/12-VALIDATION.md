@@ -1,9 +1,9 @@
 ---
 phase: 12
 slug: inertial-flick-spin-outer-letters
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: complete
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-10-05
 ---
 
@@ -38,19 +38,24 @@ created: 2026-10-05
 
 *Filled in by the planner/executor per task. Decision → test mapping:*
 
-| Decision | Behavior | Test Type | Suite | File Exists | Status |
-|----------|----------|-----------|-------|-------------|--------|
-| D-04/D-05 | trajectory continuity, duration monotonic in ω0, cap ≥ 5 s, sign symmetry | unit | `RingSpinTrajectoryTests` | ❌ W0 | ⬜ pending |
-| D-06 | final angle exact multiple of π/3, no overshoot | unit | `RingSpinTrajectoryTests` | ❌ W0 | ⬜ pending |
-| D-04 | angular velocity tracker (unwrap, stale, clamp, sign) | unit | `AngularVelocityTrackerTests` | ❌ W0 | ⬜ pending |
-| D-10/D-11 | slot crossings + tick throttle | unit | `SlotMathTests`, `TickThrottleTests` | ❌ W0 | ⬜ pending |
-| D-07/D-09 | `outerOffsets(rotation:)`, rotated letter mapping, commit continuity | unit | `HexGeometryTests`, `SlotMathTests` | extend | ⬜ pending |
-| D-12 | jackpot predicate (net > 5 rev AND home) | unit | `SpinSessionTests` | ❌ W0 | ⬜ pending |
-| D-09/D-16/D-17 | `rotateOuterLetters` guards, keeps `currentWord`, no `shuffleCount` bump | unit | `GameViewModelTests` | extend | ⬜ pending |
-| D-01..D-03 | hit classification tile vs spin zone vs center | unit | `HexGeometryTests` | extend | ⬜ pending |
-| D-11 | `SoundEffect` count + bundled files | unit | `SoundManagerTests` | extend | ⬜ pending |
-| D-20 | tutorial step count 10, order, `allows(.spin)` | unit | `TutorialCopyTests`, `TutorialControllerTests` | extend | ⬜ pending |
-| D-01/D-13/D-14 | off-tile flick rotates ring; Shuffle mid-spin | UI | `WordPuzzleUITests`/`TutorialUITests` | extend | ⬜ pending |
+| Decision | Behavior | Test Type | Suite | File Exists | Status | Plan |
+|----------|----------|-----------|-------|-------------|--------|------|
+| D-04/D-05 | trajectory continuity, duration monotonic in ω0, cap ≥ 5 s, sign symmetry | unit | `RingSpinTrajectoryTests` | created | ✅ green | 12-02 |
+| D-06 | final angle exact multiple of π/3, no overshoot | unit | `RingSpinTrajectoryTests` | created | ✅ green | 12-02 |
+| D-04 | angular velocity tracker (unwrap, stale, clamp, sign) | unit | `AngularVelocityTrackerTests` | created | ✅ green | 12-02 |
+| D-10/D-11 | slot crossings + tick throttle | unit | `SlotMathTests`, `TickThrottleTests` | created | ✅ green | 12-03 |
+| D-07/D-09 | `outerOffsets(rotation:)`, rotated letter mapping, commit continuity | unit | `HexGeometryTests`, `SlotMathTests` | updated | ✅ green | 12-02, 12-05 |
+| D-12 | jackpot predicate (net > 5 rev AND home) | unit | `SpinSessionTests` | created | ✅ green | 12-03 |
+| D-09/D-16/D-17 | `rotateOuterLetters` guards, keeps `currentWord`, no `shuffleCount` bump | unit | `GameViewModelTests` | updated | ✅ green | 12-05 |
+| D-01..D-03 | hit classification tile vs spin zone vs center | unit | `HexGeometryTests` | updated | ✅ green | 12-05 |
+| D-11 | `SoundEffect` count + bundled files | unit | `SoundManagerTests` | updated | ✅ green | 12-04 |
+| D-20 | tutorial step count 10, order, `allows(.spin)` | unit | `TutorialCopyTests`, `TutorialControllerTests` | updated | ✅ green | 12-07 |
+| D-01/D-13/D-14 | off-tile flick rotates ring; Shuffle mid-spin | UI | `WordPuzzleUITests`/`TutorialUITests` | updated | ✅ green | 12-08 |
+
+| D-14/D-15/D-16 | controller state machine, guards, Shuffle cancel | unit | `RingSpinControllerTests` | created | ✅ green | 12-06 |
+| D-10/D-11/D-12 | feedback ticks, clunk, jackpot cues | unit | `SpinFeedbackTests` | created | ✅ green | 12-04 |
+| D-12 | Full circle! popup view | unit | `FullCircleViewTests` | created | ✅ green | 12-08 |
+| D-01/D-13/D-14/D-20 | ring spin gestures end to end | UI | `RingSpinUITests` | created | ✅ green | 12-08 |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -58,14 +63,19 @@ created: 2026-10-05
 
 ## Wave 0 Requirements
 
-- [ ] `WordPuzzleTests/RingSpinTrajectoryTests.swift`
-- [ ] `WordPuzzleTests/SlotMathTests.swift`
-- [ ] `WordPuzzleTests/AngularVelocityTrackerTests.swift`
-- [ ] `WordPuzzleTests/TickThrottleTests.swift`
-- [ ] `WordPuzzleTests/SpinSessionTests.swift`
-- [ ] Update hard-coded counts: `TutorialCopyTests` (9 → 10), `TutorialControllerTests`, `SoundManagerTests` (effect count), `TutorialUITests` shuffle flow
+- [x] `WordPuzzleTests/RingSpinTrajectoryTests.swift`
+- [x] `WordPuzzleTests/SlotMathTests.swift`
+- [x] `WordPuzzleTests/AngularVelocityTrackerTests.swift`
+- [x] `WordPuzzleTests/TickThrottleTests.swift`
+- [x] `WordPuzzleTests/SpinSessionTests.swift`
+- [x] Update hard-coded counts: `TutorialCopyTests` (9 → 10), `TutorialControllerTests`, `SoundManagerTests` (effect count), `TutorialUITests` shuffle flow
 
 ---
+
+## Environmental UI-Test Hazards
+
+- Free-tier 3-rounds/day cap spans UI test classes in one install: RingSpinUITests/StatsPresentationUITests can consume rounds before TutorialUITests, causing "real board shown" failures. Uninstall the app and rerun the failed class alone.
+- WordPuzzleUITestsLaunchTests can leave the simulator in Landscape, causing scroll-to-visible failures in later classes. Run `xcrun simctl shutdown` then `boot` and rerun.
 
 ## Manual-Only Verifications
 
@@ -80,11 +90,11 @@ created: 2026-10-05
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 30s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 30s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** automated gates green; on-device feel sign-off pending (12-09 Task 2)
