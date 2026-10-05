@@ -179,6 +179,9 @@ struct GameView: View {
         }
         .sensoryFeedback(.success, trigger: lengthHapticCount)
         .sensoryFeedback(.success, trigger: sweepHapticCount)
+        // Phase 10 D-08: one light tick per REAL shuffle (button or double-tap). The counter only
+        // increments when shuffleOuterLetters() succeeds, so rejected taps (isShuffling, not .playing) are silent.
+        .sensoryFeedback(.impact(weight: .light), trigger: viewModel.shuffleCount)
     }
 
     // RESEARCH Pitfall 4: every stats surface reads the store inside its sheet content, so it is
@@ -376,7 +379,8 @@ struct GameView: View {
                 centerLetter: viewModel.centerLetter,
                 outerLetters: viewModel.outerLetters,
                 isInputDisabled: viewModel.isShuffling,
-                onLetterTouched: { viewModel.append($0) }
+                onLetterTouched: { viewModel.append($0) },
+                onEmptyDoubleTap: { viewModel.shuffleOuterLetters() }
             )
             .overlay(alignment: .top) {
                 celebrationOverlay
@@ -389,6 +393,19 @@ struct GameView: View {
             controlRow
                 .padding(.horizontal, GameTheme.lg)
                 .padding(.bottom, GameTheme.lg)
+        }
+        // Phase 10 D-03: double-tap any empty background to shuffle. This sits BEHIND every
+        // child, so it only gets touches nothing else claims. Buttons (D-05), the word display
+        // (D-04, has its own contentShape + tap) and the flower square (handled by LetterGridView's
+        // own detector, D-02) never reach it. No ancestor gesture is placed over the grid, so tile tap
+        // latency is unaffected (Phase 3 Pitfall 1). Spacers/padding are not hit-testable by
+        // themselves, so the clear layer carries contentShape (research Pitfall 1).
+        .background {
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture(count: 2) { viewModel.shuffleOuterLetters() }
+                .accessibilityHidden(true)
+                .ignoresSafeArea()
         }
     }
 
