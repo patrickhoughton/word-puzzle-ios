@@ -34,8 +34,42 @@ import AVFoundation
 
     // MARK: - SoundEffect case count
 
-    @Test func testAllCasesCountIsSeven() {
-        #expect(SoundEffect.allCases.count == 7)
+    @Test func testAllCasesCountIsTen() {
+        #expect(SoundEffect.allCases.count == 10)
+    }
+
+    // MARK: - Phase 12 effects (D-11, D-12)
+
+    @Test func testPhase12RawValues() {
+        #expect(SoundEffect.spinTick.rawValue == "spin_tick")
+        #expect(SoundEffect.spinClunk.rawValue == "spin_clunk")
+        #expect(SoundEffect.fullCircle.rawValue == "full_circle")
+        #expect(SoundEffect.fullCircle != .pangramSweep)
+        #expect(SoundEffect.fullCircle != .pangramFound)
+        #expect(SoundManager.spinTickPoolSize == 4)
+    }
+
+    @Test func testSpinTickDisabledIsANoOp() {
+        let manager = SoundManager(preloadPlayers: false)
+        manager.playSpinTick(enabled: false, volume: 0.6)
+        #expect(manager.attemptedPlayCount == 0)
+        #expect(manager.lastAttemptedEffect == nil)
+    }
+
+    @Test func testSpinTickEnabledRecordsAttempts() {
+        let manager = SoundManager(preloadPlayers: false)
+        manager.playSpinTick(enabled: true, volume: 0.6)
+        manager.playSpinTick(enabled: true, volume: 0.6)
+        #expect(manager.attemptedPlayCount == 2)
+        #expect(manager.lastAttemptedEffect == .spinTick)
+    }
+
+    @Test func testSpinClunkAndFullCircleGate() {
+        let manager = SoundManager(preloadPlayers: false)
+        manager.play(.spinClunk, enabled: false)
+        #expect(manager.attemptedPlayCount == 0)
+        manager.play(.fullCircle, enabled: true)
+        #expect(manager.lastAttemptedEffect == .fullCircle)
     }
 
     // MARK: - Phase 8 effects (D-10, D-16)

@@ -1,7 +1,7 @@
 import AVFoundation
 import Foundation
 
-/// UX-02 / D-01: the events that produce a sound effect (four from UX-02, three added in Phase 8).
+/// UX-02 / D-01: the events that produce a sound effect (four from UX-02, three added in Phase 8, three in Phase 12).
 /// Raw values are the bundled filenames (see Sounds/LICENSE.txt).
 enum SoundEffect: String, CaseIterable {
     case wordAccepted = "word_accepted"
@@ -14,6 +14,12 @@ enum SoundEffect: String, CaseIterable {
     case sweepTick      = "sweep_tick"
     /// Phase 8 D-16: lighter chime when a length group is completed.
     case lengthComplete = "length_complete"
+    /// Phase 12 D-10/D-11: one soft click per slot boundary (throttled by TickThrottle).
+    case spinTick   = "spin_tick"
+    /// Phase 12 D-06/D-10: firmer landing clunk.
+    case spinClunk  = "spin_clunk"
+    /// Phase 12 D-12: cosmetic jackpot.
+    case fullCircle = "full_circle"
 
     static let fileExtension = "wav"
 
@@ -78,6 +84,11 @@ final class SoundManager {
 
     private var players: [SoundEffect: AVAudioPlayer] = [:]
 
+    /// Phase 12 D-11: round-robin pool so rapid ticks never cut each other off.
+    static let spinTickPoolSize = 4
+    private var tickPool: [AVAudioPlayer] = []
+    private var tickPoolIndex = 0
+
     /// - Parameter preloadPlayers: pass `false` in tests that only exercise the
     ///   gate/mapping logic, so no AVAudioPlayer or audio session is touched.
     init(preloadPlayers: Bool = true) {
@@ -90,6 +101,14 @@ final class SoundManager {
             player.prepareToPlay()
             players[effect] = player
         }
+        if let url = Bundle.main.url(forResource: SoundEffect.spinTick.rawValue,
+                                     withExtension: SoundEffect.fileExtension) {
+            for _ in 0..<Self.spinTickPoolSize {
+                guard let player = try? AVAudioPlayer(contentsOf: url) else { continue }
+                player.prepareToPlay()
+                tickPool.append(player)
+            }
+        }
     }
 
     /// No-op when `enabled` is false. All call sites in GameView pass the
@@ -100,6 +119,20 @@ final class SoundManager {
         attemptedPlayCount += 1
         guard let player = players[effect] else { return }
         player.stop()
+        player.currentTime = 0
+        player.play()
+    }
+
+    /// Phase 12 D-11: ticks can arrive ~20/s. A single player would be stop()/restarted every tick
+    /// (clipped, buzzy), so ticks round-robin across a small pool. Same enabled gate + test seam as play(_:enabled:).
+    func playSpinTick(enabled: Bool, volume: Float) {
+        guard enabled else { return }
+        lastAttemptedEffect = .spinTick
+        attemptedPlayCount += 1
+        guard !tickPool.isEmpty else { return }
+        let player = tickPool[tickPoolIndex]
+        tickPoolIndex = (tickPoolIndex + 1) % tickPool.count
+        player.volume = max(0, min(1, volume))
         player.currentTime = 0
         player.play()
     }
