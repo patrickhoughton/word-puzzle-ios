@@ -43,6 +43,17 @@ final class TutorialUITests: XCTestCase {
         usleep(400_000)
     }
 
+    /// Phase 12: drag along the ring's outer margin (radius 160pt from the center tile, off every tile) clockwise
+    /// from 12 o'clock by `degrees`, then hold so the release velocity is ~0 and the ring settles to the nearest slot.
+    private func spinRing(degrees: Double) {
+        let center = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Center letter")).firstMatch
+            .coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        let r = 160.0, a0 = -Double.pi / 2, a1 = a0 + degrees * .pi / 180
+        let start = center.withOffset(CGVector(dx: r * cos(a0), dy: r * sin(a0)))
+        let end = center.withOffset(CGVector(dx: r * cos(a1), dy: r * sin(a1)))
+        start.press(forDuration: 0.1, thenDragTo: end, withVelocity: .slow, thenHoldForDuration: 0.4)
+    }
+
     // MARK: - Tests
 
     @MainActor
@@ -87,21 +98,26 @@ final class TutorialUITests: XCTestCase {
 
         // Step 6: shuffle
         app.buttons["Shuffle Letters"].tap()
-        XCTAssertTrue(waitForBanner(containing: "pangram"), "step 7 banner")
+        XCTAssertTrue(waitForBanner(containing: "Give it a spin"), "step 7 banner")
 
-        // Step 7: pangram
+        // Step 7: spin (Phase 12 D-20). Wait out the 0.4 s shuffle animation (spins are disabled while shuffling).
+        usleep(700_000)
+        spinRing(degrees: 60)
+        XCTAssertTrue(waitForBanner(containing: "pangram", timeout: 15), "step 8 banner")
+
+        // Step 8: pangram
         enter("DOLPHIN")
         submit()
-        XCTAssertTrue(waitForBanner(containing: "Tap the bar", timeout: 10), "step 8 banner")
+        XCTAssertTrue(waitForBanner(containing: "Tap the bar", timeout: 10), "step 9 banner")
 
-        // Step 8: score bar
+        // Step 9: score bar
         app.buttons["scoreBarButton"].tap()
         let done = app.buttons["Done"]
         XCTAssertTrue(done.waitForExistence(timeout: 5), "found words sheet")
         done.tap()
-        XCTAssertTrue(waitForBanner(containing: "You're ready!"), "step 9 banner")
+        XCTAssertTrue(waitForBanner(containing: "You're ready!"), "step 10 banner")
 
-        // Step 9: finish hands off to a real board
+        // Step 10: finish hands off to a real board
         app.buttons["Finish Round"].tap()
         XCTAssertFalse(app.buttons["Next Puzzle"].waitForExistence(timeout: 3), "no missed-words cover after tutorial")
         XCTAssertTrue(waitForDisappearance(banner), "banner gone")
