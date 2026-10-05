@@ -119,6 +119,15 @@ final class PersistenceStore {
         (try? context.fetchCount(FetchDescriptor<GameRecord>())) ?? 0
     }
 
+    /// Phase 11 D-08: true when ANY game history exists (a finished GameRecord or a started
+    /// RoundStartRecord). Existing players are treated as having seen the tutorial.
+    /// fetchCount on both models (SQLite COUNT), never fetch(...).count.
+    func hasAnyHistory() -> Bool {
+        let games = (try? context.fetchCount(FetchDescriptor<GameRecord>())) ?? 0
+        let starts = (try? context.fetchCount(FetchDescriptor<RoundStartRecord>())) ?? 0
+        return games + starts > 0
+    }
+
     /// MAX — expressed as ORDER BY score DESC LIMIT 1, which SwiftData does push down.
     func bestScore() -> Int {
         var descriptor = FetchDescriptor<GameRecord>(

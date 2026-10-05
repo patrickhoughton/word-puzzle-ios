@@ -10,6 +10,7 @@ import XCTest
 /// Every round is pinned to one known puzzle via the app's DEBUG-only
 /// `-ScreenshotPuzzle` launch argument, so the captures are reproducible and the
 /// words on screen are curated rather than whatever the generator happened to pick.
+/// Launches with -hasSeenTutorial YES so the Phase 11 tutorial never intercepts the staged puzzle.
 final class AppStoreScreenshotTests: XCTestCase {
 
     private var app: XCUIApplication!
@@ -37,7 +38,7 @@ final class AppStoreScreenshotTests: XCTestCase {
     @MainActor
     func testCaptureAppStoreScreenshots() throws {
         app = XCUIApplication()
-        app.launchArguments += ["-ScreenshotPuzzle", stagedPuzzle]
+        app.launchArguments += ["-ScreenshotPuzzle", stagedPuzzle, "-hasSeenTutorial", "YES"]
         app.launch()
 
         // 1 — Mid-round gameplay: several words found, a partial word in progress.
