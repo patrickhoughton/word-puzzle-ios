@@ -20,6 +20,10 @@ struct TileFramePreferenceKey: PreferenceKey {
 /// per-tile tap gesture recognizer — two recognizers competing for the same
 /// touch is exactly the documented failure mode where taps get silently swallowed.
 ///
+/// Phase 10: the same gesture also detects empty-space double-taps. `.onEnded` feeds touches
+/// that began and ended off every tile to `EmptyDoubleTapDetector`. There is still no second
+/// recognizer. A rectangular contentShape makes the gaps between hexagons part of this gesture.
+///
 /// This view is presentation-only: it never imports or references the game's
 /// view-model type. GameView (plan 03-04) binds `onLetterTouched` to `viewModel.append`.
 struct LetterGridView: View {
@@ -31,7 +35,12 @@ struct LetterGridView: View {
     /// stale frame dictionary cannot append the wrong letter (RESEARCH Pitfall 2).
     let isInputDisabled: Bool
     let onLetterTouched: (Character) -> Void
+    /// Phase 10 D-02: fired when two quick taps land on empty space inside the flower's
+    /// square (gaps, square corners, hexagon corners outside the hit circle). Never fired
+    /// for tile touches: a tile double-tap still appends the letter twice (D-01).
+    let onEmptyDoubleTap: () -> Void
 
+    @State private var emptyTapDetector = EmptyDoubleTapDetector()
     @State private var tileFrames: [Int: CGRect] = [:]
     @State private var lastTouchedIndex: Int?
 
@@ -49,20 +58,33 @@ struct LetterGridView: View {
             }
         }
         .frame(width: HexFlowerLayout.flowerDiameter(), height: HexFlowerLayout.flowerDiameter())
+        // Phase 10 D-02: the whole flower square is hit-testable, so gaps and corners are owned by this one gesture.
+        .contentShape(Rectangle())
         .animation(GameTheme.shuffleAnimation, value: outerLetters)
         .coordinateSpace(name: coordinateSpaceName)
         .onPreferenceChange(TileFramePreferenceKey.self) { tileFrames = $0 }
         .gesture(
             DragGesture(minimumDistance: 0, coordinateSpace: .named(coordinateSpaceName))
                 .onChanged { value in
+                    let index = hitIndex(at: value.location)
+                    // Any tile touch breaks an empty-tap chain ("tile tap then gap tap" never shuffles).
+                    if index != nil { emptyTapDetector.reset() }
                     guard !isInputDisabled else { return }
-                    guard let index = hitIndex(at: value.location) else { return }
+                    guard let index else { return }
                     guard index != lastTouchedIndex else { return }
                     lastTouchedIndex = index
                     onLetterTouched(letter(forIndex: index))
                 }
-                .onEnded { _ in
-                    lastTouchedIndex = nil
+                .onEnded { value in
+                    defer { lastTouchedIndex = nil }
+                    // An "empty tap" began AND ended off every tile; the detector also rejects drags (>10pt travel).
+                    if hitIndex(at: value.startLocation) == nil, hitIndex(at: value.location) == nil {
+                        if emptyTapDetector.registerEmptyTap(start: value.startLocation, end: value.location, at: value.time) {
+                            onEmptyDoubleTap()
+                        }
+                    } else {
+                        emptyTapDetector.reset()
+                    }
                 }
         )
     }
@@ -100,6 +122,7 @@ struct LetterGridView: View {
         centerLetter: "a",
         outerLetters: ["c", "d", "e", "l", "n", "t"],
         isInputDisabled: false,
-        onLetterTouched: { print($0) }
+        onLetterTouched: { print($0) },
+        onEmptyDoubleTap: { print("empty double-tap") }
     )
 }
