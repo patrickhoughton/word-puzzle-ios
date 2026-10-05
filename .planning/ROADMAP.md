@@ -22,8 +22,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 - [x] **Phase 8: All-Pangrams Bonus** - Extra bonus and callout for finding every pangram in a puzzle (completed 2026-10-04)
 - [x] **Phase 9: Player Stats Screen** - Lifetime stats and streak surfaced in a player-visible screen (completed 2026-10-05)
 - [x] **Phase 10: Double-Tap Shuffle** - Double-tap empty space to shuffle the outer letters (completed 2026-10-05)
-- [ ] **Phase 11: Long-Press Center Shuffle** - Long-press the center tile to shuffle, coexisting with tap-to-append
-- [ ] **Phase 12: First-Launch Tutorial** - First-launch onboarding that teaches the core mechanics
+- [ ] **Phase 11: First-Launch Tutorial** - First-launch onboarding that teaches the core mechanics
 
 ## Phase Details
 
@@ -118,7 +117,7 @@ Plans:
 - [x] 05-07-PLAN.md — 6.9in Simulator captures + captioned 1320x2868 App Store screenshots (Wave 3)
 - [ ] 05-08-PLAN.md — App Store Connect: Data Not Collected privacy label, listing metadata, keywords, uploads (Wave 4)
 **UI hint**: yes
-**Note (2026-10-04)**: 05-08 finishes after Phase 12 -- v1.0 submission is on hold so the backlog features ship in v1.0; screenshots are re-captured and uploaded then.
+**Note (2026-10-04)**: 05-08 finishes after Phase 11 -- v1.0 submission is on hold so the backlog features ship in v1.0; screenshots are re-captured and uploaded then.
 
 ### Phase 6: Differentiated Invalid-Word Messaging
 **Goal**: replace the single generic "Not a valid word" rejection message with distinct feedback for each rejection reason: word too short (< 4 letters), word not in the dictionary/doesn't use valid letters, and word already found this round (duplicate). Currently `GameViewModel.submitCurrentWord()` returns a plain `Bool` and `WordDisplayView` shows one hardcoded string for every failure case, so the player can't tell why a word was rejected.
@@ -190,25 +189,14 @@ Plans:
 **UI hint**: yes
 **Promoted from**: backlog 999.6 (2026-10-04, built into v1.0 before submission)
 
-### Phase 11: Long-Press Center Shuffle
-**Goal**: long-press (or "hard press") on the gold center tile as an alternative (or addition) to the Shuffle button. **Hardware note:** true pressure-sensitive 3D Touch was removed from iPhones starting with the XR/11 generation; Apple's replacement, Haptic Touch, is functionally a long-press with a delay + haptic confirmation — so "long press" and "hard press" are the same gesture on all currently-shipping iPhones, not two separate inputs to build. Conflict to resolve at design time: the center tile is currently part of the single unified `DragGesture(minimumDistance: 0)` hit-test area in `LetterGridView` (tapping it appends the center letter), so a long-press recognizer on that same tile needs to coexist with tap-to-append without misfiring — likely resolved via a time threshold (a fast tap still appends; holding past ~0.5s triggers shuffle instead) rather than a fully separate `LongPressGesture`, to avoid the two-recognizer contention risk noted in 999.5.
-**Depends on**: Phase 5
+### Phase 11: First-Launch Tutorial
+**Goal**: a first-time-user tutorial/onboarding flow that teaches the core mechanics (tap/drag letters to build a word, center letter is required, swipe down to submit, shuffle, pangrams) before or during their first round. Currently there is no onboarding at all — `ContentView` loads straight into `GameView` for every launch, first-time or not. Needs a "has the user seen this before" flag (likely `@AppStorage`, consistent with the project's existing flags/seeds persistence split) and a decision on format (overlay walkthrough vs. a scripted first puzzle vs. a standalone intro screen).
+**Depends on**: Phases 6-10 (teaches the mechanics and screens they add)
 **Requirements**: TBD
 **Plans**: 0 plans
 
 Plans:
 - [ ] TBD (run /gsd:plan-phase 11 to break down)
-**UI hint**: yes
-**Promoted from**: backlog 999.7 (2026-10-04, built into v1.0 before submission)
-
-### Phase 12: First-Launch Tutorial
-**Goal**: a first-time-user tutorial/onboarding flow that teaches the core mechanics (tap/drag letters to build a word, center letter is required, swipe down to submit, shuffle, pangrams) before or during their first round. Currently there is no onboarding at all — `ContentView` loads straight into `GameView` for every launch, first-time or not. Needs a "has the user seen this before" flag (likely `@AppStorage`, consistent with the project's existing flags/seeds persistence split) and a decision on format (overlay walkthrough vs. a scripted first puzzle vs. a standalone intro screen).
-**Depends on**: Phases 6-11 (teaches the mechanics and screens they add)
-**Requirements**: TBD
-**Plans**: 0 plans
-
-Plans:
-- [ ] TBD (run /gsd:plan-phase 12 to break down)
 **UI hint**: yes
 **Promoted from**: backlog 999.4 (2026-10-04, built into v1.0 before submission)
 
@@ -226,8 +214,7 @@ Plans:
 | 8. All-Pangrams Bonus | 6/6 | Complete   | 2026-10-04 |
 | 9. Player Stats Screen | 6/6 | Complete    | 2026-10-05 |
 | 10. Double-Tap Shuffle | 3/3 | Complete    | 2026-10-05 |
-| 11. Long-Press Center Shuffle | 0/0 | Not started | - |
-| 12. First-Launch Tutorial | 0/0 | Not started | - |
+| 11. First-Launch Tutorial | 0/0 | Not started | - |
 
 ## Backlog
 
