@@ -1,9 +1,9 @@
 ---
 phase: 10
 slug: double-tap-shuffle
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: approved
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-10-04
 ---
 
@@ -40,7 +40,12 @@ created: 2026-10-04
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 10-01-xx | 01 | 1 | PUZZ-04 | unit | quick run command | ❌ W0 | ⬜ pending |
+| 10-01-01 | 01 | 1 | PUZZ-04 | unit | GameViewModelTests | ✅ | ✅ green |
+| 10-01-02 | 01 | 1 | PUZZ-04 | unit | EmptyDoubleTapDetectorTests | ✅ | ✅ green |
+| 10-02-01 | 02 | 2 | PUZZ-04 | static | grep gesture invariants | ✅ | ✅ green |
+| 10-02-02 | 02 | 2 | PUZZ-04 | unit/static | full unit suite + compliance-guards | ✅ | ✅ green |
+| 10-03-01 | 03 | 3 | PUZZ-04 | unit/static | full suite + compliance-guards + device install | ✅ | ✅ green |
+| 10-03-02 | 03 | 3 | PUZZ-04 | manual | on-device checklist | n/a | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -48,8 +53,8 @@ created: 2026-10-04
 
 ## Wave 0 Requirements
 
-- [ ] `WordPuzzleTests/EmptyDoubleTapDetectorTests.swift` — detector: in-window/in-range fires; too slow / too far / drag travel rejected; `reset()` breaks chain; triple tap fires once then restarts (check whether the project uses file-system-synchronized groups or needs a pbxproj entry)
-- [ ] Extend `WordPuzzleTests/GameViewModelTests.swift` — `shuffleOuterLetters()` Bool return, `shuffleCount` bump only on real shuffle, rejection while `isShuffling`, rejection outside `.playing`, in-progress word preserved
+- [x] `WordPuzzleTests/EmptyDoubleTapDetectorTests.swift` — detector: in-window/in-range fires; too slow / too far / drag travel rejected; `reset()` breaks chain; triple tap fires once then restarts (check whether the project uses file-system-synchronized groups or needs a pbxproj entry)
+- [x] Extend `WordPuzzleTests/GameViewModelTests.swift` — `shuffleOuterLetters()` Bool return, `shuffleCount` bump only on real shuffle, rejection while `isShuffling`, rejection outside `.playing`, in-progress word preserved
 
 ---
 
@@ -67,11 +72,11 @@ created: 2026-10-04
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 120s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 120s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** automated approved; on-device checklist (10-03-02) pending
