@@ -98,6 +98,26 @@ into v1.0 and tested on device.** Consequences:
   Therefore also not done: review-notes PATCH, build 1.0 (2) archive/upload, build attach.
   Live description/promo/review notes are still the 2026-10-04 values.
 
+**2026-10-05 — re-run after Patrick added allow rules (commands matched exactly, no pipes):**
+- `PATCH /v1/appStoreVersionLocalizations/0dbffaa6-…` description (1824) + promotionalText (168):
+  HTTP 200; GET read-back matches the listing doc word for word; keywords unchanged (97).
+  (Note: the Bash harness turned a JSON `'` escape into a bare `'` and broke shell quoting —
+  apostrophes were passed with the standard `'\''` shell idiom instead.)
+- App Review detail id `0497122e-c6fe-4a12-a13f-5c096ab38c54`: `PATCH notes` (adds the
+  first-launch tutorial paragraph) HTTP 200; GET read-back matches the Notes block below.
+  Contact fields untouched.
+- Build 1.0 (2): `xcodebuild archive` (Release, generic iOS, `-allowProvisioningUpdates` + API key)
+  then `xcodebuild -exportArchive` (ExportOptions: method `app-store-connect`, destination `upload`,
+  team H5U5FQ78L4, automatic signing) → `Upload succeeded` / `EXPORT SUCCEEDED` at 18:30 local.
+  Archive Info.plist: CFBundleVersion 2, CFBundleShortVersionString 1.0, ITSAppUsesNonExemptEncryption false.
+- Build processing: id `6abe3263-790d-486f-96b4-d14596ef6324`, uploaded 2026-10-05T16:31:27-07:00,
+  `VALID` within ~5 min, **`usesNonExemptEncryption false`**.
+- `PATCH /v1/appStoreVersions/03ce47c4-…/relationships/build` → HTTP 204. Read-back: version 1.0
+  (`PREPARE_FOR_SUBMISSION`, `MANUAL`) now has build `6abe3263-…` (version 2, VALID) attached.
+- NOT done (by design): Submit for Review. Still open for Patrick (UI only): App Privacy "Data Not
+  Collected", uncheck Mac + Vision Pro, confirm no export-compliance prompt in the UI, and make sure
+  the IAP (READY_TO_SUBMIT) is included with the first version submission.
+
 ## Listing values
 
 ### App Name — 21/30 chars
@@ -268,7 +288,8 @@ Contact: phoughton@threemilebridge.com
 - [x] Support URL published and set (apps.threemilebridge.com, 2026-10-04)
 - [x] IAP metadata complete — review screenshot uploaded 2026-10-05; state `READY_TO_SUBMIT`
 - [x] Release option set to Manual Release (API, 2026-10-04)
-- [ ] Final build archived and uploaded — 1.0 (1) uploaded 2026-10-04 (VALID, pre-Phase 6); build number bumped to 2 on 2026-10-05, archive/upload of 1.0 (2) pending go-ahead
-- [x] Export compliance — build 1 reports `usesNonExemptEncryption false` via API (no prompt expected); re-confirm on build 2
-- [ ] Refreshed Description / Promotional Text / Review Notes pushed (drafted 2026-10-05)
-- [ ] Build 1.0 (2) attached to version 1.0 and IAP added to the submission
+- [x] Final build archived and uploaded — 1.0 (2) uploaded 2026-10-05, VALID
+- [x] Export compliance — builds 1 and 2 report `usesNonExemptEncryption false` via API (UI check still Patrick's)
+- [x] Refreshed Description / Promotional Text / Review Notes pushed and read back (2026-10-05)
+- [x] Build 1.0 (2) attached to version 1.0 (read back)
+- [ ] IAP included with the version submission (at Submit for Review time)
