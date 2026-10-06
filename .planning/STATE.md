@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-08-27)
 
 Phase: 05 (polish-compliance-app-store) — all 8 plans complete; phase verification pending
 Plan: 05-08 complete (v1.0 build 2 + IAP WAITING_FOR_REVIEW, Manual Release)
-Status: Awaiting App Review; next: phase-5 verification, confirm Mac/Vision Pro unchecked, Release after approval
+Status: Awaiting App Review; next: phase-5 verification, Release after approval
 Last activity: 2026-10-05
 
 Progress: [████████████████████] 100% (60/60 plans; v1.0 submitted 2026-10-05, WAITING_FOR_REVIEW)

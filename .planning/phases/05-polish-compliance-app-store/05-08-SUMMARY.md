@@ -93,6 +93,9 @@ completed: 2026-10-05
 4. **The Claude Code permission check blocked App Store Connect writes until Patrick added Bash allow rules.** Commands must match those rules exactly: no pipes, no `cd`, no env prefixes.
 5. **The Bash tool turned JSON `'` escapes into bare apostrophes and broke the shell quoting.** Use the shell `'\''` idiom instead.
 
+## Availability
+Mac (Apple silicon) and Apple Vision Pro availability are **confirmed unchecked**; Patrick's Pricing and Availability screenshot (2026-10-05) shows both boxes unchecked. iPad stays available (05-04 device-family-keep-ipad).
+
 ## Export compliance
 No prompt appeared. Builds 1 and 2 both report `usesNonExemptEncryption false`, which confirms plan 05-04's Info.plist key reaches the uploaded build.
 
@@ -106,7 +109,6 @@ No prompt appeared. Builds 1 and 2 both report `usesNonExemptEncryption false`, 
 - **[Rule 1] The iPad found-words sheet at medium height covered the honeycomb.** The test now drags the sheet to full height on iPad.
 
 ## Remaining items / follow-ups
-- [ ] **Mac and Vision Pro availability:** Patrick was given the steps to uncheck both but has not explicitly confirmed he did it. Confirm in Pricing and Availability.
 - [ ] **After approval:** press **Release** in App Store Connect (Manual Release is set).
 - [ ] **Word list (999.9):** `marrano` (a slur) is in `enable-clean.txt` and shows up as a valid and missed word in the HARMONY/R puzzle. Add it to the 999.9 word-list review / profanity filter.
 - [ ] **Swift 6 readiness:** the Release archive emits actor-isolation warnings. They are not errors in Swift 5 mode, but will be in Swift 6 mode:

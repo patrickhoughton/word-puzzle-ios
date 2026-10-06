@@ -140,8 +140,9 @@ into v1.0 and tested on device.** Consequences:
 3. **Screenshot UI hides the 6.9" set:** the new ASC media UI shows "iPhone with Dynamic Island (medium
    display)" by default; the `APP_IPHONE_67` (6.9") set uploaded via API only appears under **View All
    Sizes in Media Manager**. An "iPhone Duo" tab exists but submission did not require it.
-4. Mac / Vision Pro availability: uncheck steps were given to Patrick but he has **not explicitly
-   confirmed** doing them — pending confirmation (see checklist).
+4. Mac / Vision Pro availability: **confirmed unchecked** — Patrick's Pricing and Availability
+   screenshot (2026-10-05) shows both "Make this app available" (Apple silicon Mac) and "Make this app
+   available on Apple Vision Pro" unchecked.
 
 ## Per-step confirmation (plan Task 2, what was actually set)
 1. App Privacy — **Data Not Collected**, completed by Patrick in the UI 2026-10-05 (submission accepted).
@@ -150,7 +151,7 @@ into v1.0 and tested on device.** Consequences:
    category Games > Word + Puzzle; age rating 4+ (read back `FOUR_PLUS`).
 3. Screenshots — 4 x iPhone 6.9" (`APP_IPHONE_67`) + 4 x iPad 13" (`APP_IPAD_PRO_3GEN_129`) uploaded via
    API, all `COMPLETE`, order 01→04.
-4. Availability — iPad yes; Mac and Vision Pro **pending Patrick's confirmation** that they were unchecked.
+4. Availability — iPad yes; Mac and Vision Pro **confirmed unchecked** (Patrick's Pricing and Availability screenshot, 2026-10-05).
 5. URLs — Privacy Policy `https://apps.threemilebridge.com/wordpuzzle/privacy/`, Support
    `https://apps.threemilebridge.com/wordpuzzle/support/` (API, 2026-10-04).
 6. Review Notes — PATCHed 2026-10-05 with tutorial-skip + paywall steps, read back.
@@ -320,7 +321,7 @@ Contact: phoughton@threemilebridge.com
 - [x] Paywall discoverable — step-by-step path in App Review Notes (drafted above)
 - [x] Encryption export compliance: `ITSAppUsesNonExemptEncryption = NO` (05-04)
 - [x] Privacy label "Data Not Collected" published (Patrick, UI, 2026-10-05 — required by and accepted for submission)
-- [ ] Mac and Vision Pro availability unchecked — **pending Patrick's explicit confirmation** (steps given; not confirmed)
+- [x] Mac and Vision Pro availability unchecked — confirmed by Patrick's Pricing and Availability screenshot (2026-10-05)
 - [x] Screenshots for all required sizes generated (re-captured 2026-10-05 after Phases 6-12: 4 x iPhone 6.9" + 4 x iPad 13")
 - [x] Screenshots uploaded 2026-10-05 (4 x iPhone 6.9" + 4 x iPad 13", all COMPLETE, read back)
 - [x] Privacy Policy URL published and set (apps.threemilebridge.com, 2026-10-04)
