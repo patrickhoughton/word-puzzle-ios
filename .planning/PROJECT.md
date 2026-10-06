@@ -26,10 +26,12 @@ Endless, fresh word puzzles that generate algorithmically from a local dictionar
 - [x] First-time players get a guided ~2-minute tutorial on a scripted practice board (DOLPHIN, center P) teaching tap/drag, the required center letter, swipe-down submit, delete/clear, shuffle, pangrams and the found-words view; it never records stats or touches the real round, can be skipped, and replays from Settings > How to Play — Phase 11 (first-launch-tutorial), approved on a physical iPhone 15 Pro 2026-10-04
 - [x] Player can flick or wind the outer ring of letters like a prize wheel: 1:1 dial tracking from any off-tile touch, inertial coast that settles onto whole slots, per-slot haptic + synthesized peg-wheel tick, grab-to-stop, Shuffle cancels a spin, Reduce Motion snap, cosmetic "Full circle!" jackpot, and a tutorial "Give it a spin" step — Phase 12 (inertial-flick-spin-outer-letters), approved on a physical iPhone 15 Pro 2026-10-05
 
+- [x] App works fully offline (local dictionary, no network required) — Phase 5 (polish-compliance-app-store): Airplane Mode verified on device in 05-06; `scripts/compliance-guards.sh` Guard 1 proves no networking API in the app target
+- [x] Sound effects with a persistent on/off toggle, Dynamic Type support, custom icon, Data Not Collected privacy label and App Store listing (screenshots, keywords) — Phase 5 (polish-compliance-app-store), v1.0 build 2 + Unlimited Puzzles IAP submitted to App Review 2026-10-05
+
 ### Active
 
-- [ ] App works fully offline (local dictionary, no network required)
-- [ ] App is available on the iOS App Store
+- [ ] App is available on the iOS App Store — submitted 2026-10-05, WAITING_FOR_REVIEW, Manual Release; done once Apple approves and Patrick presses Release
 
 ### Out of Scope
 
@@ -85,4 +87,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-05 after Phase 12 (inertial-flick-spin-outer-letters) completion — outer ring spins with physics-based inertia and settles on slots; tutorial gains a spin step (10 steps).*
+*Last updated: 2026-10-06 after Phase 5 (polish-compliance-app-store) completion — v1.0 build 2 and the Unlimited Puzzles IAP submitted to App Review (Manual Release); all v1.0 phases complete.*
