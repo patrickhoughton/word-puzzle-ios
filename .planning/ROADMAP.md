@@ -16,7 +16,7 @@ Build bottom-up: a reliable word engine first, then persistence and IAP entitlem
 - [x] **Phase 2: Persistence & Entitlements** - SwiftData models for game history and daily usage; StoreKit 2 entitlement check for premium status (completed 2026-08-29)
 - [x] **Phase 3: Core Game UI** - Playable game on a real device: letter display, word input, validation feedback, scoring, end-of-round reveal, haptics (completed 2026-08-29)
 - [x] **Phase 4: Paywall & Free Tier Gate** - 3-puzzle daily limit enforced; paywall screen with Restore Purchases; IAP purchase and restore flows sandbox-tested (completed 2026-08-31)
-- [ ] **Phase 5: Polish, Compliance & App Store** - Sound effects, Dynamic Type, offline verification, privacy label, app icon, screenshots, ASO
+- [x] **Phase 5: Polish, Compliance & App Store** - Sound effects, Dynamic Type, offline verification, privacy label, app icon, screenshots, ASO (completed 2026-10-06)
 - [x] **Phase 6: Differentiated Invalid-Word Messaging** - Distinct feedback for too-short, not-in-dictionary and already-found submissions (completed 2026-10-04)
 - [x] **Phase 7: Found Words View** - In-round list of found words, grouped by length (completed 2026-10-04)
 - [x] **Phase 8: All-Pangrams Bonus** - Extra bonus and callout for finding every pangram in a puzzle (completed 2026-10-04)
@@ -239,7 +239,7 @@ Plans:
 | 2. Persistence & Entitlements | 5/5 | Complete   | 2026-08-29 |
 | 3. Core Game UI | 5/5 | Complete | 2026-08-29 |
 | 4. Paywall & Free Tier Gate | 4/4 | Complete | 2026-08-31 |
-| 5. Polish, Compliance & App Store | 8/8 | In Progress | - |
+| 5. Polish, Compliance & App Store | 8/8 | Complete    | 2026-10-06 |
 | 6. Differentiated Invalid-Word Messaging | 2/2 | Complete | 2026-10-04 |
 | 7. Found Words View | 3/3 | Complete | 2026-10-04 |
 | 8. All-Pangrams Bonus | 6/6 | Complete   | 2026-10-04 |
