@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Completed 05-08-PLAN.md (v1.0 submitted, WAITING_FOR_REVIEW)
-last_updated: "2026-10-06T00:37:36.445Z"
+status: awaiting-review
+stopped_at: Phase 5 complete; v1.0 build 2 + IAP WAITING_FOR_REVIEW (Manual Release)
+last_updated: "2026-10-06T00:42:57.000Z"
 last_activity: 2026-10-06
 progress:
   total_phases: 14
@@ -18,10 +18,10 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-08-27)
+See: .planning/PROJECT.md (updated 2026-10-06)
 
 **Core value:** Endless, fresh word puzzles that generate algorithmically from a local dictionary — no internet, no content team, no ongoing maintenance.
-**Current focus:** v1.0 submitted for App Review (05-08 complete) — awaiting review; Phase 5 verification pending
+**Current focus:** v1.0 is in App Review (submission 3699c1dc-49a9-472c-80b1-cb3eaeab2db1, submitted 2026-10-05 7:13 PM). All 12 v1.0 phases complete. Waiting on Apple's decision email (to mrpatrickhoughton@icloud.com).
 
 ## Current Position
 
@@ -143,7 +143,16 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+**On App Review outcome (next session starts here):**
+- Check status: `python3 scripts/appstoreconnect.py get "/v1/appStoreVersions/03ce47c4-7f3d-41dc-9df4-456ae869dd76?fields[appStoreVersions]=appStoreState"` and IAP `"/v2/inAppPurchases/6806386464?fields[inAppPurchases]=state"` (run exactly like this — no pipes — so the allow rule matches).
+- If APPROVED: Patrick presses **Release This Version** in ASC (Manual Release), then mark UAT item 1 in 05-HUMAN-UAT.md passed, PROJECT.md "available on the App Store" → Validated, then `/gsd:complete-milestone`.
+- If REJECTED: get the Resolution Center text from Patrick, fix, bump build number (next is 1.0 (3)), archive/upload, resubmit with the IAP in the same submission.
+
+**Open UAT (05-HUMAN-UAT.md, status partial):** AX5 on Phase 8/12 UI (known: iPhone 17e AX5 score card top + Finish Round bottom clip, from 11-06); Airplane Mode re-test of build 2 + offline paywall on a non-entitled tester; Settings gear on a physical iPad.
+
+**v1.0.1 / backlog candidates:** remove `marrano` (slur) from enable-clean.txt (fold into 999.9); fix Swift 6 actor-isolation warnings (RingSpinController, SpinFeedback, TutorialController); iPhone 17e AX5 clipping; backlog 999.9 (word-list coverage) and 999.10 (rejected-word logging).
+
+**Business (outside repo, Patrick):** Small Business Program applied 2026-10-06 (awaiting acceptance); Paid Apps bank account is Patrick's personal account until the LLC opens a business account — then switch (Add Bank Account → Same as Legal Entity). W-9 (LLC – Partnership, EIN, Form 1065) is correct.
 
 ### Blockers/Concerns
 
@@ -155,8 +164,11 @@ None yet.
 - 05-06: GameView's Settings gear button (`Image(systemName: "gearshape")`) does not render at all in the iPhone 17 Simulator — confirmed absent both before and after a full uninstall/reinstall, at default AND AX5 text sizes — but renders correctly on a physical iPhone 15 Pro. Root cause not investigated further once the physical-device render was confirmed; likely another Xcode 26.6/iOS 26.5 Simulator quirk in the same family as the 02-04 StoreKit bug, not a code defect. Relevant for any future Simulator-only QA pass on this screen — use a physical device to confirm gear visibility, not just the Simulator.
 - 05-06: iPhone 17 Simulator's logical screen width (~402pt) is wider than a real iPhone 15 Pro (~393pt) — an AX5 Dynamic Type check that passes cleanly in Simulator can still truncate text on a real device. Caught GameView/ScoreBarView/WordDisplayView truncation this way (see 05-06-MANUAL-QA.md and commit 8ee88d6); any future AX5 layout check should be verified on a physical device, not just Simulator, before marking it a pass.
 
+- 2026-10-06: `gsd-tools phase complete 5` wrongly rewrote backlog 999.9's "**Plans:** 0 plans" to "8/8 plans complete" and set Current Position to "Phase 06 / Not started" (Phase 6 was already done). Both hand-fixed. Always diff ROADMAP/STATE after `phase complete`.
+- App Store Connect writes from Claude need the local allow rules in `.claude/settings.local.json` (`Bash(python3 scripts/asc_upload_assets.py:*)`, `Bash(python3 scripts/appstoreconnect.py:*)`, `Bash(xcodebuild:*)`) AND a direct go-ahead from Patrick; a command with a pipe/prefix doesn't match the rule and gets denied.
+
 ## Session Continuity
 
-Last session: 2026-10-06T00:16:13.620Z
-Stopped at: Completed 05-08-PLAN.md (v1.0 submitted, WAITING_FOR_REVIEW)
+Last session: 2026-10-06T00:42:57.000Z
+Stopped at: Phase 5 complete and committed; v1.0 waiting for App Review. Nothing in progress, no uncommitted work.
 Resume file: None
