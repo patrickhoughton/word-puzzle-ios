@@ -116,7 +116,7 @@ Plans:
 - [x] 05-05-PLAN.md — SettingsView sound toggle, GameView gear entry point, four D-01 SFX call sites (Wave 2)
 - [x] 05-06-PLAN.md — Manual QA: AX5 Dynamic Type on every screen, sound behaviour, Airplane Mode on device (Wave 3)
 - [x] 05-07-PLAN.md — 6.9in Simulator captures + captioned 1320x2868 App Store screenshots (Wave 3)
-- [ ] 05-08-PLAN.md — App Store Connect: Data Not Collected privacy label, listing metadata, keywords, uploads (Wave 4)
+- [x] 05-08-PLAN.md — App Store Connect: Data Not Collected privacy label, listing metadata, keywords, uploads (Wave 4)
 **UI hint**: yes
 **Note (2026-10-04)**: 05-08 finishes after Phase 11 -- v1.0 submission is on hold so the backlog features ship in v1.0; screenshots are re-captured and uploaded then.
 

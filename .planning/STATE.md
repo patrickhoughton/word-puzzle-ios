@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 12 context gathered
-last_updated: "2026-10-05T22:52:25.773Z"
+stopped_at: Completed 05-08-PLAN.md (v1.0 submitted, WAITING_FOR_REVIEW)
+last_updated: "2026-10-06T00:16:13.623Z"
 last_activity: 2026-10-05
 progress:
   total_phases: 14
-  completed_phases: 11
+  completed_phases: 12
   total_plans: 60
-  completed_plans: 59
-  percent: 97
+  completed_plans: 60
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-27)
 
 **Core value:** Endless, fresh word puzzles that generate algorithmically from a local dictionary — no internet, no content team, no ongoing maintenance.
-**Current focus:** Phase 12 — inertial-flick-spin-outer-letters
+**Current focus:** v1.0 submitted for App Review (05-08 complete) — awaiting review; Phase 5 verification pending
 
 ## Current Position
 
-Phase: 999.9
-Plan: Not started
-Status: Executing Phase 12
+Phase: 05 (polish-compliance-app-store) — all 8 plans complete; phase verification pending
+Plan: 05-08 complete (v1.0 build 2 + IAP WAITING_FOR_REVIEW, Manual Release)
+Status: Awaiting App Review; next: phase-5 verification, confirm Mac/Vision Pro unchecked, Release after approval
 Last activity: 2026-10-05
 
-Progress: [███████████████████░] 97% (29/30 plans; 05-08 App Store listing still pending; Phases 8-12 unplanned)
+Progress: [████████████████████] 100% (60/60 plans; v1.0 submitted 2026-10-05, WAITING_FOR_REVIEW)
 
 ## Performance Metrics
 
@@ -82,6 +82,7 @@ Progress: [███████████████████░] 97% (29
 | Phase 11 P04 | 15min | 2 tasks | 2 files |
 | Phase 11 P05 | 15min | 2 tasks | 3 files |
 | Phase 11 P06 | n/a | 3 tasks | 4 files |
+| Phase 05 P08 | ~2 sessions | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -137,6 +138,8 @@ Recent decisions affecting current work:
 - [Backlog review 2026-10-04]: Promoted 999.3->Phase 6, 999.2->7, 999.8->8, 999.1->9, 999.6->10, 999.7->11, 999.4->12 (tutorial last so it teaches everything). 999.9/999.10/999.11 stay in backlog. [2026-10-04 later: 999.11 promoted by hand to Phase 12 — Inertial Flick-to-Spin.] gsd-tools `phase add` would have numbered new phases 1000+ (its regex treats "Phase 999.x" headers as the max phase), so promotion was done by hand -- use `phase insert` or manual edits for future promotions.
 - [Phase 07]: FoundWordsView omits pangrams Set param; FoundWord carries isPangram
 - [Phase 11]: AX5 tutorial banner capped at 20% screen height, Skip pinned below scrolling text
+- [Phase 05]: First IAP must be added to the same draft review submission as the version (ASC does not include it automatically)
+- [Phase 05]: App price Free (USD base); Content Rights = third-party content with rights held (ENABLE public domain)
 
 ### Pending Todos
 
@@ -154,6 +157,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-10-05T21:39:26.836Z
-Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-inertial-flick-spin-outer-letters/12-CONTEXT.md
+Last session: 2026-10-06T00:16:13.620Z
+Stopped at: Completed 05-08-PLAN.md (v1.0 submitted, WAITING_FOR_REVIEW)
+Resume file: None

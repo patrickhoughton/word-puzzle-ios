@@ -1,13 +1,13 @@
 ---
 phase: 5
 plan: 08
-status: draft
+status: submitted
 ---
 
 # App Store Listing — Word Puzzle Unlimited v1.0
 
 Every value Patrick will set in App Store Connect, drafted within Apple's limits.
-Status `draft` until the values are confirmed live in App Store Connect.
+Status `submitted` — v1.0 (build 2) + IAP submitted for review 2026-10-05; values below are what is live in App Store Connect.
 
 ## Current App Store Connect state (API read-back, 2026-10-03)
 
@@ -117,6 +117,45 @@ into v1.0 and tested on device.** Consequences:
 - NOT done (by design): Submit for Review. Still open for Patrick (UI only): App Privacy "Data Not
   Collected", uncheck Mac + Vision Pro, confirm no export-compliance prompt in the UI, and make sure
   the IAP (READY_TO_SUBMIT) is included with the first version submission.
+
+**2026-10-05 — SUBMITTED FOR REVIEW (Patrick, App Store Connect UI; facts from orchestrator API read-backs + Patrick's screenshots):**
+- Review submission `3699c1dc-49a9-472c-80b1-cb3eaeab2db1`, submitted 7:13 PM, **2 items**: version 1.0
+  (build 2) and IAP `6806386464`. Version `appStoreState WAITING_FOR_REVIEW`, `releaseType MANUAL`;
+  IAP `WAITING_FOR_REVIEW`.
+- `GET /v1/apps/6806385553/appInfos` (read-back by executor): appInfo `ee6e2274-5da6-46e9-b0df-6ecc38cd3ae5`
+  `state WAITING_FOR_REVIEW`, `appStoreState WAITING_FOR_REVIEW`, `appStoreAgeRating FOUR_PLUS`.
+- **No export compliance prompt appeared** (build 2 `usesNonExemptEncryption false`).
+- App Privacy questionnaire completed as **Data Not Collected** (submission requires it; it went through).
+
+**Lessons — App Store Connect surprises on this first submission (reuse next time):**
+1. **A first IAP is NOT added automatically.** The first submission (7:04 PM) held only the version even
+   though the IAP was `READY_TO_SUBMIT`. Patrick cancelled it (version went to `DEVELOPER_REJECTED`,
+   which is resubmittable). Fix in the new ASC UI: add the IAP to a draft submission from the IAP's own
+   page, then put the version into that same draft via **Add for Review** dropdown → "Draft Submission (1)".
+   A first IAP must be explicitly included with the version submission.
+2. **"Add for Review" was blocked by two unset items the API work never touched:**
+   - *Content Rights* — answered **Yes, contains third-party content, and the rights are held** (the ENABLE
+     word list is public domain).
+   - *App price tier* — none was set; now **Free, USD base** (the IAP carries the $2.99).
+3. **Screenshot UI hides the 6.9" set:** the new ASC media UI shows "iPhone with Dynamic Island (medium
+   display)" by default; the `APP_IPHONE_67` (6.9") set uploaded via API only appears under **View All
+   Sizes in Media Manager**. An "iPhone Duo" tab exists but submission did not require it.
+4. Mac / Vision Pro availability: uncheck steps were given to Patrick but he has **not explicitly
+   confirmed** doing them — pending confirmation (see checklist).
+
+## Per-step confirmation (plan Task 2, what was actually set)
+1. App Privacy — **Data Not Collected**, completed by Patrick in the UI 2026-10-05 (submission accepted).
+2. Listing metadata — name `Word Puzzle Unlimited`, subtitle `Endless offline word puzzles`, keywords
+   (97 chars, below) set via API; description (1824) + promo (168) PATCHed and read back 2026-10-05;
+   category Games > Word + Puzzle; age rating 4+ (read back `FOUR_PLUS`).
+3. Screenshots — 4 x iPhone 6.9" (`APP_IPHONE_67`) + 4 x iPad 13" (`APP_IPAD_PRO_3GEN_129`) uploaded via
+   API, all `COMPLETE`, order 01→04.
+4. Availability — iPad yes; Mac and Vision Pro **pending Patrick's confirmation** that they were unchecked.
+5. URLs — Privacy Policy `https://apps.threemilebridge.com/wordpuzzle/privacy/`, Support
+   `https://apps.threemilebridge.com/wordpuzzle/support/` (API, 2026-10-04).
+6. Review Notes — PATCHed 2026-10-05 with tutorial-skip + paywall steps, read back.
+7. Export compliance — **no prompt**; builds 1 and 2 report `usesNonExemptEncryption false`.
+8. Release option — **Manual Release** (`releaseType MANUAL`, read back while `WAITING_FOR_REVIEW`).
 
 ## Listing values
 
@@ -280,8 +319,8 @@ Contact: phoughton@threemilebridge.com
 - [x] Restore Purchases button present (MON-03, Phase 4)
 - [x] Paywall discoverable — step-by-step path in App Review Notes (drafted above)
 - [x] Encryption export compliance: `ITSAppUsesNonExemptEncryption = NO` (05-04)
-- [ ] Privacy label "Data Not Collected" published (Task 2 — UI only, no API exists)
-- [ ] Mac and Vision Pro availability unchecked (Task 2)
+- [x] Privacy label "Data Not Collected" published (Patrick, UI, 2026-10-05 — required by and accepted for submission)
+- [ ] Mac and Vision Pro availability unchecked — **pending Patrick's explicit confirmation** (steps given; not confirmed)
 - [x] Screenshots for all required sizes generated (re-captured 2026-10-05 after Phases 6-12: 4 x iPhone 6.9" + 4 x iPad 13")
 - [x] Screenshots uploaded 2026-10-05 (4 x iPhone 6.9" + 4 x iPad 13", all COMPLETE, read back)
 - [x] Privacy Policy URL published and set (apps.threemilebridge.com, 2026-10-04)
@@ -289,7 +328,11 @@ Contact: phoughton@threemilebridge.com
 - [x] IAP metadata complete — review screenshot uploaded 2026-10-05; state `READY_TO_SUBMIT`
 - [x] Release option set to Manual Release (API, 2026-10-04)
 - [x] Final build archived and uploaded — 1.0 (2) uploaded 2026-10-05, VALID
-- [x] Export compliance — builds 1 and 2 report `usesNonExemptEncryption false` via API (UI check still Patrick's)
+- [x] Export compliance — builds 1 and 2 report `usesNonExemptEncryption false`; no prompt appeared at submission
 - [x] Refreshed Description / Promotional Text / Review Notes pushed and read back (2026-10-05)
 - [x] Build 1.0 (2) attached to version 1.0 (read back)
-- [ ] IAP included with the version submission (at Submit for Review time)
+- [x] IAP included with the version submission (submission `3699c1dc-…`, 2 items, after the 7:04 PM version-only attempt was cancelled)
+- [x] Content Rights answered (Yes — third-party content, rights held; ENABLE is public domain)
+- [x] App price set (Free, USD base)
+- [x] Submitted for review 2026-10-05 7:13 PM — version + IAP `WAITING_FOR_REVIEW`
+- [ ] After approval: press Release (Manual Release)
