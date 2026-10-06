@@ -239,7 +239,7 @@ Plans:
 | 2. Persistence & Entitlements | 5/5 | Complete   | 2026-08-29 |
 | 3. Core Game UI | 5/5 | Complete | 2026-08-29 |
 | 4. Paywall & Free Tier Gate | 4/4 | Complete | 2026-08-31 |
-| 5. Polish, Compliance & App Store | 7/8 | In Progress | - |
+| 5. Polish, Compliance & App Store | 8/8 | In Progress | - |
 | 6. Differentiated Invalid-Word Messaging | 2/2 | Complete | 2026-10-04 |
 | 7. Found Words View | 3/3 | Complete | 2026-10-04 |
 | 8. All-Pangrams Bonus | 6/6 | Complete   | 2026-10-04 |
