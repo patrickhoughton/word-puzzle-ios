@@ -143,6 +143,8 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
+**Review history:** 2026-10-07 Apple returned Guideline 2.1 "Information Needed" (standard for new developer accounts): asked for a physical-device screen recording plus purpose/audience, setup, external services, regional differences, third-party material and IAP overview. Patrick recorded build 2 via TestFlight (fresh install, paywall reached after 3 rounds, TestFlight purchase), replied in the Resolution Center with the video, and the same text was pushed to App Review Notes via API (3.1K chars; ENABLE public domain + Kenney CC0 sounds; no external services). Resubmitted the SAME submission 3699c1dc 2026-10-07 22:56 UTC — version + IAP both WAITING_FOR_REVIEW. (Resubmit stays greyed until the rejected version row's Edit → re-add to the existing submission.)
+
 **On App Review outcome (next session starts here):**
 - Check status: `python3 scripts/appstoreconnect.py get "/v1/appStoreVersions/03ce47c4-7f3d-41dc-9df4-456ae869dd76?fields[appStoreVersions]=appStoreState"` and IAP `"/v2/inAppPurchases/6806386464?fields[inAppPurchases]=state"` (run exactly like this — no pipes — so the allow rule matches).
 - If APPROVED: Patrick presses **Release This Version** in ASC (Manual Release), then mark UAT item 1 in 05-HUMAN-UAT.md passed, PROJECT.md "available on the App Store" → Validated, then `/gsd:complete-milestone`.
