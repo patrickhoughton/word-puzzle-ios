@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: awaiting-review
-stopped_at: Phase 5 complete; v1.0 build 2 + IAP WAITING_FOR_REVIEW (Manual Release)
-last_updated: "2026-10-06T00:42:57.000Z"
+stopped_at: v1.0 resubmitted after 2.1 Information Needed; build 2 + IAP WAITING_FOR_REVIEW (Manual Release)
+last_updated: "2026-10-07T22:57:55.000Z"
 last_activity: 2026-10-06
 progress:
   total_phases: 14
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-06)
 
 **Core value:** Endless, fresh word puzzles that generate algorithmically from a local dictionary — no internet, no content team, no ongoing maintenance.
-**Current focus:** v1.0 is in App Review (submission 3699c1dc-49a9-472c-80b1-cb3eaeab2db1, submitted 2026-10-05 7:13 PM). All 12 v1.0 phases complete. Waiting on Apple's decision email (to mrpatrickhoughton@icloud.com).
+**Current focus:** v1.0 is in App Review (submission 3699c1dc-49a9-472c-80b1-cb3eaeab2db1, submitted 2026-10-05, resubmitted 2026-10-07 22:56 UTC after a 2.1 Information Needed request). All 12 v1.0 phases complete. Waiting on Apple's decision email (to mrpatrickhoughton@icloud.com).
 
 ## Current Position
 
 Phase: 05 (polish-compliance-app-store) — complete 2026-10-06 (verified human_needed; 4 UAT items open in 05-HUMAN-UAT.md)
 Plan: All v1.0 phases (1-12) complete; only backlog 999.x remains
 Status: Awaiting App Review (v1.0 build 2 + IAP); next: Release after approval, then /gsd:complete-milestone
-Last activity: 2026-10-06
+Last activity: 2026-10-07
 
 Progress: [████████████████████] 100% (60/60 plans; v1.0 submitted 2026-10-05, WAITING_FOR_REVIEW)
 
@@ -171,6 +171,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-10-06T00:42:57.000Z
-Stopped at: Phase 5 complete and committed; v1.0 waiting for App Review. Nothing in progress, no uncommitted work.
+Last session: 2026-10-07T22:57:55.000Z
+Stopped at: v1.0 resubmitted 2026-10-07 (answered Apple's 2.1 Information Needed request); waiting for App Review. Nothing in progress, no uncommitted work. Full reply text + review history in 05-08-APP-STORE-LISTING.md.
 Resume file: None

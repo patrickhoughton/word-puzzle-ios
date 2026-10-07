@@ -144,6 +144,22 @@ into v1.0 and tested on device.** Consequences:
    screenshot (2026-10-05) shows both "Make this app available" (Apple silicon Mac) and "Make this app
    available on Apple Vision Pro" unchecked.
 
+**2026-10-07 — Guideline 2.1 "Information Needed" round:**
+- Apple (2026-10-05 10:13 PM) asked, as it does for new developer accounts, for a physical-device screen
+  recording from launch (incl. the paid flow) plus written answers: purpose/audience, setup, external
+  services, regional differences, regulated/third-party material, IAP overview — in a Resolution Center
+  reply AND in the Notes field. Version went `REJECTED` (2.1.0 Performance: App Completeness), IAP back to
+  `READY_TO_SUBMIT`, submission `UNRESOLVED_ISSUES`.
+- Recording: build 2 installed via TestFlight internal testing (the Wi-Fi dev install already owned the
+  IAP, so the paywall never showed), fresh install, tutorial → rounds → unlock screen (Restore Purchases
+  button visible) → TestFlight purchase. Restore itself was not demonstrated (not possible after purchase;
+  not required).
+- Notes field replaced via API (HTTP 200, read back; 3.1K chars) with the text below; two Resolution
+  Center replies sent with the same video (second one with the corrected Restore sentence).
+- Resubmitted the SAME submission `3699c1dc…` at 2026-10-07 22:56 UTC: "Resubmit to App Review" stayed
+  greyed until the rejected version row's **Edit** → re-added to the existing submission. Read back: version
+  1.0 + IAP both `WAITING_FOR_REVIEW`, release `MANUAL`.
+
 ## Per-step confirmation (plan Task 2, what was actually set)
 1. App Privacy — **Data Not Collected**, completed by Patrick in the UI 2026-10-05 (submission accepted).
 2. Listing metadata — name `Word Puzzle Unlimited`, subtitle `Endless offline word puzzles`, keywords
@@ -256,17 +272,30 @@ Set via API 2026-10-04; read back 2026-10-05.
 ### App Review Information
 - Sign-in required: **No** (no demo account needed)
 - Contact: Patrick Houghton — phone/email entered privately in App Store Connect
-- **Notes:** (updated 2026-10-05 for the Phase 11 first-launch tutorial — the live App Review
-  details still carry the 2026-10-04 notes without the tutorial paragraph; push needed)
+- **Notes:** (replaced 2026-10-07 in answer to Apple's Guideline 2.1 "Information Needed" request; this
+  exact text is live in App Review Information → Notes, read back via API, and was also sent as the
+  Resolution Center reply with the screen recording attached)
 ```
-The app works fully offline and requires no login, demo account or network connection.
+1. SCREEN RECORDING
+Attached: a screen recording captured on an iPhone 15 Pro running the latest iOS, starting from app launch. It shows the first-launch tutorial, a full round of play, the end-of-round results, Stats and Settings, and the in-app purchase: reaching the unlock screen after the third free puzzle (which shows the price and the "Restore Purchases" button) and buying "Unlimited Puzzles". The app has no account registration, login or user-generated content.
 
-First launch: a short interactive tutorial runs on a practice board. Tap "Skip tutorial" in the instruction banner to go straight to the first real puzzle (or complete the steps and tap Finish Round). The practice board does not count toward the daily limit.
+2. PURPOSE AND TARGET AUDIENCE
+Word Puzzle Unlimited is a single-player honeycomb word game for teens and adults who enjoy word puzzles. Players get seven letters with one required center letter and find as many words as they can. Popular puzzles of this kind offer one new puzzle per day. This app generates a fresh puzzle on the device every round from a bundled 170,000-word public-domain dictionary, so players can keep playing whenever they like, fully offline, with no account, no ads and no data collection.
 
-How to reach the in-app purchase (paywall):
-The paywall appears after a free user has started their third puzzle of the day. To reach it quickly: play and finish three rounds — tap letters to build a word, swipe down on the assembled word to submit it, then tap Finish Round, then tap Next Puzzle on the results screen. After the third round, tapping Next Puzzle shows the unlock screen with the price ($2.99), an "Unlock Unlimited Puzzles" button and a "Restore Purchases" button.
+3. SETUP AND MAIN FEATURES
+No login, demo account, sample files or network connection is needed. On first launch a short interactive tutorial runs on a practice board; tap "Skip tutorial" in the instruction banner to go straight to the first puzzle. To play: tap or drag across the letters to build a word, then swipe down on the word to submit it. Words must be at least four letters and include the gold center letter. Use the shuffle button, double-tap an empty area, or flick the outer ring of letters to rearrange them. Tap the score bar to see the words found so far, grouped by length. Tap "Finish Round" to see every word you missed, then "Next Puzzle" for a new puzzle. The Stats icon shows lifetime stats and streaks. The Settings gear has the "Sound Effects" toggle, "Stats" and "How to Play" (replays the tutorial).
 
-The in-app purchase is a single non-consumable ("Unlimited Puzzles", com.patrickhoughton.wordpuzzle.unlimited) that removes the 3-puzzles-per-day limit. There are no subscriptions.
+4. EXTERNAL SERVICES
+None. The app has no servers, makes no network calls, and uses no analytics, advertising, authentication or AI services. Puzzles are generated on the device from the bundled word list. The only external service is Apple’s In-App Purchase (StoreKit) for the single optional purchase.
+
+5. REGIONAL DIFFERENCES
+None. The app works the same in every region: English word list and English interface everywhere. The only difference is the in-app purchase price, which Apple localizes for each storefront.
+
+6. REGULATED INDUSTRY / THIRD-PARTY MATERIAL
+The app is not in a regulated industry. The only third-party material is the ENABLE word list (public domain) and sound effects from Kenney’s "Interface Sounds" pack (released under CC0, a public-domain dedication). No licensed or protected content is used.
+
+7. IN-APP PURCHASE
+One non-consumable purchase, "Unlimited Puzzles" (com.patrickhoughton.wordpuzzle.unlimited, US$2.99), removes the limit of 3 free puzzles per day. There are no subscriptions or consumables. To reach it: play and finish three rounds (build a word, swipe down to submit, tap "Finish Round", then "Next Puzzle"). After the third round, tapping "Next Puzzle" opens the unlock screen with the price, an "Unlock Unlimited Puzzles" button and a "Restore Purchases" button. The practice tutorial board does not count toward the daily limit.
 ```
 
 ### App Privacy questionnaire — **Data Not Collected**
