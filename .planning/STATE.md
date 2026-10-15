@@ -4,8 +4,8 @@ milestone: v1.0
 milestone_name: milestone
 status: awaiting-review
 stopped_at: v1.0 resubmitted after 2.1 Information Needed; build 2 + IAP WAITING_FOR_REVIEW (Manual Release)
-last_updated: "2026-10-07T22:57:55.000Z"
-last_activity: 2026-10-06
+last_updated: "2026-10-14T12:00:00.000Z"
+last_activity: 2026-10-14
 progress:
   total_phases: 14
   completed_phases: 12
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-06)
 Phase: 05 (polish-compliance-app-store) — complete 2026-10-06 (verified human_needed; 4 UAT items open in 05-HUMAN-UAT.md)
 Plan: All v1.0 phases (1-12) complete; only backlog 999.x remains
 Status: Awaiting App Review (v1.0 build 2 + IAP); next: Release after approval, then /gsd:complete-milestone
-Last activity: 2026-10-07
+Last activity: 2026-10-14 (accepted pending Apple agreements; still WAITING_FOR_REVIEW)
 
 Progress: [████████████████████] 100% (60/60 plans; v1.0 submitted 2026-10-05, WAITING_FOR_REVIEW)
 
@@ -145,6 +145,8 @@ Recent decisions affecting current work:
 
 **Review history:** 2026-10-07 Apple returned Guideline 2.1 "Information Needed" (standard for new developer accounts): asked for a physical-device screen recording plus purpose/audience, setup, external services, regional differences, third-party material and IAP overview. Patrick recorded build 2 via TestFlight (fresh install, paywall reached after 3 rounds, TestFlight purchase), replied in the Resolution Center with the video, and the same text was pushed to App Review Notes via API (3.1K chars; ENABLE public domain + Kenney CC0 sounds; no external services). Resubmitted the SAME submission 3699c1dc 2026-10-07 22:56 UTC — version + IAP both WAITING_FOR_REVIEW. (Resubmit stays greyed until the rejected version row's Edit → re-add to the existing submission.)
 
+**2026-10-14 status check:** version + IAP still WAITING_FOR_REVIEW (7 days after the 10/7 resubmission). ASC showed two pending agreements, likely what stalled the queue — Patrick accepted both on 10/14: the updated Apple Developer Program License Agreement (developer.apple.com) and the updated Paid Applications Schedule (Schedule 2, ASC → Business). Also verified the Sept 2026 social-media age-rating requirement is already satisfied (ageRatingDeclaration `socialMedia: false`, `socialMediaAgeRestricted: false`) — no action needed. If still WAITING_FOR_REVIEW around 2026-10-17, contact App Review via App Review → Contact Us (not expedited review).
+
 **On App Review outcome (next session starts here):**
 - Check status: `python3 scripts/appstoreconnect.py get "/v1/appStoreVersions/03ce47c4-7f3d-41dc-9df4-456ae869dd76?fields[appStoreVersions]=appStoreState"` and IAP `"/v2/inAppPurchases/6806386464?fields[inAppPurchases]=state"` (run exactly like this — no pipes — so the allow rule matches).
 - If APPROVED: Patrick presses **Release This Version** in ASC (Manual Release), then mark UAT item 1 in 05-HUMAN-UAT.md passed, PROJECT.md "available on the App Store" → Validated, then `/gsd:complete-milestone`.
@@ -171,6 +173,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-10-07T22:57:55.000Z
-Stopped at: v1.0 resubmitted 2026-10-07 (answered Apple's 2.1 Information Needed request); waiting for App Review. Nothing in progress, no uncommitted work. Full reply text + review history in 05-08-APP-STORE-LISTING.md.
+Last session: 2026-10-14
+Stopped at: 2026-10-14 accepted pending DPLA + Paid Applications Schedule; v1.0 + IAP still WAITING_FOR_REVIEW. Next: check status; if still waiting ~10/17, contact App Review. Nothing in progress, no uncommitted work. Full reply text + review history in 05-08-APP-STORE-LISTING.md.
 Resume file: None
