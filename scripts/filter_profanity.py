@@ -4,9 +4,13 @@
 # Usage: python3 filter_profanity.py enable1.txt ldnoobw-en.txt enable-clean.txt
 import sys
 
+# Slurs missing from LDNOOBW, added in v1.0.1
+EXTRA_BLOCKED = {"marrano"}
+
 def main(enable_path, blocklist_path, output_path):
     with open(blocklist_path, encoding="utf-8") as f:
         blocklist = {line.strip().lower() for line in f if line.strip()}
+    blocklist |= EXTRA_BLOCKED
     with open(enable_path, encoding="utf-8") as f:
         words = [line.strip().lower() for line in f if line.strip()]
     cleaned = [w for w in words if w not in blocklist]

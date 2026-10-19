@@ -31,12 +31,10 @@ final class AppStoreScreenshotTests: XCTestCase {
     private let stagedPuzzle = "harmony:r"
     /// Submitted before shot 1. Hand-picked so the round-end missed list (shot 3) shows
     /// only friendly words; the pangram is deliberately left unfound for its badge.
-    /// The four-letter words fill the top of the found-words sheet (shot 2), and
-    /// "marrano" (a historical slur) is submitted only so it never shows in the
-    /// missed list — it sits at the bottom of the sheet, below the medium detent.
+    /// The four-letter words fill the top of the found-words sheet (shot 2).
     private let stagedWords = ["honorary", "armory", "hooray", "horror", "maroon", "mayor",
                                "manor", "honor", "mammary", "moron", "roomy", "marry",
-                               "army", "horn", "norm", "roam", "marrano"]
+                               "army", "horn", "norm", "roam"]
     /// Left assembled but unsubmitted in shot 1, hinting at the pangram.
     private let inProgressWord = "harmo"
 

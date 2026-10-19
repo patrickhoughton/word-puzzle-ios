@@ -28,6 +28,12 @@ struct ProfanityTests {
         #expect(!blocklist.isEmpty, "Blocklist should not be empty")
         #expect(wl.words.isDisjoint(with: blocklist), "Word list contains blocked words!")
     }
+
+    @Test func testSlurDenylistNotInWordList() async {
+        let wl = WordList()
+        await wl.load()
+        #expect(!wl.contains("marrano"))
+    }
 }
 
 // Helper class so we can call Bundle(for:) from a struct test context
