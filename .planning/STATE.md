@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-06)
 Phase: 05 (polish-compliance-app-store) — complete 2026-10-06 (verified human_needed; 4 UAT items open in 05-HUMAN-UAT.md)
 Plan: All v1.0 phases (1-12) complete; only backlog 999.x remains
 Status: Awaiting App Review (v1.0 build 2 + IAP); next: Release after approval, then /gsd:complete-milestone
-Last activity: 2026-10-19 - Completed quick task 261019-o9k: persist in-progress round across launches; remove marrano (v1.0.1 hotfix, not yet shipped)
+Last activity: 2026-10-19 - v1.0.1 (3) submitted for review (quick task 261019-o9k: round persistence + relaunch free-puzzle fix + marrano removal)
 
 Progress: [████████████████████] 100% (60/60 plans; v1.0 submitted 2026-10-05, WAITING_FOR_REVIEW)
 
@@ -147,7 +147,9 @@ Recent decisions affecting current work:
 
 **2026-10-14 status check:** version + IAP still WAITING_FOR_REVIEW (7 days after the 10/7 resubmission). ASC showed two pending agreements, likely what stalled the queue — Patrick accepted both on 10/14: the updated Apple Developer Program License Agreement (developer.apple.com) and the updated Paid Applications Schedule (Schedule 2, ASC → Business). Also verified the Sept 2026 social-media age-rating requirement is already satisfied (ageRatingDeclaration `socialMedia: false`, `socialMediaAgeRestricted: false`) — no action needed. If still WAITING_FOR_REVIEW around 2026-10-17, contact App Review via App Review → Contact Us (not expedited review).
 
-**On App Review outcome (next session starts here):**
+**v1.0.1 (2026-10-19, next session starts here):** v1.0 is READY_FOR_SALE (IAP APPROVED). v1.0.1 build 3 fixes a user-reported bug (each relaunch generated a new puzzle and consumed a free daily puzzle) and removes `marrano`. Device-tested by Patrick. Submitted via API, AFTER_APPROVAL release. Check: `python3 scripts/appstoreconnect.py get "/v1/appStoreVersions/ca52a07d-84f8-4847-ba34-dd78e0baaed8?fields[appStoreVersions]=appStoreState"`. If rejected: next build is 1.0.1 (4). Version localizations do NOT copy promotionalText to a new version (whatsNew starts null too) — copy it by hand. `install-on-device.sh` auto-detect fails on Xcode 27.1 (devicectl JSON no longer reports reality=physical); pass the UDID 00008130-000914CE1883401C explicitly until fixed.
+
+**On v1.0 App Review outcome (historical):**
 - Check status: `python3 scripts/appstoreconnect.py get "/v1/appStoreVersions/03ce47c4-7f3d-41dc-9df4-456ae869dd76?fields[appStoreVersions]=appStoreState"` and IAP `"/v2/inAppPurchases/6806386464?fields[inAppPurchases]=state"` (run exactly like this — no pipes — so the allow rule matches).
 - If APPROVED: Patrick presses **Release This Version** in ASC (Manual Release), then mark UAT item 1 in 05-HUMAN-UAT.md passed, PROJECT.md "available on the App Store" → Validated, then `/gsd:complete-milestone`.
 - If REJECTED: get the Resolution Center text from Patrick, fix, bump build number (next is 1.0 (3)), archive/upload, resubmit with the IAP in the same submission.
@@ -180,5 +182,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-10-14
-Stopped at: 2026-10-19 v1.0 LIVE (READY_FOR_SALE, IAP APPROVED). v1.0.1 hotfix 261019-o9k committed + unit tests green; next: Patrick device-tests via install-on-device.sh, then bump to 1.0.1 build, archive/upload, submit version + nothing else (IAP already approved). Previously: 2026-10-14 accepted pending DPLA + Paid Applications Schedule; v1.0 + IAP still WAITING_FOR_REVIEW. Next: check status; if still waiting ~10/17, contact App Review. Nothing in progress, no uncommitted work. Full reply text + review history in 05-08-APP-STORE-LISTING.md.
+Stopped at: 2026-10-19 v1.0 LIVE. v1.0.1 (3) SUBMITTED 22:48 UTC — review submission 0f6e26c2-7b1e-4ae5-80e4-accd7195f1ca, version ca52a07d-84f8-4847-ba34-dd78e0baaed8, build c00a9982-ba5c-4c33-baf5-da9f94193c21, releaseType AFTER_APPROVAL (goes live automatically). Next: check status; then /gsd:complete-milestone.
 Resume file: None
