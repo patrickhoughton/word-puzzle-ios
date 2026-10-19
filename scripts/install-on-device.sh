@@ -26,9 +26,13 @@ devices = json.load(open(sys.argv[1]))["result"]["devices"]
 # Any paired physical iOS device qualifies: an idle Wi-Fi phone reports tunnelState
 # "disconnected" until something talks to it, and devicectl/xcodebuild open the tunnel
 # on demand. Prefer one whose tunnel is already up, then iPhones over iPads.
+# An idle Wi-Fi phone can also be listed before its hardware details arrive, with no
+# "reality" key at all, so exclude simulators rather than requiring reality=="physical".
+# devicectl also lists simulators; they report reality "simulated" / transport "sameMachine".
 paired = [d for d in devices
-          if d.get("hardwareProperties", {}).get("reality") == "physical"
-          and d.get("hardwareProperties", {}).get("platform") == "iOS"
+          if d.get("hardwareProperties", {}).get("reality") != "simulated"
+          and d.get("connectionProperties", {}).get("transportType") != "sameMachine"
+          and d.get("hardwareProperties", {}).get("platform", "iOS") == "iOS"
           and d.get("connectionProperties", {}).get("pairingState") == "paired"]
 paired.sort(key=lambda d: (d["connectionProperties"].get("tunnelState") != "connected",
                            d["hardwareProperties"].get("deviceType") != "iPhone"))
