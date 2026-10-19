@@ -123,9 +123,13 @@ final class GameViewModel {
     /// (button or double-tap). Never reset per round; `.sensoryFeedback` only needs it to change.
     private(set) var shuffleCount: Int = 0
 
-    init(wordList: WordList, persistenceStore: PersistenceStore? = nil) {
+    /// nil for the tutorial practice VM and most tests: such a VM never saves or restores a round.
+    private let roundStore: RoundSnapshotStore?
+
+    init(wordList: WordList, persistenceStore: PersistenceStore? = nil, roundStore: RoundSnapshotStore? = nil) {
         self.wordList = wordList
         self.persistenceStore = persistenceStore
+        self.roundStore = roundStore
     }
 
     // MARK: - Derived
@@ -216,6 +220,63 @@ final class GameViewModel {
     /// hard kill; writing at start time captures normal and abandoned rounds identically.
     func startNewRound(with puzzle: Puzzle) {
         persistenceStore?.recordRoundStarted()
+        resetRoundState(for: puzzle)
+        saveSnapshot()
+    }
+
+    /// Launch-only entry point. An unfinished saved round is restored first (it was already counted
+    /// at creation, so it bypasses the gate); otherwise falls through to `requestNextRound`.
+    /// "Next Puzzle" keeps calling `requestNextRound` directly.
+    func resumeOrRequestNextRound(isPremium: Bool) {
+        if restoreSavedRound() { return }
+        requestNextRound(isPremium: isPremium)
+    }
+
+    /// Restores the saved in-progress round, regardless of date. NEVER calls recordRoundStarted.
+    @discardableResult
+    func restoreSavedRound() -> Bool {
+        #if DEBUG
+        if UserDefaults.standard.string(forKey: "ScreenshotPuzzle") != nil { return false }
+        #endif
+        guard let snapshot = roundStore?.load() else { return false }
+        let letters = Array(snapshot.letters)
+        guard letters.count == 7, Set(letters).count == 7,
+              snapshot.centerLetter.count == 1,
+              let center = snapshot.centerLetter.first, letters.contains(center),
+              !snapshot.validWords.isEmpty else {
+            roundStore?.clear()
+            return false
+        }
+        let restored = Puzzle(letters: Set(letters), centerLetter: center,
+                              validWords: snapshot.validWords, pangrams: snapshot.pangrams)
+        resetRoundState(for: restored)
+        for word in snapshot.foundWords.reversed() {
+            // Structural checks only; deliberately no wordList.contains so already-found words survive list edits.
+            guard word.count >= 4, word.contains(center), Set(word).isSubset(of: restored.letters),
+                  !foundWordSet.contains(word) else { continue }
+            _ = applyAcceptedWord(word)
+        }
+        pendingCelebrations = []
+        lastSubmissionBonusEvents = []
+        lastOutcome = nil
+        return true
+    }
+
+    private func saveSnapshot() {
+        #if DEBUG
+        if UserDefaults.standard.string(forKey: "ScreenshotPuzzle") != nil { return }
+        #endif
+        guard let roundStore, let puzzle, roundPhase == .playing else { return }
+        roundStore.save(RoundSnapshot(
+            letters: String(puzzle.letters.sorted()),
+            centerLetter: String(puzzle.centerLetter),
+            validWords: puzzle.validWords,
+            pangrams: puzzle.pangrams,
+            foundWords: foundWords
+        ))
+    }
+
+    private func resetRoundState(for puzzle: Puzzle) {
         self.puzzle = puzzle
         self.pangramSet = Set(puzzle.pangrams)
         self.maxPossibleScore = ScoreCalculator.score(for: puzzle.validWords, pangrams: pangramSet)
@@ -246,6 +307,7 @@ final class GameViewModel {
         // Phase 9 D-11/D-13: the new lifetime stats are written once, at Finish Round only.
         persistenceStore?.record(score: score, wordsFoundCount: foundWords.count,
                                  rank: rank, pangramsFound: foundPangramCount, hadSweep: sweepBonus > 0)
+        roundStore?.clear()
         roundPhase = .roundOver
     }
 
@@ -281,6 +343,19 @@ final class GameViewModel {
         if foundWordSet.contains(word) { return reject(.alreadyFound) }
         if !wordList.contains(word) { return reject(.notAWord) }
 
+        let (points, isPangram, events) = applyAcceptedWord(word)
+        // All bonus state must be current BEFORE the counter bump GameView reacts to.
+        lastSubmissionBonusEvents = events
+        pendingCelebrations.append(contentsOf: events)
+
+        lastOutcome = .accepted(word: word, points: points, isPangram: isPangram)
+        acceptedSubmissionCount += 1
+        saveSnapshot()
+        return true
+    }
+
+    /// Accepted-word bookkeeping shared by live submission and snapshot replay.
+    private func applyAcceptedWord(_ word: String) -> (points: Int, isPangram: Bool, events: [CompletionEvent]) {
         foundWordSet.insert(word)
         foundWords.insert(word, at: 0)
         let isPangram = pangramSet.contains(word)
@@ -311,13 +386,7 @@ final class GameViewModel {
             let foundOrder = foundWords.reversed().filter { pangramSet.contains($0) }
             events.append(.pangramSweep(bonus: bonus, pangrams: foundOrder))   // D-17: after length
         }
-        // All bonus state must be current BEFORE the counter bump GameView reacts to.
-        lastSubmissionBonusEvents = events
-        pendingCelebrations.append(contentsOf: events)
-
-        lastOutcome = .accepted(word: word, points: points, isPangram: isPangram)
-        acceptedSubmissionCount += 1
-        return true
+        return (points, isPangram, events)
     }
 
     /// GameView drains celebrations one at a time (UI-SPEC 4/5: sequential, never overlapping).
