@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: awaiting-review
-stopped_at: v1.0 resubmitted after 2.1 Information Needed; build 2 + IAP WAITING_FOR_REVIEW (Manual Release)
-last_updated: "2026-10-14T12:00:00.000Z"
-last_activity: 2026-10-14
+status: completed
+stopped_at: "v1.0 milestone archived 2026-10-19; v1.0.1 (3) in App Review (automatic release). Next: /gsd:new-milestone"
+last_updated: "2026-10-19T22:53:16.093Z"
+last_activity: 2026-10-19
 progress:
   total_phases: 14
   completed_phases: 12
@@ -18,19 +18,19 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-06)
+See: .planning/PROJECT.md (updated 2026-10-19)
 
 **Core value:** Endless, fresh word puzzles that generate algorithmically from a local dictionary — no internet, no content team, no ongoing maintenance.
-**Current focus:** v1.0 is in App Review (submission 3699c1dc-49a9-472c-80b1-cb3eaeab2db1, submitted 2026-10-05, resubmitted 2026-10-07 22:56 UTC after a 2.1 Information Needed request). All 12 v1.0 phases complete. Waiting on Apple's decision email (to mrpatrickhoughton@icloud.com).
+**Current focus:** v1.0 shipped and archived (2026-10-19). v1.0.1 (3) in App Review with automatic release. Next: /gsd:new-milestone.
 
 ## Current Position
 
-Phase: 05 (polish-compliance-app-store) — complete 2026-10-06 (verified human_needed; 4 UAT items open in 05-HUMAN-UAT.md)
-Plan: All v1.0 phases (1-12) complete; only backlog 999.x remains
-Status: Awaiting App Review (v1.0 build 2 + IAP); next: Release after approval, then /gsd:complete-milestone
-Last activity: 2026-10-19 - v1.0.1 (3) submitted for review (quick task 261019-o9k: round persistence + relaunch free-puzzle fix + marrano removal)
+Milestone: v1.0 MVP — COMPLETE, archived 2026-10-19 (.planning/milestones/v1.0-ROADMAP.md, MILESTONES.md)
+Phase: none active — only backlog 999.9 / 999.10 remain
+Status: Between milestones; v1.0.1 (3) WAITING_FOR_REVIEW (automatic release)
+Last activity: 2026-10-19 - v1.0 milestone completed; v1.0.1 (3) submitted (quick task 261019-o9k: round save/restore + relaunch free-puzzle fix + marrano removal)
 
-Progress: [████████████████████] 100% (60/60 plans; v1.0 submitted 2026-10-05, WAITING_FOR_REVIEW)
+Progress: v1.0 [████████████████████] 100% (12 phases, 60 plans)
 
 ## Performance Metrics
 
@@ -150,6 +150,7 @@ Recent decisions affecting current work:
 **v1.0.1 (2026-10-19, next session starts here):** v1.0 is READY_FOR_SALE (IAP APPROVED). v1.0.1 build 3 fixes a user-reported bug (each relaunch generated a new puzzle and consumed a free daily puzzle) and removes `marrano`. Device-tested by Patrick. Submitted via API, AFTER_APPROVAL release. Check: `python3 scripts/appstoreconnect.py get "/v1/appStoreVersions/ca52a07d-84f8-4847-ba34-dd78e0baaed8?fields[appStoreVersions]=appStoreState"`. If rejected: next build is 1.0.1 (4). Version localizations do NOT copy promotionalText to a new version (whatsNew starts null too) — copy it by hand. `install-on-device.sh` auto-detect fixed 2026-10-19: an idle Wi-Fi iPhone can be listed without hardwareProperties.reality; the script now excludes simulators instead.
 
 **On v1.0 App Review outcome (historical):**
+
 - Check status: `python3 scripts/appstoreconnect.py get "/v1/appStoreVersions/03ce47c4-7f3d-41dc-9df4-456ae869dd76?fields[appStoreVersions]=appStoreState"` and IAP `"/v2/inAppPurchases/6806386464?fields[inAppPurchases]=state"` (run exactly like this — no pipes — so the allow rule matches).
 - If APPROVED: Patrick presses **Release This Version** in ASC (Manual Release), then mark UAT item 1 in 05-HUMAN-UAT.md passed, PROJECT.md "available on the App Store" → Validated, then `/gsd:complete-milestone`.
 - If REJECTED: get the Resolution Center text from Patrick, fix, bump build number (next is 1.0 (3)), archive/upload, resubmit with the IAP in the same submission.
