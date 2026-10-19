@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-06)
 Phase: 05 (polish-compliance-app-store) — complete 2026-10-06 (verified human_needed; 4 UAT items open in 05-HUMAN-UAT.md)
 Plan: All v1.0 phases (1-12) complete; only backlog 999.x remains
 Status: Awaiting App Review (v1.0 build 2 + IAP); next: Release after approval, then /gsd:complete-milestone
-Last activity: 2026-10-14 (accepted pending Apple agreements; still WAITING_FOR_REVIEW)
+Last activity: 2026-10-19 - Completed quick task 261019-o9k: persist in-progress round across launches; remove marrano (v1.0.1 hotfix, not yet shipped)
 
 Progress: [████████████████████] 100% (60/60 plans; v1.0 submitted 2026-10-05, WAITING_FOR_REVIEW)
 
@@ -171,8 +171,14 @@ Recent decisions affecting current work:
 - 2026-10-06: `gsd-tools phase complete 5` wrongly rewrote backlog 999.9's "**Plans:** 0 plans" to "8/8 plans complete" and set Current Position to "Phase 06 / Not started" (Phase 6 was already done). Both hand-fixed. Always diff ROADMAP/STATE after `phase complete`.
 - App Store Connect writes from Claude need the local allow rules in `.claude/settings.local.json` (`Bash(python3 scripts/asc_upload_assets.py:*)`, `Bash(python3 scripts/appstoreconnect.py:*)`, `Bash(xcodebuild:*)`) AND a direct go-ahead from Patrick; a command with a pipe/prefix doesn't match the rule and gets denied.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 261019-o9k | Persist in-progress round across launches (relaunch no longer burns a free puzzle); remove marrano | 2026-10-19 | 84caa1e | [261019-o9k-persist-in-progress-round-across-launche](./quick/261019-o9k-persist-in-progress-round-across-launche/) |
+
 ## Session Continuity
 
 Last session: 2026-10-14
-Stopped at: 2026-10-14 accepted pending DPLA + Paid Applications Schedule; v1.0 + IAP still WAITING_FOR_REVIEW. Next: check status; if still waiting ~10/17, contact App Review. Nothing in progress, no uncommitted work. Full reply text + review history in 05-08-APP-STORE-LISTING.md.
+Stopped at: 2026-10-19 v1.0 LIVE (READY_FOR_SALE, IAP APPROVED). v1.0.1 hotfix 261019-o9k committed + unit tests green; next: Patrick device-tests via install-on-device.sh, then bump to 1.0.1 build, archive/upload, submit version + nothing else (IAP already approved). Previously: 2026-10-14 accepted pending DPLA + Paid Applications Schedule; v1.0 + IAP still WAITING_FOR_REVIEW. Next: check status; if still waiting ~10/17, contact App Review. Nothing in progress, no uncommitted work. Full reply text + review history in 05-08-APP-STORE-LISTING.md.
 Resume file: None
