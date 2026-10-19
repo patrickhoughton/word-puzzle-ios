@@ -40,7 +40,7 @@ struct WordPuzzleApp: App {
         _persistenceStore = State(initialValue: store)
         _wordList = State(initialValue: list)
         _tutorial = State(initialValue: TutorialController(wordList: list))
-        _gameViewModel = State(initialValue: GameViewModel(wordList: list, persistenceStore: store))
+        _gameViewModel = State(initialValue: GameViewModel(wordList: list, persistenceStore: store, roundStore: RoundSnapshotStore()))
     }
 
     var body: some Scene {
@@ -72,7 +72,7 @@ struct WordPuzzleApp: App {
                     // The .loading guard means a real round is never started twice.
                     tutorial.onExit = { [gameViewModel, entitlementStore] mode in
                         guard mode == .firstLaunch, gameViewModel.roundPhase == .loading else { return }
-                        gameViewModel.requestNextRound(isPremium: entitlementStore.isPremium)
+                        gameViewModel.resumeOrRequestNextRound(isPremium: entitlementStore.isPremium)
                     }
                     // Phase 11 D-08/D-09/D-13: new installs with no history see the practice tutorial (premium
                     // included). The real VM stays .loading until Finish/Skip, so no RoundStartRecord is written
@@ -80,9 +80,10 @@ struct WordPuzzleApp: App {
                     if TutorialFlag.shouldShowOnLaunch(hasHistory: { persistenceStore.hasAnyHistory() }) {
                         tutorial.begin(mode: .firstLaunch)
                     } else {
-                        // D-01 trigger 2: on relaunch, a free user already at the daily
-                        // limit goes straight to .paywalled.
-                        gameViewModel.requestNextRound(isPremium: entitlementStore.isPremium)
+                        // An unfinished saved round is restored first, regardless of date, and is never
+                        // paywalled (it was already counted at creation). Otherwise D-01 trigger 2:
+                        // a free user already at the daily limit goes straight to .paywalled.
+                        gameViewModel.resumeOrRequestNextRound(isPremium: entitlementStore.isPremium)
                     }
                 }
         }
