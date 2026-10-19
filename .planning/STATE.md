@@ -147,7 +147,7 @@ Recent decisions affecting current work:
 
 **2026-10-14 status check:** version + IAP still WAITING_FOR_REVIEW (7 days after the 10/7 resubmission). ASC showed two pending agreements, likely what stalled the queue — Patrick accepted both on 10/14: the updated Apple Developer Program License Agreement (developer.apple.com) and the updated Paid Applications Schedule (Schedule 2, ASC → Business). Also verified the Sept 2026 social-media age-rating requirement is already satisfied (ageRatingDeclaration `socialMedia: false`, `socialMediaAgeRestricted: false`) — no action needed. If still WAITING_FOR_REVIEW around 2026-10-17, contact App Review via App Review → Contact Us (not expedited review).
 
-**v1.0.1 (2026-10-19, next session starts here):** v1.0 is READY_FOR_SALE (IAP APPROVED). v1.0.1 build 3 fixes a user-reported bug (each relaunch generated a new puzzle and consumed a free daily puzzle) and removes `marrano`. Device-tested by Patrick. Submitted via API, AFTER_APPROVAL release. Check: `python3 scripts/appstoreconnect.py get "/v1/appStoreVersions/ca52a07d-84f8-4847-ba34-dd78e0baaed8?fields[appStoreVersions]=appStoreState"`. If rejected: next build is 1.0.1 (4). Version localizations do NOT copy promotionalText to a new version (whatsNew starts null too) — copy it by hand. `install-on-device.sh` auto-detect fails on Xcode 27.1 (devicectl JSON no longer reports reality=physical); pass the UDID 00008130-000914CE1883401C explicitly until fixed.
+**v1.0.1 (2026-10-19, next session starts here):** v1.0 is READY_FOR_SALE (IAP APPROVED). v1.0.1 build 3 fixes a user-reported bug (each relaunch generated a new puzzle and consumed a free daily puzzle) and removes `marrano`. Device-tested by Patrick. Submitted via API, AFTER_APPROVAL release. Check: `python3 scripts/appstoreconnect.py get "/v1/appStoreVersions/ca52a07d-84f8-4847-ba34-dd78e0baaed8?fields[appStoreVersions]=appStoreState"`. If rejected: next build is 1.0.1 (4). Version localizations do NOT copy promotionalText to a new version (whatsNew starts null too) — copy it by hand. `install-on-device.sh` auto-detect fixed 2026-10-19: an idle Wi-Fi iPhone can be listed without hardwareProperties.reality; the script now excludes simulators instead.
 
 **On v1.0 App Review outcome (historical):**
 - Check status: `python3 scripts/appstoreconnect.py get "/v1/appStoreVersions/03ce47c4-7f3d-41dc-9df4-456ae869dd76?fields[appStoreVersions]=appStoreState"` and IAP `"/v2/inAppPurchases/6806386464?fields[inAppPurchases]=state"` (run exactly like this — no pipes — so the allow rule matches).
@@ -178,6 +178,7 @@ Recent decisions affecting current work:
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 261019-o9k | Persist in-progress round across launches (relaunch no longer burns a free puzzle); remove marrano | 2026-10-19 | 84caa1e | [261019-o9k-persist-in-progress-round-across-launche](./quick/261019-o9k-persist-in-progress-round-across-launche/) |
+| fast | install-on-device.sh: detect idle Wi-Fi iPhone listed without `reality` | 2026-10-19 | 61482db | — |
 
 ## Session Continuity
 
