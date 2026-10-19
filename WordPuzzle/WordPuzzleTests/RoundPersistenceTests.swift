@@ -83,7 +83,9 @@ final class RoundPersistenceTests {
         defer { env.defaults.removePersistentDomain(forName: env.suiteName) }
         let vm1 = makeVM(env)
         vm1.startNewRound(with: twoPangramFixturePuzzle())
-        submit("bead", on: vm1)
+        // "cabin" leaves the 5-letter group ("dance") open, so no length bonus yet.
+        // ("bead" would complete the only 4-letter group and earn one.)
+        submit("cabin", on: vm1)
         let vm2 = makeVM(env)
         #expect(vm2.restoreSavedRound() == true)
         expectSameState(vm1, vm2)
