@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: "v1.0 milestone archived 2026-10-19; v1.0.1 (3) in App Review (automatic release). Next: /gsd:new-milestone"
-last_updated: "2026-10-19T22:53:16.093Z"
-last_activity: 2026-10-19
+stopped_at: "v1.0.1 live; v1.0.2 (4) in App Review (automatic release). Next: /gsd:new-milestone"
+last_updated: "2026-11-02T19:07:00.000Z"
+last_activity: 2026-11-02
 progress:
   total_phases: 14
   completed_phases: 12
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-19)
 
 **Core value:** Endless, fresh word puzzles that generate algorithmically from a local dictionary — no internet, no content team, no ongoing maintenance.
-**Current focus:** v1.0 shipped and archived (2026-10-19). v1.0.1 (3) in App Review with automatic release. Next: /gsd:new-milestone.
+**Current focus:** v1.0.1 live. v1.0.2 (4) in App Review with automatic release. Next: /gsd:new-milestone.
 
 ## Current Position
 
 Milestone: v1.0 MVP — COMPLETE, archived 2026-10-19 (.planning/milestones/v1.0-ROADMAP.md, MILESTONES.md)
 Phase: none active — only backlog 999.9 / 999.10 remain
-Status: Between milestones; v1.0.1 (3) WAITING_FOR_REVIEW (automatic release)
-Last activity: 2026-10-19 - v1.0 milestone completed; v1.0.1 (3) submitted (quick task 261019-o9k: round save/restore + relaunch free-puzzle fix + marrano removal)
+Status: Between milestones; v1.0.1 READY_FOR_SALE; v1.0.2 (4) WAITING_FOR_REVIEW (automatic release)
+Last activity: 2026-11-02 - v1.0.2 (4) submitted (debug stats-multiday-zero: today stats split by day via WordEventRecord). Earlier: 2026-10-19 v1.0 milestone completed; v1.0.1 (3) submitted (quick task 261019-o9k: round save/restore + relaunch free-puzzle fix + marrano removal)
 
 Progress: v1.0 [████████████████████] 100% (12 phases, 60 plans)
 
@@ -183,6 +183,7 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-10-14
-Stopped at: 2026-10-19 v1.0 LIVE. v1.0.1 (3) SUBMITTED 22:48 UTC — review submission 0f6e26c2-7b1e-4ae5-80e4-accd7195f1ca, version ca52a07d-84f8-4847-ba34-dd78e0baaed8, build c00a9982-ba5c-4c33-baf5-da9f94193c21, releaseType AFTER_APPROVAL (goes live automatically). Next: check status; then /gsd:complete-milestone.
+Last session: 2026-11-02
+Stopped at: 2026-11-02 v1.0.1 LIVE. v1.0.2 (4) SUBMITTED 19:06 UTC — review submission b3ab19c7-e7df-4200-aa63-196eb81bc0be, version 8af41743-b119-4777-b866-9f59a2235576, build 6dd480f9-cc53-4fe6-8945-5b19f4c2d307, releaseType AFTER_APPROVAL. Fix: today stats (puzzles/score/words) split by day, in-progress rounds count. If rejected: next build is 1.0.2 (5). Simulator tests need `xcodebuild -runFirstLaunch` after Xcode updates (CoreSimulator mismatch).
+Previous: 2026-10-19 v1.0 LIVE. v1.0.1 (3) SUBMITTED 22:48 UTC — review submission 0f6e26c2-7b1e-4ae5-80e4-accd7195f1ca, version ca52a07d-84f8-4847-ba34-dd78e0baaed8, build c00a9982-ba5c-4c33-baf5-da9f94193c21, releaseType AFTER_APPROVAL (goes live automatically). Next: check status; then /gsd:complete-milestone.
 Resume file: None
