@@ -32,5 +32,5 @@ files_changed: []
 
 ## Resolution
 verified: 2026-11-02 on device (iPhone, Wi-Fi Debug install). Puzzles today shows 1 for an in-progress round carried over from an earlier day; existing save opened fine with the added WordEventRecord model.
-not_verified: unit tests (MidnightStatsTests and existing suite) not run; simulator unavailable (CoreSimulator out of date).
+tests: full WordPuzzleTests suite passed on iPhone 17 simulator (359 tests, incl. 4 MidnightStatsTests) after `xcodebuild -runFirstLaunch` fixed the CoreSimulator mismatch.
 behavior_changes: words found in abandoned rounds now count toward today's score/words; words found before upgrade in an in-progress round are not counted in today's totals.
