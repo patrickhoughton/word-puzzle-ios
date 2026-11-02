@@ -89,6 +89,9 @@ final class GameViewModel {
     /// Most-recent-first.
     private(set) var foundWords: [String] = []
     private(set) var score: Int = 0
+    /// When the current round was started (persisted in the snapshot so it survives relaunch).
+    /// Used to attribute stats across midnight.
+    private(set) var roundStartedAt: Date = .now
     private var foundWordSet: Set<String> = []
 
     // MARK: - Completion bonuses (Phase 8)
@@ -221,6 +224,7 @@ final class GameViewModel {
     func startNewRound(with puzzle: Puzzle) {
         persistenceStore?.recordRoundStarted()
         resetRoundState(for: puzzle)
+        roundStartedAt = .now
         saveSnapshot()
     }
 
@@ -250,6 +254,10 @@ final class GameViewModel {
         let restored = Puzzle(letters: Set(letters), centerLetter: center,
                               validWords: snapshot.validWords, pangrams: snapshot.pangrams)
         resetRoundState(for: restored)
+        // Legacy snapshots (no startedAt): if nothing was started today the round must be from an
+        // earlier day; otherwise treat it as today's (already counted) so it is not double counted.
+        roundStartedAt = snapshot.startedAt
+            ?? ((persistenceStore?.puzzlesPlayedToday() ?? 0) == 0 ? .distantPast : .now)
         for word in snapshot.foundWords.reversed() {
             // Structural checks only; deliberately no wordList.contains so already-found words survive list edits.
             guard word.count >= 4, word.contains(center), Set(word).isSubset(of: restored.letters),
@@ -272,7 +280,8 @@ final class GameViewModel {
             centerLetter: String(puzzle.centerLetter),
             validWords: puzzle.validWords,
             pangrams: puzzle.pangrams,
-            foundWords: foundWords
+            foundWords: foundWords,
+            startedAt: roundStartedAt
         ))
     }
 
@@ -343,7 +352,9 @@ final class GameViewModel {
         if foundWordSet.contains(word) { return reject(.alreadyFound) }
         if !wordList.contains(word) { return reject(.notAWord) }
 
+        let scoreBefore = score
         let (points, isPangram, events) = applyAcceptedWord(word)
+        persistenceStore?.recordWordFound(points: score - scoreBefore, roundStartedAt: roundStartedAt)
         // All bonus state must be current BEFORE the counter bump GameView reacts to.
         lastSubmissionBonusEvents = events
         pendingCelebrations.append(contentsOf: events)

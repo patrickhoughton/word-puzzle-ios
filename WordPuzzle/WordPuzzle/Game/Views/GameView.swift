@@ -282,7 +282,10 @@ struct GameView: View {
     // RESEARCH Pitfall 4: every stats surface reads the store inside its sheet content, so it is
     // fresh each time it opens. A @State snapshot set in the same tap that flips the sheet flag
     // reached the sheet stale (.empty) on device -- 09-06 found all-zero stats that way.
-    private var freshStats: PlayerStats { persistenceStore.playerStats() }
+    private var freshStats: PlayerStats {
+        persistenceStore.playerStats(
+            activeRoundStartedAt: viewModel.roundPhase == .playing ? viewModel.roundStartedAt : nil)
+    }
 
     @ViewBuilder private var celebrationOverlay: some View {
         switch activeCelebration {

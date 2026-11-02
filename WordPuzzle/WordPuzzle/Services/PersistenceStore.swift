@@ -26,7 +26,7 @@ final class PersistenceStore {
         } else {
             configuration = ModelConfiguration(isStoredInMemoryOnly: inMemory)
         }
-        return try ModelContainer(for: GameRecord.self, RoundStartRecord.self, configurations: configuration)
+        return try ModelContainer(for: GameRecord.self, RoundStartRecord.self, WordEventRecord.self, configurations: configuration)
     }
 
     // MARK: - Writing
@@ -55,6 +55,13 @@ final class PersistenceStore {
         return entry
     }
 
+    /// Logs one accepted word (points include any bonus it triggered) at the time it was found,
+    /// so today's score/words are attributed to the calendar day they were earned on.
+    func recordWordFound(points: Int, date: Date = .now, roundStartedAt: Date) {
+        context.insert(WordEventRecord(date: date, points: points, roundStartedAt: roundStartedAt))
+        try? context.save()
+    }
+
     // MARK: - Daily count
 
     /// Number of rounds STARTED during the current LOCAL calendar day (D-02) — this is
@@ -72,27 +79,49 @@ final class PersistenceStore {
 
     // MARK: - Today's totals (D-07)
 
-    /// D-07: sum of score across today's FINISHED rounds only (GameRecord, not
-    /// RoundStartRecord) — an abandoned round contributes 0, per D-02's constraint that
-    /// abandoned rounds must not contribute a score.
-    /// SUM is done in Swift: SwiftData has NO SUM pushdown (same reasoning as totalWordsFound()).
-    func todayTotalScore(now: Date = .now) -> Int {
+    /// Words found (and points earned) during the current local day, split by day: derived from
+    /// per-word events, so an in-progress round counts and a round spanning midnight contributes
+    /// to each day only what was found on that day. Finished GameRecords from before word events
+    /// existed (dated earlier than the first event) are added so upgrade-day totals stay intact.
+    private func todayActivity(now: Date) -> (score: Int, words: Int) {
         let (startOfDay, startOfNextDay) = todayBounds(now: now)
-        let descriptor = FetchDescriptor<GameRecord>(
+        let events = (try? context.fetch(FetchDescriptor<WordEventRecord>(
             predicate: #Predicate { $0.date >= startOfDay && $0.date < startOfNextDay }
-        )
-        let records = (try? context.fetch(descriptor)) ?? []
-        return records.reduce(0) { $0 + $1.score }
+        ))) ?? []
+        var score = events.reduce(0) { $0 + $1.points }
+        var words = events.count
+
+        var firstEventDescriptor = FetchDescriptor<WordEventRecord>(sortBy: [SortDescriptor(\.date)])
+        firstEventDescriptor.fetchLimit = 1
+        let firstEvent = (try? context.fetch(firstEventDescriptor))?.first?.date
+        let legacyEnd = min(startOfNextDay, firstEvent ?? startOfNextDay)
+        if legacyEnd > startOfDay {
+            let legacy = (try? context.fetch(FetchDescriptor<GameRecord>(
+                predicate: #Predicate { $0.date >= startOfDay && $0.date < legacyEnd }
+            ))) ?? []
+            score += legacy.reduce(0) { $0 + $1.score }
+            words += legacy.reduce(0) { $0 + $1.wordsFoundCount }
+        }
+        return (score, words)
     }
 
-    /// D-07: sum of words found across today's FINISHED rounds only. See todayTotalScore().
-    func todayTotalWordsFound(now: Date = .now) -> Int {
+    /// Score earned today (finished AND in-progress rounds, by day found). See todayActivity.
+    func todayTotalScore(now: Date = .now) -> Int { todayActivity(now: now).score }
+
+    /// Words found today (finished AND in-progress rounds, by day found). See todayActivity.
+    func todayTotalWordsFound(now: Date = .now) -> Int { todayActivity(now: now).words }
+
+    /// Stats-screen "Puzzles today": rounds started today PLUS distinct earlier-day rounds that
+    /// had words found in them today, PLUS the active round if it was started on an earlier day.
+    /// Display only. The free-tier limit keeps using puzzlesPlayedToday (starts only).
+    func puzzlesTouchedToday(now: Date = .now, activeRoundStartedAt: Date? = nil) -> Int {
         let (startOfDay, startOfNextDay) = todayBounds(now: now)
-        let descriptor = FetchDescriptor<GameRecord>(
+        let events = (try? context.fetch(FetchDescriptor<WordEventRecord>(
             predicate: #Predicate { $0.date >= startOfDay && $0.date < startOfNextDay }
-        )
-        let records = (try? context.fetch(descriptor)) ?? []
-        return records.reduce(0) { $0 + $1.wordsFoundCount }
+        ))) ?? []
+        var carried = Set(events.map(\.roundStartedAt).filter { $0 < startOfDay })
+        if let active = activeRoundStartedAt, active < startOfDay { carried.insert(active) }
+        return puzzlesPlayedToday(now: now) + carried.count
     }
 
     /// D-06 / RESEARCH Pitfall 4: the single source of truth for "when do free puzzles
@@ -254,10 +283,10 @@ final class PersistenceStore {
 
     /// Phase 9: the single snapshot builder GameView calls each time a stats surface opens
     /// (RESEARCH Pitfall 4: never a cached snapshot).
-    func playerStats(now: Date = .now) -> PlayerStats {
+    func playerStats(now: Date = .now, activeRoundStartedAt: Date? = nil) -> PlayerStats {
         let current = currentStreak(now: now)
         return PlayerStats(
-            puzzlesToday: puzzlesPlayedToday(now: now),
+            puzzlesToday: puzzlesTouchedToday(now: now, activeRoundStartedAt: activeRoundStartedAt),
             todayScore: todayTotalScore(now: now),
             todayWords: todayTotalWordsFound(now: now),
             currentStreak: current,

@@ -10,6 +10,8 @@ struct RoundSnapshot: Codable, Equatable {
     let validWords: [String]
     let pangrams: [String]
     let foundWords: [String]   // most-recent-first, same as GameViewModel.foundWords
+    /// When the round started; nil in snapshots written before this field existed (still decodes).
+    var startedAt: Date? = nil
 }
 
 /// Persists the in-progress round as one small JSON blob.
